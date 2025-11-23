@@ -4,18 +4,21 @@ import path from "path";
 
 // Path for bulk resize
 const imageInputPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Client Projects\\Flavor And Flour Bakery\\public\\assets\\image\\"; //Change as per requirement
+  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Official Projects\\Tron Labz\\frontend\\public\\assets\\images\\projects\\the_fitness_club\\"; //Change as per requirement
 
 const imageOuptutPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Client Projects\\Flavor And Flour Bakery\\public\\assets\\image\\"; //Change as per requirement
+  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Official Projects\\Tron Labz\\frontend\\public\\assets\\images\\projects\\the_fitness_club\\"; //Change as per requirement
 
-const imageType = ".jpg"; //Change as per requirement
+const imageType = ".png"; //Change as per requirement
+
 const imageCoversionType = ".avif"; //Change as per requirement
 // const imageCoversionType = ".webp"; //Change as per requirement
 
+const width = 1920; //Change as per requirement
+const height = 1080; //Change as per requirement
+
 // Function to convert images to AVIF format
 async function convertMultipleImagesToAVIF() {
-
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -42,7 +45,8 @@ async function convertMultipleImagesToAVIF() {
 
       try {
         await sharp(inputFilePath)
-          .avif({ quality: 70 }) // adjust quality as needed
+          .avif({ quality: 80 }) // adjust quality as needed
+          .resize(width, height, { fit: "cover", position: "center" })
           .toFile(outputFilePath);
 
         console.log(`✅ Converted: ${file} → ${outputFileName}`);
@@ -57,7 +61,6 @@ async function convertMultipleImagesToAVIF() {
 
 // Function to convert images to WEBP format
 async function convertMultipleImagesToWEBP() {
-
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -84,7 +87,8 @@ async function convertMultipleImagesToWEBP() {
 
       try {
         await sharp(inputFilePath)
-          .webp({ quality: 70 }) // adjust quality as needed
+          .webp({ quality: 90 }) // adjust quality as needed
+          .resize(width, height, { fit: "cover", position: "center" })
           .toFile(outputFilePath);
 
         console.log(`✅ Converted: ${file} → ${outputFileName}`);
@@ -103,5 +107,5 @@ async function convertMultipleImagesToWEBP() {
 
 // converts images to different format
 
-// convertMultipleImagesToAVIF();
+convertMultipleImagesToAVIF();
 // convertMultipleImagesToWEBP();

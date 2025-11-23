@@ -13,7 +13,8 @@ import path from "path";
 */
 
 // Path for bulk resize
-const imageInputPath = "C:\\Users\\Assassin\\Desktop\\"; //Change as per requirement
+const imageInputPath =
+  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Official Projects\\Tron Labz\\frontend\\public\\assets\\images\\projects\\flavor_flour\\"; //Change as per requirement
 
 const imageOuptutPath = "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\output\\"; //Change as per requirement
 
@@ -24,8 +25,8 @@ const outputFileName = "capetown.png"; //Change as per requirement
 
 
 const imageType = ".png"; //Change as per requirement
-const width = 1024; //Change as per requirement
-const height = 1024; //Change as per requirement
+const width = 1920; //Change as per requirement
+const height = 1080; //Change as per requirement
 
 
 // Function to resize images dimensions (width x height)
@@ -124,7 +125,7 @@ async function resizeSingleImagesDimensions() {
     bulk image reziser
  */
 
-// resizeMultipleImagesDimensions();
+resizeMultipleImagesDimensions();
 
 
 /* 

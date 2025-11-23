@@ -4,16 +4,16 @@ import path from "path";
 
 // Path for bulk compression
 const imageInputPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Client Projects\\The Fitness Club\\public\\assets\\image\\trainer"; //Change as per requirement
+  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Client Projects\\The Fitness Club\\public\\assets\\image\\"; //Change as per requirement
 
 const imageOuptutPath =
   "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\output\\"; //Change as per requirement
 
-const imageType = ".png"; //Change as per requirement
+const imageType = ".jpg"; //Change as per requirement
 
-// Function to compress Multiple png images
+// Function to compress Multiple jpg/jpeg images
 
-async function compressMultiplePNG() {
+async function compressMultipleJPEG() {
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -23,7 +23,7 @@ async function compressMultiplePNG() {
     );
 
     if (imageFiles.length === 0) {
-      console.log("No PNG files found in the input directory.");
+      console.log(`No ${imageType.toUpperCase()} files found in the input directory.`);
       return;
     }
 
@@ -36,11 +36,9 @@ async function compressMultiplePNG() {
 
       try {
         await sharp(inputFilePath)
-          .png({
-            compressionLevel: 9, // 0 (fastest) to 9 (smallest)
-            quality: 50, // only used for palette-based images (not typical PNG)
-            adaptiveFiltering: true, // improve compression
-            force: true, // ensure output is PNG
+          .jpeg({
+            quality: 70, // Adjust quality (0–100)
+            chromaSubsampling: "4:4:4", // Better quality color (optional)
           })
           .toFile(outputFilePath);
 
@@ -55,4 +53,4 @@ async function compressMultiplePNG() {
 };
 
 // function call
-compressMultiplePNG();
+compressMultipleJPEG();
