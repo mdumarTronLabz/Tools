@@ -2,13 +2,7 @@ import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
 
-// Path for bulk enhancement of images
-const imageInputPath = "C:\\Users\\Assassin\\Downloads"; //Change as per requirement
 
-const imageOuptutPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\output\\"; //Change as per requirement
-
-const imageType = ".png"; //Change as per requirement
 
 /* 
     
@@ -33,8 +27,9 @@ const imageType = ".png"; //Change as per requirement
 
 */
 
-// Function to enhance images
-async function enhanceImage() {
+// Function to enhance images of specified type in bulk
+
+async function enhanceImage(imageInputPath, imageOuptutPath,imageType) {
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -88,5 +83,6 @@ async function enhanceImage() {
 
 };
 
-// function call
-enhanceImage();
+
+export {enhanceImage}
+

@@ -2,23 +2,10 @@ import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
 
-// Path for bulk resize
-const imageInputPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Official Projects\\Tron Labz\\frontend\\public\\assets\\images\\projects\\the_fitness_club\\"; //Change as per requirement
 
-const imageOuptutPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Official Projects\\Tron Labz\\frontend\\public\\assets\\images\\projects\\the_fitness_club\\"; //Change as per requirement
-
-const imageType = ".png"; //Change as per requirement
-
-const imageCoversionType = ".avif"; //Change as per requirement
-// const imageCoversionType = ".webp"; //Change as per requirement
-
-const width = 1920; //Change as per requirement
-const height = 1080; //Change as per requirement
 
 // Function to convert images to AVIF format
-async function convertMultipleImagesToAVIF() {
+async function convertResizeMultipleImagesToAVIF(imageInputPath, imageOuptutPath, imageType, imageCoversionType, width, height) {
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -60,7 +47,7 @@ async function convertMultipleImagesToAVIF() {
 }
 
 // Function to convert images to WEBP format
-async function convertMultipleImagesToWEBP() {
+async function convertResizeMultipleImagesToWEBP(imageInputPath, imageOuptutPath, imageType, imageCoversionType, width, height) {
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -101,11 +88,8 @@ async function convertMultipleImagesToWEBP() {
   }
 }
 
-/* 
-    Run the conversion 
-*/
 
-// converts images to different format
-
-convertMultipleImagesToAVIF();
-// convertMultipleImagesToWEBP();
+export {
+  convertResizeMultipleImagesToAVIF,
+  convertResizeMultipleImagesToWEBP,
+};

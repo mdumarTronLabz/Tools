@@ -12,26 +12,10 @@ import path from "path";
     outside	Ensure dimensions are at least the given size
 */
 
-// Path for bulk resize
-const imageInputPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Official Projects\\Tron Labz\\frontend\\public\\assets\\images\\projects\\flavor_flour\\"; //Change as per requirement
-
-const imageOuptutPath = "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\output\\"; //Change as per requirement
-
-// Single image resize path
-const imagePath = "C:\\Users\\Assassin\\Desktop\\capetown.png"; //Change as per requirement
-const outputFileName = "capetown.png"; //Change as per requirement
-  
-
-
-const imageType = ".png"; //Change as per requirement
-const width = 1920; //Change as per requirement
-const height = 1080; //Change as per requirement
-
 
 // Function to resize images dimensions (width x height)
 
-async function resizeMultipleImagesDimensions() {
+async function resizeMultipleImagesDimensions(imageInputPath, imageOuptutPath, imageType, width, height ) {
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -80,7 +64,7 @@ async function resizeMultipleImagesDimensions() {
 
 // Function to resize single image dimensions (width x height)
 
-async function resizeSingleImagesDimensions() {
+async function resizeSingleImageDimensions(imagePath, imageOuptutPath, outputFileName, imageType, width, height) {
   try {
     
       
@@ -117,19 +101,4 @@ async function resizeSingleImagesDimensions() {
 }
 
 
-
-// Run the reizer function
-
-
-/* 
-    bulk image reziser
- */
-
-resizeMultipleImagesDimensions();
-
-
-/* 
-    single image resizer 
-*/
-
-// resizeSingleImagesDimensions();
+export {resizeMultipleImagesDimensions, resizeSingleImageDimensions};

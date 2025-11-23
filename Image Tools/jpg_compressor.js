@@ -2,23 +2,15 @@ import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
 
-// Path for bulk compression
-const imageInputPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Client Projects\\The Fitness Club\\public\\assets\\image\\"; //Change as per requirement
-
-const imageOuptutPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\output\\"; //Change as per requirement
-
-const imageType = ".jpg"; //Change as per requirement
 
 // Function to compress Multiple jpg/jpeg images
 
-async function compressMultipleJPEG() {
+async function compressMultipleJPEG(imageInputPath, imageOuptutPath, imageType) {
   try {
     const files = await fs.readdir(imageInputPath);
 
     const imageFiles = files.filter(
-      //checking for type of specified type of image (png,jpg,jpeg etc) files [change as per requirement]
+      //checking for type of specified type of image (jpg/jpeg) files [change as per requirement]
       (file) => path.extname(file).toLowerCase() === imageType
     );
 
@@ -52,5 +44,5 @@ async function compressMultipleJPEG() {
   }
 };
 
-// function call
-compressMultipleJPEG();
+
+export { compressMultipleJPEG };

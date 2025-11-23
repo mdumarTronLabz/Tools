@@ -4,19 +4,9 @@ import fs from "fs/promises";
 import path from "path";
 
 
-// Path for bulk convertion of images
-
-const imageInputPath =
-  "C:\\Users\\Assassin\\Downloads"; //Change as per requirement
-
-const imageOuptutPath = "C:\\Users\\Assassin\\Downloads"; //Change as per requirement
-
-const imageType = ".png"; //Change as per requirement
-// const imageCoversionType = ".avif"; //Change as per requirement
-const imageCoversionType = ".ico"; //Change as per requirement
 
 // Function to convert images to AVIF format
-async function convertMultipleImagesToAVIF() {
+async function convertMultipleImagesToAVIF(imageInputPath, imageOuptutPath, imageType, imageCoversionType) {
 
   try {
     const files = await fs.readdir(imageInputPath);
@@ -58,7 +48,7 @@ async function convertMultipleImagesToAVIF() {
 }
 
 // Function to convert images to WEBP format
-async function convertMultipleImagesToWEBP() {
+async function convertMultipleImagesToWEBP(imageInputPath, imageOuptutPath, imageType, imageCoversionType) {
 
   try {
     const files = await fs.readdir(imageInputPath);
@@ -100,7 +90,7 @@ async function convertMultipleImagesToWEBP() {
 }
 
 // Function to convert images to ICO format
-async function convertMultipleImagesToICO() { 
+async function convertMultipleImagesToICO(imageInputPath, imageOuptutPath, imageType, imageCoversionType) { 
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -127,7 +117,7 @@ async function convertMultipleImagesToICO() {
 
       try {
         // Create PNG buffers for multiple ICO sizes as needed
-        const sizes = [64];
+        const sizes = [128];
 
         const pngBuffers = await Promise.all(
           sizes.map((size) =>
@@ -152,13 +142,10 @@ async function convertMultipleImagesToICO() {
   
 }
 
-/* 
-    Run the conversion 
-*/
 
-// converts images to different format
-
-// convertMultipleImagesToAVIF();
-// convertMultipleImagesToWEBP();
-convertMultipleImagesToICO();
+export {
+  convertMultipleImagesToAVIF,
+  convertMultipleImagesToWEBP,
+  convertMultipleImagesToICO,
+};
 

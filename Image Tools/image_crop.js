@@ -2,20 +2,10 @@ import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
 
-// Path for bulk compression
-const imageInputPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Official Projects\\Tron Labz\\frontend\\public\\assets\\images\\projects\\flavor_flour\\"; //Change as per requirement
-
-const imageOuptutPath =
-  "C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\output\\"; //Change as per requirement
-
-const imageType = ".png"; //Change as per requirement
-const sideToCrop = "right"; // Change as per requirement: 'left', 'right', 'top', 'bottom'
-const pixelsToCrop = 30; // Change as per requirement
 
 // Function to crop Multiple images
 
-async function cropMultipleImages() {
+async function cropMultipleImages(imageInputPath, imageOuptutPath, imageType, sideToCrop, pixelsToCrop) {
   try {
     const files = await fs.readdir(imageInputPath);
 
@@ -73,5 +63,5 @@ async function cropMultipleImages() {
   }
 }
 
-// function call
-cropMultipleImages();
+
+export { cropMultipleImages };
