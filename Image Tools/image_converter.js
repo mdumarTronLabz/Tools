@@ -117,7 +117,7 @@ async function convertMultipleImagesToICO(imageInputPath, imageOuptutPath, image
 
       try {
         // Create PNG buffers for multiple ICO sizes as needed
-        const sizes = [128];
+        const sizes = [256];
 
         const pngBuffers = await Promise.all(
           sizes.map((size) =>
