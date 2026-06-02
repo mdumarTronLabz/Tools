@@ -1,0 +1,1326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Logo Design Packages · Tron Labz</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+      :root {
+        --bg: #0a0a0f;
+        --page: #0e0e16;
+        --srf: #14141f;
+        --srf2: #1a1a28;
+        --rule: #22223a;
+        --text: #e8e8f4;
+        --muted: #7878a0;
+        --dim: #40405a;
+        --violet: #7c3aed;
+        --violet-2: #9d5cf5;
+        --violet-lt: #1e1535;
+        --violet-bd: #3d2870;
+        --pink: #ec4899;
+        --pink-lt: #1f1220;
+        --teal: #14b8a6;
+        --teal-lt: #0d1f1e;
+        --gold: #f59e0b;
+        --gold-lt: #1f1a0d;
+        --white: #ffffff;
+        --sans: "Instrument Sans", system-ui, sans-serif;
+        --head: "Syne", system-ui, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: #06060d;
+        color: var(--text);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ── A4 PAGE ── */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: var(--page);
+        margin: 8mm auto;
+        padding: 16mm 15mm 14mm;
+        position: relative;
+        box-shadow: 0 8px 48px rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* geometric bg decoration */
+      .page::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(124, 58, 237, 0.12) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .page::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        left: -60px;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(20, 184, 166, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      @media print {
+        body {
+          background: #000;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          padding: 14mm 13mm 12mm;
+          page-break-after: always;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+
+      /* ── CURRENCY PANEL ── */
+      .panel {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 278px;
+        background: var(--srf);
+        border: 1px solid var(--rule);
+        border-top: 3px solid var(--violet);
+        border-radius: 12px;
+        padding: 18px;
+        z-index: 1000;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        font-family: var(--sans);
+      }
+
+      .panel-title {
+        font-family: var(--head);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel-title span {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: var(--violet);
+        border-radius: 50%;
+      }
+
+      .plabel {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--muted);
+        margin-bottom: 5px;
+      }
+
+      .country-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+
+      .cbtn {
+        background: var(--srf2);
+        border: 1px solid var(--rule);
+        color: var(--muted);
+        padding: 7px 8px;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.15s;
+        font-family: var(--sans);
+      }
+      .cbtn:hover {
+        border-color: var(--violet);
+        color: var(--text);
+      }
+      .cbtn.active {
+        background: var(--violet);
+        border-color: var(--violet);
+        color: #fff;
+      }
+
+      .row2 {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .pinput {
+        background: var(--srf2);
+        border: 1px solid var(--rule);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-family: var(--mono);
+        width: 100%;
+        outline: none;
+      }
+      .pinput:focus {
+        border-color: var(--violet);
+      }
+
+      .abtn {
+        width: 100%;
+        background: var(--violet);
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: 700;
+        font-size: 11px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-family: var(--sans);
+        margin-top: 5px;
+        transition: background 0.2s;
+      }
+      .abtn:hover {
+        background: var(--violet-2);
+      }
+
+      .pbtn {
+        width: 100%;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--rule);
+        padding: 9px;
+        border-radius: 5px;
+        font-weight: 600;
+        font-size: 11px;
+        cursor: pointer;
+        font-family: var(--sans);
+        margin-top: 5px;
+        transition: all 0.2s;
+      }
+      .pbtn:hover {
+        border-color: var(--violet-2);
+        color: var(--text);
+      }
+
+      .pdivider {
+        border: none;
+        border-top: 1px solid var(--rule);
+        margin: 12px 0;
+      }
+      .ptip {
+        font-size: 9.5px;
+        color: var(--dim);
+        line-height: 1.6;
+      }
+
+      /* ── DOC HEADER ── */
+      .doc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--rule);
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo-img {
+        width: 7rem;
+        height: 4.2rem;
+        object-fit: contain;
+        filter: brightness(1.1);
+      }
+      .logo-tagline {
+        font-size: 8px;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: var(--violet-2);
+        font-weight: 600;
+        margin-top: 4px;
+      }
+
+      .hdr-right {
+        text-align: right;
+      }
+      .hdr-chip {
+        display: inline-block;
+        background: var(--violet-lt);
+        border: 1px solid var(--violet-bd);
+        color: var(--violet-2);
+        font-size: 9px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+      .hdr-sub {
+        font-size: 9px;
+        color: var(--muted);
+        margin-top: 4px;
+        letter-spacing: 0.3px;
+      }
+
+      /* ── COVER TITLE ── */
+      .cover-block {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 28px;
+      }
+
+      .cover-eyebrow {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--violet-2);
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+
+      .cover-h1 {
+        font-family: var(--head);
+        font-size: 46px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -2px;
+        line-height: 0.95;
+        margin-bottom: 14px;
+      }
+
+      .cover-h1 em {
+        font-style: normal;
+        -webkit-text-stroke: 1.5px var(--violet-2);
+        color: transparent;
+      }
+
+      .cover-desc {
+        font-size: 12.5px;
+        color: var(--muted);
+        max-width: auto;
+        line-height: 1.7;
+        text-align: justify;
+      }
+
+      /* ── SECTION LABEL ── */
+      .sec-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+        position: relative;
+        z-index: 1;
+      }
+      .sec-num {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--violet-2);
+        background: var(--violet-lt);
+        border: 1px solid var(--violet-bd);
+        padding: 3px 8px;
+        border-radius: 4px;
+        letter-spacing: 1px;
+      }
+      .sec-title {
+        font-family: var(--head);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.5px;
+      }
+
+      /* ── PACKAGE CARDS ── */
+      .pkg-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 4px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .pkg-card {
+        background: var(--srf);
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 220px 1fr;
+      }
+
+      .pkg-card.popular {
+        border-color: var(--violet);
+        box-shadow:
+          0 0 0 1px rgba(124, 58, 237, 0.2),
+          0 4px 20px rgba(124, 58, 237, 0.1);
+      }
+
+      .pkg-card.premium {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.15);
+      }
+
+      /* Left column — price & name */
+      .pkg-left {
+        padding: 18px 20px;
+        border-right: 1px solid var(--rule);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .pkg-card.basic .pkg-left {
+        background: linear-gradient(140deg, var(--srf2) 0%, var(--srf) 100%);
+      }
+      .pkg-card.popular .pkg-left {
+        background: linear-gradient(
+          140deg,
+          var(--violet-lt) 0%,
+          var(--srf) 100%
+        );
+      }
+      .pkg-card.premium .pkg-left {
+        background: linear-gradient(140deg, var(--gold-lt) 0%, var(--srf) 100%);
+      }
+
+      .pkg-left::before {
+        content: "";
+        position: absolute;
+        top: -30px;
+        left: -30px;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        opacity: 0.06;
+      }
+      .pkg-card.basic .pkg-left::before {
+        background: var(--teal);
+      }
+      .pkg-card.popular .pkg-left::before {
+        background: var(--violet);
+      }
+      .pkg-card.premium .pkg-left::before {
+        background: var(--gold);
+      }
+
+      .pkg-tag {
+        display: inline-block;
+        font-size: 8.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 3px 8px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        width: fit-content;
+      }
+      .pkg-card.basic .pkg-tag {
+        background: rgba(20, 184, 166, 0.12);
+        color: var(--teal);
+      }
+      .pkg-card.popular .pkg-tag {
+        background: rgba(124, 58, 237, 0.2);
+        color: var(--violet-2);
+      }
+      .pkg-card.premium .pkg-tag {
+        background: rgba(245, 158, 11, 0.12);
+        color: var(--gold);
+      }
+
+      .pkg-name {
+        font-family: var(--head);
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 12px;
+        line-height: 1;
+        letter-spacing: -0.5px;
+      }
+
+      .pkg-price-line {
+        display: flex;
+        align-items: baseline;
+        gap: 2px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+      .pkg-sym {
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .pkg-card.basic .pkg-sym {
+        color: var(--teal);
+      }
+      .pkg-card.popular .pkg-sym {
+        color: var(--violet-2);
+      }
+      .pkg-card.premium .pkg-sym {
+        color: var(--gold);
+      }
+
+      .pkg-amt {
+        font-family: var(--mono);
+        font-size: 19px;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1;
+      }
+      .pkg-period {
+        font-size: 9px;
+        color: var(--muted);
+        margin-left: 3px;
+      }
+
+      .pkg-delivery {
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .pkg-delivery::before {
+        content: "◷";
+        font-size: 11px;
+      }
+      .pkg-card.basic .pkg-delivery::before {
+        color: var(--teal);
+      }
+      .pkg-card.popular .pkg-delivery::before {
+        color: var(--violet-2);
+      }
+      .pkg-card.premium .pkg-delivery::before {
+        color: var(--gold);
+      }
+
+      /* Right column — features */
+      .pkg-right {
+        padding: 16px 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 14px;
+        align-content: start;
+      }
+
+      .pkg-feat {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        font-size: 10.5px;
+        color: #b0b0c8;
+        line-height: 1.4;
+        padding: 3px 0;
+      }
+      .feat-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 4px;
+      }
+      .pkg-card.basic .feat-dot {
+        background: var(--teal);
+      }
+      .pkg-card.popular .feat-dot {
+        background: var(--violet-2);
+      }
+      .pkg-card.premium .feat-dot {
+        background: var(--gold);
+      }
+
+      .popular-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: var(--violet);
+        color: #fff;
+        font-size: 7.5px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 8px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .pkg-best {
+        grid-column: span 2;
+        text-align: justify;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-style: italic;
+        border-top: 1px solid var(--rule);
+        padding-top: 8px;
+        margin-top: 32px;
+      }
+      /* ── QUICK SUMMARY TABLE ── */
+      .summ-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11.5px;
+        margin-top: 12px;
+        position: relative;
+        z-index: 1;
+      }
+      .summ-table thead th {
+        background: var(--srf2);
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 10px 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--rule);
+      }
+      .summ-table thead th:not(:first-child) {
+        text-align: center;
+      }
+      .summ-table tbody td {
+        padding: 11px 12px;
+        border-bottom: 1px solid rgba(34, 34, 58, 0.8);
+        color: var(--text);
+        vertical-align: middle;
+      }
+      .summ-table tbody td:not(:first-child) {
+        text-align: center;
+      }
+      .summ-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+      .summ-table tbody tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .pkg-row-basic td:first-child {
+        color: var(--teal);
+        font-weight: 700;
+      }
+      .pkg-row-standard td:first-child {
+        color: var(--violet-2);
+        font-weight: 700;
+      }
+      .pkg-row-premium td:first-child {
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .price-cell {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      /* ── INFO SECTIONS ── */
+      .info-block {
+        background: var(--srf);
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-bottom: 14px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .info-block h3 {
+        font-family: var(--head);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .info-block h3::before {
+        content: "";
+        width: 3px;
+        height: 14px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .block-violet h3::before {
+        background: var(--violet);
+      }
+      .block-teal h3::before {
+        background: var(--teal);
+      }
+      .block-pink h3::before {
+        background: var(--pink);
+      }
+      .block-gold h3::before {
+        background: var(--gold);
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .info-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 9px;
+        background: var(--srf2);
+        border-radius: 7px;
+      }
+      .info-icon {
+        font-size: 14px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .info-text {
+      }
+      .info-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .info-desc {
+        font-size: 10px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* list style items */
+      .tip-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tip-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        font-size: 11px;
+        color: #b0b0c8;
+        line-height: 1.6;
+      }
+      .tip-bullet {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--violet-2);
+        font-weight: 600;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .tip-item strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      /* delivery steps */
+      .step-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--rule);
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .step-row:last-child {
+        border-bottom: none;
+      }
+      .step-num {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 600;
+        background: var(--teal-lt);
+        color: var(--teal);
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      /* price tag for tips */
+      .ptag {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        display: inline-block;
+      }
+      .ptag.violet {
+        color: var(--violet-2);
+      }
+      .ptag.gold {
+        color: var(--gold);
+      }
+      .ptag.pink {
+        color: var(--pink);
+      }
+
+      /* ── FOOTER ── */
+      .page-footer {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--rule);
+        display: flex;
+        justify-content: space-between;
+        font-size: 8.5px;
+        color: var(--muted);
+        position: relative;
+        z-index: 1;
+      }
+      .footer-brand {
+        font-weight: 700;
+        color: var(--violet-2);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════ CURRENCY PANEL ═══════════ -->
+    <div class="panel no-print">
+      <div class="panel-title"><span></span>Currency Settings</div>
+
+      <div class="plabel">Select Region</div>
+      <div class="country-grid">
+        <button class="cbtn active" onclick="setPreset('INR', '₹', 1, event)">
+          🇮🇳 India (INR)
+        </button>
+        <button class="cbtn" onclick="setPreset('USD', '$', 0.012, event)">
+          🇺🇸 USA (USD)
+        </button>
+        <button class="cbtn" onclick="setPreset('EUR', '€', 0.011, event)">
+          🇪🇺 Europe (EUR)
+        </button>
+        <button class="cbtn" onclick="setPreset('GBP', '£', 0.0094, event)">
+          🇬🇧 UK (GBP)
+        </button>
+        <button class="cbtn" onclick="setPreset('AED', 'AED ', 0.044, event)">
+          🇦🇪 UAE (AED)
+        </button>
+        <button class="cbtn" onclick="setPreset('SGD', 'S$', 0.016, event)">
+          🇸🇬 Singapore
+        </button>
+        <button class="cbtn" onclick="setPreset('AUD', 'A$', 0.018, event)">
+          🇦🇺 Australia
+        </button>
+        <button class="cbtn" onclick="setPreset('CAD', 'C$', 0.016, event)">
+          🇨🇦 Canada
+        </button>
+      </div>
+
+      <hr class="pdivider" />
+      <div class="plabel" style="margin-bottom: 6px">Custom Override</div>
+      <div class="row2">
+        <div>
+          <div class="plabel" style="margin-bottom: 3px">Symbol</div>
+          <input class="pinput" id="inp-sym" value="₹" />
+        </div>
+        <div>
+          <div class="plabel" style="margin-bottom: 3px">Rate × INR</div>
+          <input class="pinput" id="inp-rate" value="1" />
+        </div>
+      </div>
+      <p style="font-size: 9px; color: var(--dim); margin: 4px 0 8px">
+        e.g. ₹1 = 0.012 USD → enter 0.012
+      </p>
+      <button class="abtn" onclick="applyCustom()">
+        Apply & Convert All Prices
+      </button>
+      <button class="pbtn" onclick="window.print()">
+        🖨 Print / Save as PDF
+      </button>
+      <hr class="pdivider" />
+      <p class="ptip">All prices update instantly. Set rate → Apply → Print.</p>
+    </div>
+
+    <!-- ═══════════ PAGE 1 — PACKAGES ═══════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+          <img
+            class="logo-img"
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz"
+          />
+          <div class="logo-tagline">Building Your Digital Home</div>
+        </div>
+        <div class="hdr-right">
+          <div class="hdr-chip">Logo Design Services</div>
+          <div class="hdr-sub">
+            www.tronlabz.com · support@tronlabz.com . +91 95400 43695
+          </div>
+          <div
+            class="hdr-sub"
+            style="
+              margin-top: 2px;
+              font-size: 8px;
+              color: var(--dim);
+              text-transform: uppercase;
+              letter-spacing: 0.8px;
+            "
+          >
+            Confidential · For Client Use Only
+          </div>
+        </div>
+      </div>
+
+      <!-- Cover -->
+      <div class="cover-block">
+        <div class="cover-eyebrow">Brand Identity & Logo Design</div>
+        <h1 class="cover-h1">Logo<br /><em>Design</em><br />Packages</h1>
+        <p class="cover-desc">
+          Professional, memorable logos crafted to represent your brand with
+          precision. Every package includes personal consultation, thoughtful
+          concepts, and files that work everywhere: web, print, signage,
+          merchandise.
+        </p>
+      </div>
+
+      <!-- Section 01 -->
+      <div class="sec-label">
+        <span class="sec-num">01</span>
+        <span class="sec-title">Packages</span>
+      </div>
+
+      <div class="pkg-stack">
+        <!-- BASIC -->
+        <div class="pkg-card basic">
+          <div class="pkg-left">
+            <div>
+              <div class="pkg-tag">Package 1</div>
+              <div class="pkg-name">Basic</div>
+              <div class="pkg-price-line">
+                <span class="pkg-sym price-sym">₹</span>
+                <span
+                  class="pkg-amt price-atom"
+                  data-inr-lo="2500"
+                  data-inr-hi="4000"
+                  >2,500 – 4,000</span
+                >
+              </div>
+              <div class="pkg-delivery">3–4 day delivery</div>
+            </div>
+          </div>
+          <div class="pkg-right">
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>2 logo concept
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>2 revisions
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>Final files: PNG, JPG, PDF
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>Simple, clean design
+            </div>
+            
+              <div class="pkg-best">
+                Best for: Small local businesses, startups on a budget
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- STANDARD -->
+        <div class="pkg-card popular" style="position: relative">
+          <span class="popular-badge">Most Popular</span>
+          <div class="pkg-left">
+            <div>
+              <div class="pkg-tag">Package 2</div>
+              <div class="pkg-name">Standard</div>
+              <div class="pkg-price-line">
+                <span class="pkg-sym price-sym">₹</span>
+                <span
+                  class="pkg-amt price-atom"
+                  data-inr-lo="6000"
+                  data-inr-hi="10000"
+                  >6,000 – 10,000</span
+                >
+              </div>
+              <div class="pkg-delivery">5–7 day delivery</div>
+            </div>
+            
+          </div>
+          <div class="pkg-right">
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>2–3 logo concepts
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>4 revisions
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>Final Files: PNG, JPG, PDF, SVG
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>Color + black & white versions
+            </div>
+            <div class="pkg-best">
+              Best for: Growing businesses, freelancers, online brands
+            </div>
+          </div>
+        </div>
+
+        <!-- PREMIUM -->
+        <div class="pkg-card premium">
+          <div class="pkg-left">
+            <div>
+              <div class="pkg-tag">Package 3</div>
+              <div class="pkg-name">Premium</div>
+              <div class="pkg-price-line">
+                <span class="pkg-sym price-sym">₹</span>
+                <span
+                  class="pkg-amt price-atom"
+                  data-inr-lo="15000"
+                  data-inr-hi="25000"
+                  >15,000 – 25,000</span
+                >
+              </div>
+              <div class="pkg-delivery">7–10 day delivery</div>
+            </div>
+            
+          </div>
+          <div class="pkg-right">
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>4–5 logo concepts
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>6 Revisions
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>Full file package: PNG, JPG, PDF,
+              SVG, AI/EPS
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>All color variations (color, B&W,
+              transparent)
+            </div>
+            <div class="pkg-feat">
+              <span class="feat-dot"></span>Brand style guide (fonts, colors,
+              usage)
+            </div>
+            <div class="pkg-best">
+              Best for: Established businesses, rebrands, agencies
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand">Tron Labz</span>
+        <span>Page 1 of 2 - Logo Design Packages</span>
+      </div>
+    </section>
+
+    <!-- ═══════════ PAGE 2 — FILES, DELIVERY, TIPS ═══════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+          <img
+            class="logo-img"
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz"
+          />
+          <div class="logo-tagline">Building Your Digital Home</div>
+        </div>
+        <div class="hdr-right">
+          <div class="hdr-chip">Logo Design Services</div>
+          <div class="hdr-sub">
+            www.tronlabz.com · support@tronlabz.com . +91 95400 43695
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Summary Table -->
+      <div class="sec-label" style="margin-top: 18px">
+        <span class="sec-num">02</span>
+        <span class="sec-title">Quick Comparison</span>
+      </div>
+
+      <table class="summ-table">
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Price</th>
+            <th>Concepts</th>
+            <th>Revisions</th>
+            <th>Delivery</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="pkg-row-basic">
+            <td>Basic</td>
+            <td class="price-cell">
+              <span class="price-sym">₹</span
+              > <span class="price-atom" data-inr-lo="2500" data-inr-hi="4000"
+                >2,500 – 4,000</span
+              >
+            </td>
+            <td>2</td>
+            <td>2</td>
+            <td>3–4 days</td>
+          </tr>
+          <tr class="pkg-row-standard">
+            <td>Standard</td>
+            <td class="price-cell">
+              <span class="price-sym">₹</span
+              > <span class="price-atom" data-inr-lo="6000" data-inr-hi="10000"
+                >6,000 – 10,000</span
+              >
+            </td>
+            <td>2–3</td>
+            <td>4</td>
+            <td>5–7 days</td>
+          </tr>
+          <tr class="pkg-row-premium">
+            <td>Premium</td>
+            <td class="price-cell">
+              <span class="price-sym">₹</span
+              > <span class="price-atom" data-inr-lo="15000" data-inr-hi="25000"
+                >15,000 – 25,000</span
+              >
+            </td>
+            <td>4–5</td>
+            <td>6</td>
+            <td>7–10 days</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Rush / Extra charges mini table -->
+      <div class="sec-label" style="margin-top: 20px">
+        <span class="sec-num">03</span>
+        <span class="sec-title">Add-On Charges</span>
+      </div>
+
+      <table class="summ-table">
+        <thead>
+          <tr>
+            <th style="width: 50%">Add-On</th>
+            <th>Price</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color: var(--text); font-weight: 600">
+              Extra Revision (per round)
+            </td>
+            <td class="price-cell">
+              <span class="price-sym">₹</span
+              > <span class="price-atom" data-inr-lo="500" data-inr-hi="1000"
+                >500 – 1,000</span
+              >
+            </td>
+            <td style="font-size: 10.5px; color: var(--muted)">
+              Beyond package limit
+            </td>
+          </tr>
+          <tr>
+            <td style="color: var(--text); font-weight: 600">
+              Source File (AI / EPS)
+            </td>
+            <td class="price-cell">
+              <span class="price-sym">₹</span
+              > <span class="price-atom" data-inr-lo="1500" data-inr-hi="3000"
+                >1,500 – 3,000</span
+              >
+            </td>
+            <td style="font-size: 10.5px; color: var(--muted)">
+              Working files
+            </td>
+          </tr>
+          <tr>
+            <td style="color: var(--text); font-weight: 600">
+              Rush Delivery (24–48 hrs)
+            </td>
+            <td
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--pink);
+              "
+            >
+              +25–30%
+            </td>
+            <td style="font-size: 10.5px; color: var(--muted)">
+              On top of package price
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- CTA Band -->
+      <div
+        style="
+          background: linear-gradient(
+            135deg,
+            var(--violet-lt) 0%,
+            var(--srf) 100%
+          );
+          border: 1px solid var(--violet-bd);
+          border-radius: 10px;
+          padding: 18px 20px;
+          margin-top: 18px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          position: relative;
+          z-index: 1;
+        "
+      >
+        <div>
+          <div
+            style="
+              font-family: var(--head);
+              font-size: 18px;
+              font-weight: 700;
+              color: var(--text);
+              margin-bottom: 4px;
+            "
+          >
+            Ready to start a logo project?
+          </div>
+          <div style="font-size: 11px; color: var(--muted)">
+            Get in touch, let's discuss your brand vision
+          </div>
+        </div>
+        <div style="text-align: right">
+          <div
+            style="
+              font-family: var(--mono);
+              font-size: 13px;
+              color: var(--violet-2);
+              font-weight: 600;
+              margin-bottom: 3px;
+            "
+          >
+            +91 95400 43695
+          </div>
+          <div style="font-size: 10px; color: var(--dim)">
+            support@tronlabz.com
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand">Tron Labz</span>
+        <span>Page 2 of 2 - Logo Design Packages</span>
+      </div>
+    </section>
+
+    <!-- ═══════════ CURRENCY ENGINE ═══════════ -->
+    <script>
+      let currentSym = "₹";
+      let currentRate = 1;
+
+      function smartRound(n) {
+        if (n >= 100000) return Math.round(n / 1000) * 1000;
+        if (n >= 10000) return Math.round(n / 500) * 500;
+        if (n >= 1000) return Math.round(n / 50) * 50;
+        if (n >= 100) return Math.round(n / 5) * 5;
+        return parseFloat(n.toFixed(2));
+      }
+
+      function numFmt(n) {
+        if (n >= 10000000)
+          return (n / 10000000).toFixed(2).replace(/\.?0+$/, "") + "Cr";
+        if (n >= 100000)
+          return (n / 100000).toFixed(2).replace(/\.?0+$/, "") + "L";
+        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.?0+$/, "") + "K";
+        return parseFloat(n.toFixed(2)).toLocaleString();
+      }
+
+      function applyConversion(sym, rate) {
+        currentSym = sym;
+        currentRate = rate;
+
+        document.querySelectorAll(".price-atom").forEach((el) => {
+          const lo = parseFloat(el.dataset.inrLo || 0);
+          const hi = parseFloat(el.dataset.inrHi || 0);
+          const loC = smartRound(lo * rate);
+
+          if (hi && hi !== lo) {
+            const hiC = smartRound(hi * rate);
+            el.textContent = numFmt(loC) + " – " + numFmt(hiC);
+          } else {
+            el.textContent = numFmt(loC);
+          }
+        });
+
+        document.querySelectorAll(".price-sym").forEach((el) => {
+          el.textContent = sym;
+        });
+      }
+
+      function setPreset(code, sym, rate, e) {
+        document.getElementById("inp-sym").value = sym;
+        document.getElementById("inp-rate").value = rate;
+        applyConversion(sym, rate);
+        document
+          .querySelectorAll(".cbtn")
+          .forEach((b) => b.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+      }
+
+      function applyCustom() {
+        const sym = document.getElementById("inp-sym").value.trim() || "₹";
+        const rate = parseFloat(document.getElementById("inp-rate").value) || 1;
+        applyConversion(sym, rate);
+        document
+          .querySelectorAll(".cbtn")
+          .forEach((b) => b.classList.remove("active"));
+      }
+    </script>
+  </body>
+</html>

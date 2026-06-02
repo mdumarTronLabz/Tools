@@ -34,3 +34,11 @@ This directory contains various tools designed to accelerate and streamline the 
 - `video_to_gif_converter.js`: A tool for converting video clips into GIF format, making it easy to create animated images from video content.
 
 - `video_to_thumbnail_generator.js`: A utility for generating thumbnail images from video files, which can be used for previews or as cover images.
+
+##
+### Email Marketing
+##
+
+- `server.js`: A simple server setup for handling email marketing campaigns, including sending emails in bulk for promotions, newsletters, or updates to subscribers.
+
+
