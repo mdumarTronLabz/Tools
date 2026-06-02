@@ -1,0 +1,3660 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clinic Website Audit Report - Tron Labz</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+      :root {
+        --primary: #0f4c5c;
+        --primary-dark: #08313c;
+        --secondary: #e36414;
+        --light: #f4f7f6;
+        --border: #d9e4e2;
+        --text: #1a1a1a;
+        --muted: #5d6b6e;
+        --danger: #d62828;
+        --warning: #f77f00;
+        --success: #2a9d8f;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #d8d8d8;
+        color: var(--text);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: white;
+        margin: 8mm auto;
+        padding: 15mm;
+        position: relative;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ===== EDIT MODE TOOLBAR ===== */
+      #edit-toolbar {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 9999;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: #1a1a1a;
+        padding: 10px 16px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      }
+
+      #edit-toolbar .tb-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-right: 4px;
+      }
+
+      .tb-btn {
+        border: none;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s;
+      }
+
+      #toggle-edit {
+        background: var(--secondary);
+        color: white;
+      }
+
+      #toggle-edit:hover {
+        background: #c55510;
+      }
+      #toggle-edit.active {
+        background: var(--success);
+      }
+
+      #save-btn {
+        background: #2a2a2a;
+        color: #ccc;
+        border: 1px solid #444;
+      }
+
+      #save-btn:hover {
+        background: #3a3a3a;
+        color: white;
+      }
+
+      #clear-btn {
+        background: transparent;
+        color: #888;
+        border: 1px solid #444;
+        font-size: 11px;
+        padding: 6px 12px;
+      }
+
+      #clear-btn:hover {
+        color: var(--danger);
+        border-color: var(--danger);
+      }
+
+      /* ===== EDIT MODE ACTIVE STATE ===== */
+      body.edit-mode [contenteditable="true"] {
+        outline: 1.5px dashed rgba(227, 100, 20, 0.5);
+        background: rgba(255, 247, 237, 0.6);
+        border-radius: 3px;
+        padding: 1px 4px;
+        cursor: text;
+        transition:
+          outline 0.2s,
+          background 0.2s;
+      }
+
+      body.edit-mode [contenteditable="true"]:hover {
+        outline: 2px solid var(--secondary);
+        background: rgba(255, 247, 237, 0.9);
+      }
+
+      body.edit-mode [contenteditable="true"]:focus {
+        outline: 2px solid var(--secondary);
+        background: #fff7ed;
+        box-shadow: 0 0 0 3px rgba(227, 100, 20, 0.15);
+      }
+
+      body:not(.edit-mode) [contenteditable] {
+        outline: none !important;
+        background: transparent !important;
+        cursor: default;
+      }
+
+      /* Guide-only columns */
+      .guide-col {
+        transition: opacity 0.3s;
+      }
+
+      body.edit-mode .guide-col {
+        display: table-cell !important;
+        opacity: 1;
+      }
+      body:not(.edit-mode) .guide-col {
+        display: none !important;
+      }
+
+      .guide-banner {
+        background: #fff7ed;
+        border-left: 4px solid var(--warning);
+        padding: 8px 12px;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 8px;
+        border-radius: 4px;
+        transition: all 0.3s;
+      }
+
+      body:not(.edit-mode) .guide-banner {
+        display: none;
+      }
+
+      /* ===== STATUS BADGE — auto-color by data-status ===== */
+      .status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        cursor: default;
+        user-select: none;
+      }
+
+      .status[data-status="pass"] {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status[data-status="fail"] {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .status[data-status="warn"] {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      /* In edit mode: make status badges clickable/cycleable */
+      body.edit-mode .status {
+        cursor: pointer;
+        box-shadow: 0 0 0 2px rgba(227, 100, 20, 0.4);
+      }
+      body.edit-mode .status:hover {
+        opacity: 0.85;
+        transform: scale(1.05);
+      }
+
+      /* ===== SCORE INPUTS ===== */
+      .score-input {
+        display: inline-block;
+        font-weight: 900;
+        color: var(--secondary);
+        background: transparent;
+        border: none;
+        font-family: inherit;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        text-align: right;
+      }
+
+      .score-input::-webkit-inner-spin-button,
+      .score-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+
+      body.edit-mode .score-input {
+        outline: 2px dashed rgba(227, 100, 20, 0.5);
+        background: rgba(255, 247, 237, 0.6);
+        border-radius: 4px;
+        cursor: text;
+      }
+
+      body.edit-mode .score-input:focus {
+        outline: 2px solid var(--secondary);
+        background: #fff7ed;
+      }
+
+      /* ===== OVERALL SCORE BADGE ===== */
+      .score-grade-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+        margin-left: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        vertical-align: middle;
+        transition: all 0.4s;
+      }
+
+      .grade-critical {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .grade-average {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .grade-good {
+        background: #d4edda;
+        color: #155724;
+      }
+      .grade-excellent {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      /* ===== TYPOGRAPHY ===== */
+      h1 {
+        font-size: 38px;
+        line-height: 1.08;
+        color: var(--primary);
+        font-weight: 900;
+        margin-bottom: 16px;
+        letter-spacing: -1px;
+      }
+      h2 {
+        font-size: 24px;
+        color: var(--primary);
+        font-weight: 850;
+        margin-bottom: 12px;
+        letter-spacing: -0.3px;
+      }
+      h3 {
+        font-size: 17px;
+        color: var(--primary);
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      h4 {
+        font-size: 14px;
+        color: var(--text);
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      p {
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      ul {
+        padding-left: 18px;
+        margin-top: 6px;
+      }
+      li {
+        font-size: 12.5px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 4px;
+      }
+
+      .highlight {
+        color: var(--secondary);
+      }
+      .small {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      /* ===== HEADER ===== */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 2px solid var(--light);
+        padding-bottom: 14px;
+        margin-bottom: 28px;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 900;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+      }
+      .logo span {
+        color: var(--secondary);
+      }
+      .tagline {
+        font-size: 7px;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--secondary);
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      .doc-tag {
+        background: var(--primary);
+        color: white;
+        padding: 7px 14px;
+        border-radius: 30px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      /* ===== COVER GRID ===== */
+      .cover-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 30px 0;
+      }
+
+      .info-card {
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--secondary);
+        border-radius: 10px;
+        padding: 14px;
+      }
+
+      .info-card label {
+        display: block;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--muted);
+        font-weight: 800;
+        margin-bottom: 5px;
+      }
+
+      .info-card [contenteditable] {
+        width: 100%;
+        font-size: 13px;
+        font-weight: 650;
+        color: var(--text);
+        display: block;
+        min-height: 20px;
+      }
+
+      /* ===== SCORE BOX ===== */
+      .score-box {
+        background: var(--primary);
+        color: white;
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      .big-score-wrap {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        min-width: 145px;
+      }
+      .big-score {
+        font-size: 62px;
+        font-weight: 900;
+        color: var(--secondary);
+        line-height: 1;
+      }
+      .big-score-input {
+        font-size: 62px;
+        font-weight: 900;
+        color: var(--secondary);
+        line-height: 1;
+        width: 2ch;
+        background: transparent;
+        border: none;
+        font-family: inherit;
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+      .big-score-input::-webkit-inner-spin-button,
+      .big-score-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+
+      body.edit-mode .big-score-input {
+        outline: 2px dashed rgba(255, 255, 255, 0.4);
+        border-radius: 6px;
+      }
+
+      .score-box h3 {
+        color: white;
+        font-size: 20px;
+        margin-bottom: 6px;
+      }
+      .score-box p {
+        color: #cfe2e4;
+        margin-bottom: 0;
+        font-size: 12.5px;
+      }
+
+      /* ===== SECTION TITLE ===== */
+      .section-title {
+        background: var(--primary);
+        color: white;
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .section-title h2 {
+        color: white;
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .section-score {
+        background: var(--secondary);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .section-score-input {
+        width: 1.8ch;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 13px;
+        font-weight: 800;
+        font-family: inherit;
+        -moz-appearance: textfield;
+        appearance: textfield;
+        text-align: center;
+      }
+      .section-score-input::-webkit-inner-spin-button,
+      .section-score-input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+      body.edit-mode .section-score-input {
+        outline: 1px dashed rgba(255, 255, 255, 0.5);
+        border-radius: 3px;
+      }
+
+      /* ===== AUDIT TABLE ===== */
+      .audit-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 24px;
+        font-size: 11.5px;
+      }
+      .audit-table thead {
+        background: var(--light);
+      }
+      .audit-table th {
+        padding: 10px;
+        text-align: left;
+        font-weight: 800;
+        color: var(--primary);
+        border-bottom: 2px solid var(--border);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .audit-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: top;
+      }
+      .audit-table tr:hover {
+        background: #fafafa;
+      }
+      .audit-table strong {
+        color: var(--text);
+        display: block;
+        margin-bottom: 3px;
+        font-size: 12px;
+      }
+      .audit-table td.guide-col {
+        font-size: 10.5px;
+        color: var(--muted);
+      }
+      .audit-table [contenteditable] {
+        min-height: 16px;
+        display: block;
+      }
+
+      /* ===== SCORE SUMMARY ===== */
+      .score-summary {
+        margin: 20px 0;
+      }
+
+      .score-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .score-row:last-child {
+        border-bottom: none;
+      }
+      .score-name {
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text);
+      }
+      .score-display {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .score-value {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--primary);
+        min-width: 60px;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+      }
+      .score-bar-wrap {
+        width: 120px;
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .score-bar {
+        height: 100%;
+        border-radius: 4px;
+        transition:
+          width 0.5s ease,
+          background 0.5s ease;
+      }
+
+      /* ===== PATIENT LEAKS ===== */
+      .leak-card {
+        border-left: 4px solid var(--danger);
+        background: #fff5f5;
+        padding: 11px 14px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+      }
+      .leak-title {
+        font-weight: 800;
+        color: var(--danger);
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+      .leak-item {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 8px;
+        margin-bottom: 6px;
+        font-size: 11.5px;
+      }
+      .leak-label {
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .leak-value {
+        color: var(--text);
+      }
+      .leak-fix {
+        background: #e8f5e9;
+        padding: 8px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        margin-top: 8px;
+        border-left: 3px solid var(--success);
+      }
+      .leak-fix strong {
+        color: var(--success);
+        font-weight: 800;
+      }
+
+      /* ===== RECOMMENDATIONS ===== */
+      .recommendation {
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 14px;
+        border-left: 4px solid;
+      }
+      .recommendation.high {
+        background: #fff5f5;
+        border-left-color: var(--danger);
+      }
+      .recommendation.medium {
+        background: #fff9f0;
+        border-left-color: var(--warning);
+      }
+      .recommendation.low {
+        background: #f0faf9;
+        border-left-color: var(--success);
+      }
+      .recommendation h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+      .recommendation p {
+        font-size: 12.5px;
+      }
+
+      .priority {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+      .priority.red {
+        background: var(--danger);
+        color: white;
+      }
+      .priority.orange {
+        background: var(--warning);
+        color: white;
+      }
+      .priority.green {
+        background: var(--success);
+        color: white;
+      }
+
+      /* ===== QUICK WINS ===== */
+      .win-card {
+        background: #f1f8e9;
+        border-left: 4px solid var(--success);
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+      .win-card strong {
+        color: #2e7d32;
+      }
+
+      /* ===== TIMELINE ===== */
+      .timeline {
+        margin: 20px 0;
+      }
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 16px;
+        margin-bottom: 14px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      .timeline-item:last-child {
+        border-bottom: none;
+      }
+      .timeline-label {
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 13px;
+      }
+      .timeline-content {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ===== TWO COL ===== */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 10px 0;
+      }
+      .note-box {
+        background: var(--light);
+        border-radius: 10px;
+        padding: 16px;
+        border-top: 3px solid var(--secondary);
+      }
+      .note-box h3 {
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .note-box p {
+        font-size: 10px;
+      }
+
+      /* ===== CTA ===== */
+      .cta {
+        background: var(--primary);
+        color: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+      }
+      .cta h2 {
+        color: white;
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+      .cta p {
+        color: #cfe2e4;
+        font-size: 12.5px;
+        margin-bottom: 14px;
+      }
+      .contact p {
+        color: white;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .qr {
+        background: white;
+        width: 140px;
+        height: 140px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 11px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+
+      /* ===== FOOTER ===== */
+      .footer-note {
+        margin-top: auto;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      /* ===== PRINT ===== */
+      @media print {
+        @page {
+          size: A4;
+          margin: 0;
+        }
+
+        html,
+        body {
+          width: 210mm;
+          height: 297mm;
+          background: white !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        #edit-toolbar {
+          display: none !important;
+        }
+        .guide-banner {
+          display: none !important;
+        }
+        .guide-col {
+          display: none !important;
+        }
+
+        .page {
+          width: 210mm !important;
+          height: 297mm !important;
+          min-height: unset !important;
+          max-height: 297mm !important;
+          margin: 0 !important;
+          padding: 12mm 14mm !important;
+          box-shadow: none !important;
+          overflow: hidden !important;
+          page-break-after: always !important;
+          page-break-inside: avoid !important;
+          break-after: page !important;
+          display: flex !important;
+          flex-direction: column !important;
+          position: relative !important;
+        }
+
+        .page:last-child {
+          page-break-after: auto !important;
+          break-after: auto !important;
+        }
+
+        /* Prevent any element from being split across pages inside a .page */
+        .section-title,
+        .leak-card,
+        .recommendation,
+        .win-card,
+        .timeline-item,
+        .score-row,
+        .audit-table thead,
+        .audit-table tr,
+        .info-card,
+        .note-box,
+        .score-box,
+        .cta {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+
+        /* Tighten spacing for print so content fits per page */
+        h1 {
+          font-size: 32px !important;
+          margin-bottom: 10px !important;
+        }
+        h2 {
+          font-size: 20px !important;
+          margin-bottom: 8px !important;
+        }
+        h3 {
+          font-size: 15px !important;
+          margin-bottom: 6px !important;
+        }
+        h4 {
+          font-size: 13px !important;
+          margin-bottom: 4px !important;
+        }
+        p {
+          font-size: 11.5px !important;
+          margin-bottom: 7px !important;
+          line-height: 1.5 !important;
+        }
+        li {
+          font-size: 11px !important;
+          margin-bottom: 3px !important;
+        }
+
+        .header {
+          padding-bottom: 10px !important;
+          margin-bottom: 14px !important;
+        }
+
+        .section-title {
+          padding: 10px 14px !important;
+          margin-bottom: 10px !important;
+        }
+        .section-title h2 {
+          font-size: 16px !important;
+        }
+
+        .audit-table {
+          font-size: 10px !important;
+          margin-bottom: 14px !important;
+        }
+        .audit-table th {
+          padding: 7px 8px !important;
+          font-size: 9px !important;
+        }
+        .audit-table td {
+          padding: 8px !important;
+          font-size: 10px !important;
+        }
+        .audit-table strong {
+          font-size: 10.5px !important;
+        }
+
+        .cover-grid {
+          gap: 10px !important;
+          margin: 16px 0 !important;
+        }
+        .info-card {
+          padding: 10px !important;
+        }
+
+        .score-box {
+          padding: 16px !important;
+          margin-top: 16px !important;
+          gap: 16px !important;
+        }
+        .big-score-input {
+          font-size: 50px !important;
+        }
+        .big-score {
+          font-size: 50px !important;
+        }
+        .score-box h3 {
+          font-size: 16px !important;
+        }
+        .score-box p {
+          font-size: 11px !important;
+        }
+
+        .score-summary {
+          margin: 10px 0 !important;
+        }
+        .score-row {
+          padding: 8px 0 !important;
+        }
+        .score-name {
+          font-size: 11.5px !important;
+        }
+        .score-value {
+          font-size: 12px !important;
+        }
+        .score-bar-wrap {
+          width: 90px !important;
+        }
+
+        .leak-card {
+          padding: 10px !important;
+          margin-bottom: 9px !important;
+        }
+        .leak-title {
+          font-size: 12px !important;
+          margin-bottom: 7px !important;
+        }
+        .leak-item {
+          font-size: 10.5px !important;
+          margin-bottom: 5px !important;
+          gap: 8px !important;
+        }
+        .leak-fix {
+          font-size: 10px !important;
+          padding: 7px !important;
+          margin-top: 6px !important;
+        }
+
+        .win-card {
+          padding: 9px !important;
+          margin-bottom: 7px !important;
+          font-size: 11px !important;
+        }
+
+        .timeline-item {
+          margin-bottom: 10px !important;
+          padding-bottom: 10px !important;
+        }
+        .timeline-label {
+          font-size: 11.5px !important;
+        }
+        .timeline-content {
+          font-size: 11px !important;
+        }
+
+        .recommendation {
+          padding: 11px !important;
+          margin-bottom: 10px !important;
+        }
+        .recommendation h3 {
+          font-size: 13.5px !important;
+        }
+        .recommendation p {
+          font-size: 11px !important;
+        }
+        .priority {
+          font-size: 9px !important;
+          padding: 4px 10px !important;
+        }
+
+        .two-col {
+          gap: 12px !important;
+          margin: 12px 0 !important;
+        }
+        .note-box {
+          padding: 12px !important;
+        }
+        .note-box h3 {
+          font-size: 13px !important;
+        }
+        .note-box p {
+          font-size: 11px !important;
+        }
+
+        .cta {
+          padding: 24px !important;
+        }
+        .cta h2 {
+          font-size: 16px !important;
+        }
+        .cta p {
+          font-size: 11px !important;
+          margin-bottom: 10px !important;
+        }
+        .contact p {
+          font-size: 11px !important;
+        }
+        .qr {
+          width: 100px !important;
+          height: 100px !important;
+        }
+
+        .footer-note {
+          padding-top: 10px !important;
+          font-size: 9px !important;
+        }
+
+        /* Page 1 specific — cover */
+        .page:nth-child(1) p[style] {
+          font-size: 13px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== EDIT TOOLBAR ===== -->
+    <div id="edit-toolbar">
+      <span class="tb-label">Tron Labz Audit</span>
+      <button class="tb-btn" id="toggle-edit" onclick="toggleEditMode()">
+        ✏️ Enable Editing
+      </button>
+      <button class="tb-btn" id="save-btn" onclick="saveData()">💾 Save</button>
+      <button class="tb-btn" id="clear-btn" onclick="clearData()">
+        🗑 Clear
+      </button>
+      <button
+        class="tb-btn"
+        id="print-btn"
+        onclick="printPDF()"
+        style="background: #0f4c5c; color: white"
+      >
+        🖨 Save PDF
+      </button>
+    </div>
+
+    <!-- ====================== PAGE 1: COVER ====================== -->
+    <section class="page">
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Confidential Audit</div>
+      </div>
+
+      <div
+        style="
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        "
+      >
+        <div
+          style="
+            background: var(--secondary);
+            color: white;
+            display: inline-block;
+            padding: 2px 18px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: fit-content;
+          "
+        >
+          Website Performance Audit
+        </div>
+
+        <h1>
+          Clinic Website<br /><span class="highlight"
+            >Revenue &amp; Growth</span
+          >
+          Report
+        </h1>
+
+        <p style="font-size: 15px; margin-top: 16px; line-height: 1.6">
+          This report identifies exactly where your website is
+          <strong>losing patient enquiries</strong> and what can be fixed to
+          convert more visitors into appointments.
+        </p>
+
+        <div class="cover-grid">
+          <div class="info-card">
+            <label>Clinic Name</label>
+            <div data-key="clinic-name" contenteditable="false">
+              Enter Clinic Name
+            </div>
+          </div>
+          <div class="info-card">
+            <label>Website URL</label>
+            <div data-key="clinic-url" contenteditable="false">
+              www.example.com
+            </div>
+          </div>
+          <div class="info-card">
+            <label>Clinic Type / Specialty</label>
+            <div data-key="clinic-type" contenteditable="false">
+              Dental / Skin / Physio / Eye
+            </div>
+          </div>
+          <div class="info-card">
+            <label>City / Location</label>
+            <div data-key="clinic-city" contenteditable="false">Enter City</div>
+          </div>
+          <div class="info-card">
+            <label>Audit Conducted By</label>
+            <div data-key="audit-by" contenteditable="false">
+              Tron Labz Digital Team
+            </div>
+          </div>
+          <div class="info-card">
+            <label>Audit Date</label>
+            <div data-key="audit-date" contenteditable="false">DD/MM/YYYY</div>
+          </div>
+        </div>
+
+        <p style="font-size: 12px; margin-top: 20px">
+          This audit covers <strong>7 core areas</strong>: Speed &amp;
+          Performance, Mobile Experience, Local SEO, Trust &amp; Credibility,
+          Patient Conversion, Booking Experience, and Security &amp; Compliance.
+        </p>
+      </div>
+
+      <!-- Overall Score Box -->
+      <div class="score-box">
+        <div class="big-score-wrap">
+          <input
+            type="number"
+            class="big-score-input"
+            id="overall-score"
+            value="42"
+            min="0"
+            max="70"
+            data-key="overall-score"
+          />
+          <span class="big-score">/70</span>
+        </div>
+        <div>
+          <h3
+            style="
+              display: flex;
+              align-items: center;
+              flex-wrap: wrap;
+              gap: 8px;
+              margin-left: 2.5rem;
+            "
+          >
+            Overall Website Health Score
+            <span class="score-grade-badge" id="grade-badge">Average</span>
+          </h3>
+          <p style="margin-left: 2.5rem">
+            <strong>Score Guide:</strong> 0–25 = Critical &nbsp; |&nbsp; 26–45 =
+            Average (revenue leaking) &nbsp; |&nbsp; 46–60 = Good &nbsp; |&nbsp;
+            61–70 = Excellent
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== PAGE 2: SCORE BREAKDOWN ====================== -->
+    <section class="page">
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Score Breakdown</div>
+      </div>
+
+      <h2>Audit <span class="highlight">Score Breakdown</span></h2>
+
+      <div class="guide-banner">
+        📝 <strong>Edit Mode ON:</strong> Click any score to change it. Bars and
+        badges update automatically.
+      </div>
+
+      <p style="margin-bottom: 20px">
+        Each section is scored out of 10. Below is your current performance
+        across all 7 critical areas.
+      </p>
+
+      <div class="score-summary" id="score-summary">
+        <!-- rows injected by JS -->
+      </div>
+
+      <h2 style="margin-top: 30px">What This Means for Your Clinic</h2>
+
+      <div
+        style="
+          background: #fff5f5;
+          border-left: 4px solid var(--danger);
+          padding: 16px;
+          border-radius: 8px;
+          margin-bottom: 14px;
+        "
+      >
+        <h4 style="color: var(--danger); margin-bottom: 8px">
+          Critical Issues (Score 0–3)
+        </h4>
+        <p data-key="meaning-critical" contenteditable="false">
+          Your website is actively losing patient enquiries due to slow speed,
+          poor booking flow, and weak conversion elements. These need immediate
+          attention.
+        </p>
+      </div>
+
+      <div
+        style="
+          background: #fff9f0;
+          border-left: 4px solid var(--warning);
+          padding: 16px;
+          border-radius: 8px;
+          margin-bottom: 14px;
+        "
+      >
+        <h4 style="color: var(--warning); margin-bottom: 8px">
+          Needs Improvement (Score 4–6)
+        </h4>
+        <p data-key="meaning-avg" contenteditable="false">
+          Mobile experience, SEO, and trust elements are functional but could be
+          significantly better. Improvements here will directly increase patient
+          enquiries.
+        </p>
+      </div>
+
+      <div
+        style="
+          background: #f0faf9;
+          border-left: 4px solid var(--success);
+          padding: 16px;
+          border-radius: 8px;
+        "
+      >
+        <h4 style="color: var(--success); margin-bottom: 8px">
+          Performing Well (Score 7–10)
+        </h4>
+        <p data-key="meaning-good" contenteditable="false">
+          Security and basic compliance are in place. These areas are stable and
+          don't require urgent fixes.
+        </p>
+      </div>
+
+      <div class="footer-note">
+        <span>Page 2 — Score Breakdown</span><span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ====================== PAGE 3: SPEED + MOBILE + SEO ====================== -->
+    <section class="page">
+      <div class="header">
+        <div>
+          <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" style="width: 8rem; height: 4.8rem;">
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Technical Audit</div>
+      </div>
+
+      <div class="guide-banner">
+        📝 "How to Check" &amp; "What to Audit" columns only show in Edit Mode.
+        Click status badges to cycle Pass / Warn / Issue.
+      </div>
+
+      <!-- Speed -->
+      <div class="section-title">
+        <h2>01. Speed &amp; Performance</h2>
+        <div class="section-score">
+          Score:
+          <input
+            type="number"
+            class="section-score-input"
+            data-section="0"
+            value="3"
+            min="0"
+            max="10"
+          />
+        </div>
+      </div>
+
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="guide-col">What to Audit</th>
+            <th class="guide-col">How to Check</th>
+            <th style="width: 80px">Status</th>
+            <th>Finding</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="guide-col">
+              <strong>Desktop Load Speed</strong><br />Target: Under 2.5 seconds
+            </td>
+            <td class="guide-col">Test at PageSpeed Insights</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r1finding" contenteditable="false"
+                >Desktop load time is 6.2 seconds. Industry standard is
+                2.3s.</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r1fix" contenteditable="false"
+                >Compress images, optimize scripts, upgrade hosting.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Mobile Load Speed</strong><br />Target: Under 3 seconds on
+              4G
+            </td>
+            <td class="guide-col">Test on real mobile device or PageSpeed</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r2finding" contenteditable="false"
+                >Mobile load time is 9.1 seconds. 64% of visitors leave before
+                page loads.</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r2fix" contenteditable="false"
+                >Priority fix: image compression, lazy loading, CDN setup.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Image Optimization</strong><br />Modern WebP format?
+              Compressed?
+            </td>
+            <td class="guide-col">Check image formats in developer tools</td>
+            <td>
+              <span
+                class="status"
+                data-status="warn"
+                onclick="cycleStatus(this)"
+                >Partial</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r3finding" contenteditable="false"
+                >Found 12 uncompressed PNG images totaling 4.2MB.</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r3fix" contenteditable="false"
+                >Convert to WebP, compress all images below 200KB each.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Google PageSpeed Score</strong><br />Target: 80+ on mobile
+            </td>
+            <td class="guide-col">Run test at pagespeed.web.dev</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r4finding" contenteditable="false"
+                >Current score: 34/100 on mobile. Google penalizes scores below
+                50.</span
+              >
+            </td>
+            <td>
+              <span data-key="s1r4fix" contenteditable="false"
+                >Follow PageSpeed recommendations: reduce JS, improve server
+                response.</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Mobile -->
+      <div class="section-title">
+        <h2>02. Mobile Experience</h2>
+        <div class="section-score">
+          Score:
+          <input
+            type="number"
+            class="section-score-input"
+            data-section="1"
+            value="5"
+            min="0"
+            max="10"
+          />
+        </div>
+      </div>
+
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="guide-col">What to Audit</th>
+            <th class="guide-col">How to Check</th>
+            <th style="width: 80px">Status</th>
+            <th>Finding</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="guide-col">
+              <strong>Responsive Design</strong><br />Displays correctly on all
+              screens?
+            </td>
+            <td class="guide-col">Test on mobile device or Chrome DevTools</td>
+            <td>
+              <span
+                class="status"
+                data-status="pass"
+                onclick="cycleStatus(this)"
+                >Good</span
+              >
+            </td>
+            <td>
+              <span data-key="s2r1finding" contenteditable="false"
+                >Site adapts to mobile screens correctly. No horizontal
+                scrolling.</span
+              >
+            </td>
+            <td>
+              <span data-key="s2r1fix" contenteditable="false"
+                >Maintain current responsive design standards.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Click-to-Call</strong><br />Phone number tappable?
+            </td>
+            <td class="guide-col">Try tapping phone number on mobile</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s2r2finding" contenteditable="false"
+                >Phone number displays as text only. Patient must manually
+                copy/dial.</span
+              >
+            </td>
+            <td>
+              <span data-key="s2r2fix" contenteditable="false"
+                >Add tel: link to all phone numbers. Add sticky mobile call
+                button.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>WhatsApp Button</strong><br />Easy to find and tap?
+            </td>
+            <td class="guide-col">Look for WhatsApp button on mobile view</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s2r3finding" contenteditable="false"
+                >No WhatsApp button visible. 67% of Indian patients prefer
+                WhatsApp booking.</span
+              >
+            </td>
+            <td>
+              <span data-key="s2r3fix" contenteditable="false"
+                >Add sticky WhatsApp button with pre-filled booking
+                message.</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SEO -->
+      <div class="section-title">
+        <h2>03. Local SEO</h2>
+        <div class="section-score">
+          Score:
+          <input
+            type="number"
+            class="section-score-input"
+            data-section="2"
+            value="4"
+            min="0"
+            max="10"
+          />
+        </div>
+      </div>
+
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="guide-col">What to Audit</th>
+            <th class="guide-col">How to Check</th>
+            <th style="width: 80px">Status</th>
+            <th>Finding</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="guide-col">
+              <strong>Google Business Profile</strong><br />Listed and verified?
+            </td>
+            <td class="guide-col">
+              Search "your clinic name + city" on Google
+            </td>
+            <td>
+              <span
+                class="status"
+                data-status="warn"
+                onclick="cycleStatus(this)"
+                >Partial</span
+              >
+            </td>
+            <td>
+              <span data-key="s3r1finding" contenteditable="false"
+                >GBP exists but has inconsistent address and limited
+                photos.</span
+              >
+            </td>
+            <td>
+              <span data-key="s3r1fix" contenteditable="false"
+                >Update GBP with correct NAP, add 15+ photos, collect
+                reviews.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>NAP Consistency</strong><br />Same name/address/phone
+              everywhere?
+            </td>
+            <td class="guide-col">
+              Check website footer vs GBP vs social media
+            </td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s3r2finding" contenteditable="false"
+                >Address format varies across website, GBP, and Facebook.</span
+              >
+            </td>
+            <td>
+              <span data-key="s3r2fix" contenteditable="false"
+                >Standardize exact NAP format across all platforms.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Local Keywords</strong><br />City + treatment in page
+              titles?
+            </td>
+            <td class="guide-col">View page source, check title tags</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s3r3finding" contenteditable="false"
+                >Page titles are generic. Missing "best dental clinic in [city]"
+                keywords.</span
+              >
+            </td>
+            <td>
+              <span data-key="s3r3fix" contenteditable="false"
+                >Rewrite titles: "Treatment Name | Clinic Name | City
+                Location"</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="footer-note">
+        <span>Page 3 — Speed, Mobile &amp; SEO Audit</span
+        ><span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ====================== PAGE 4: TRUST + CONVERSION ====================== -->
+    <section class="page">
+      <div class="header">
+        <div>
+          <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" style="width: 8rem; height: 4.8rem;">
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Trust &amp; Conversion</div>
+      </div>
+
+      <!-- Trust -->
+      <div class="section-title">
+        <h2>04. Trust &amp; Credibility</h2>
+        <div class="section-score">
+          Score:
+          <input
+            type="number"
+            class="section-score-input"
+            data-section="3"
+            value="6"
+            min="0"
+            max="10"
+          />
+        </div>
+      </div>
+
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="guide-col">What to Audit</th>
+            <th class="guide-col">How to Check</th>
+            <th style="width: 80px">Status</th>
+            <th>Finding</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="guide-col">
+              <strong>Doctor Credentials</strong><br />Clearly visible on
+              homepage?
+            </td>
+            <td class="guide-col">
+              Check for doctor name, photo, qualifications
+            </td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r1finding" contenteditable="false"
+                >Doctor credentials hidden in "About" page. 73% of patients
+                check doctor qualifications before booking.</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r1fix" contenteditable="false"
+                >Add doctor profile card on homepage with photo, qualifications,
+                registration number.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Patient Reviews</strong><br />Google reviews displayed?
+            </td>
+            <td class="guide-col">Check if website shows reviews widget</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r2finding" contenteditable="false"
+                >No reviews visible on website. Patients must leave site to find
+                proof.</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r2fix" contenteditable="false"
+                >Embed Google reviews widget. Display 4-6 recent 5-star reviews
+                prominently.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Before/After Gallery</strong><br />Treatment results
+              shown?
+            </td>
+            <td class="guide-col">Look for results gallery or case studies</td>
+            <td>
+              <span
+                class="status"
+                data-status="warn"
+                onclick="cycleStatus(this)"
+                >Partial</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r3finding" contenteditable="false"
+                >Limited before/after images. Visual proof increases conversion
+                by 40%.</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r3fix" contenteditable="false"
+                >Create dedicated gallery with 15+ before/after cases,
+                categorized by treatment.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Social Proof</strong><br />Patient count, years,
+              testimonials?
+            </td>
+            <td class="guide-col">Look for trust indicators on homepage</td>
+            <td>
+              <span
+                class="status"
+                data-status="warn"
+                onclick="cycleStatus(this)"
+                >Partial</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r4finding" contenteditable="false"
+                >No mention of patient count or years of experience on first
+                screen.</span
+              >
+            </td>
+            <td>
+              <span data-key="s4r4fix" contenteditable="false"
+                >Add stats: "5000+ Patients Treated | 15+ Years Experience" on
+                homepage.</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Conversion -->
+      <div class="section-title">
+        <h2>05. Patient Conversion</h2>
+        <div class="section-score">
+          Score:
+          <input
+            type="number"
+            class="section-score-input"
+            data-section="4"
+            value="3"
+            min="0"
+            max="10"
+          />
+        </div>
+      </div>
+
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="guide-col">What to Audit</th>
+            <th class="guide-col">How to Check</th>
+            <th style="width: 80px">Status</th>
+            <th>Finding</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="guide-col">
+              <strong>Above-the-Fold CTA</strong><br />Clear action visible
+              immediately?
+            </td>
+            <td class="guide-col">Open homepage without scrolling</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s5r1finding" contenteditable="false"
+                >First screen does not tell patient what to do. No clear CTA
+                button.</span
+              >
+            </td>
+            <td>
+              <span data-key="s5r1fix" contenteditable="false"
+                >Add prominent CTA: "Book Appointment" or "WhatsApp Us Now"
+                above fold.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Conversion Forms</strong><br />Simple and fast to
+              complete?
+            </td>
+            <td class="guide-col">Try filling enquiry/booking form</td>
+            <td>
+              <span
+                class="status"
+                data-status="warn"
+                onclick="cycleStatus(this)"
+                >Partial</span
+              >
+            </td>
+            <td>
+              <span data-key="s5r2finding" contenteditable="false"
+                >Form asks 8 questions. Ideal is 4 fields max to reduce
+                drop-off.</span
+              >
+            </td>
+            <td>
+              <span data-key="s5r2fix" contenteditable="false"
+                >Simplify form to: Name, Phone, Treatment, Preferred Time
+                only.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Analytics Tracking</strong><br />GA4, conversion events
+              setup?
+            </td>
+            <td class="guide-col">Check page source or use Tag Assistant</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s5r3finding" contenteditable="false"
+                >No conversion tracking found. Cannot measure which pages drive
+                bookings.</span
+              >
+            </td>
+            <td>
+              <span data-key="s5r3fix" contenteditable="false"
+                >Install GA4. Track: form submits, call clicks, WhatsApp clicks,
+                button clicks.</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Booking -->
+      <div class="section-title">
+        <h2>06. Booking Experience</h2>
+        <div class="section-score">
+          Score:
+          <input
+            type="number"
+            class="section-score-input"
+            data-section="5"
+            value="2"
+            min="0"
+            max="10"
+          />
+        </div>
+      </div>
+
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="guide-col">What to Audit</th>
+            <th class="guide-col">How to Check</th>
+            <th style="width: 80px">Status</th>
+            <th>Finding</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="guide-col">
+              <strong>Booking Speed</strong><br />Can patient book in under 90
+              seconds?
+            </td>
+            <td class="guide-col">Time yourself trying to book appointment</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s6r1finding" contenteditable="false"
+                >Patient must hunt for contact info. No instant booking option
+                available.</span
+              >
+            </td>
+            <td>
+              <span data-key="s6r1fix" contenteditable="false"
+                >Add one-click WhatsApp booking with pre-filled message
+                template.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>After-Hours Booking</strong><br />Works when clinic
+              closed?
+            </td>
+            <td class="guide-col">Try booking outside business hours</td>
+            <td>
+              <span
+                class="status"
+                data-status="fail"
+                onclick="cycleStatus(this)"
+                >Issue</span
+              >
+            </td>
+            <td>
+              <span data-key="s6r2finding" contenteditable="false"
+                >Website doesn't capture leads after hours. Losing night-time
+                enquiries.</span
+              >
+            </td>
+            <td>
+              <span data-key="s6r2fix" contenteditable="false"
+                >Add 24/7 appointment request form with auto-confirmation
+                message.</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Security -->
+      <div class="section-title">
+        <h2>07. Security &amp; Compliance</h2>
+        <div class="section-score">
+          Score:
+          <input
+            type="number"
+            class="section-score-input"
+            data-section="6"
+            value="6"
+            min="0"
+            max="10"
+          />
+        </div>
+      </div>
+
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="guide-col">What to Audit</th>
+            <th class="guide-col">How to Check</th>
+            <th style="width: 80px">Status</th>
+            <th>Finding</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="guide-col">
+              <strong>SSL Certificate</strong><br />HTTPS enabled?
+            </td>
+            <td class="guide-col">Check padlock icon in browser URL bar</td>
+            <td>
+              <span
+                class="status"
+                data-status="pass"
+                onclick="cycleStatus(this)"
+                >Good</span
+              >
+            </td>
+            <td>
+              <span data-key="s7r1finding" contenteditable="false"
+                >SSL certificate active. Site loads on HTTPS correctly.</span
+              >
+            </td>
+            <td>
+              <span data-key="s7r1fix" contenteditable="false"
+                >Renew SSL before expiry. Set up auto-renewal.</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="guide-col">
+              <strong>Privacy Policy</strong><br />Present and linked?
+            </td>
+            <td class="guide-col">Check footer for privacy policy link</td>
+            <td>
+              <span
+                class="status"
+                data-status="warn"
+                onclick="cycleStatus(this)"
+                >Partial</span
+              >
+            </td>
+            <td>
+              <span data-key="s7r2finding" contenteditable="false"
+                >Privacy policy exists but not linked from footer on all
+                pages.</span
+              >
+            </td>
+            <td>
+              <span data-key="s7r2fix" contenteditable="false"
+                >Add privacy policy link to global footer. Update content
+                annually.</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="footer-note">
+        <span>Page 4 — Trust, Conversion, Booking &amp; Security Audit</span
+        ><span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ====================== PAGE 5: PATIENT LEAKS ====================== -->
+    <section class="page">
+      <div class="header">
+        <div>
+          <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" style="width: 8rem; height: 4.8rem;">
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Revenue Leaks</div>
+      </div>
+
+      <h2>Top 5 <span class="highlight">Patient Leaks</span></h2>
+      <p style="margin-bottom: 20px">
+        These are the specific issues actively costing you patient enquiries.
+        Each leak has a measurable impact on your conversion rate and revenue.
+      </p>
+
+      <div class="leak-card">
+        <div class="leak-title" data-key="leak1-title" contenteditable="false">
+          ⚠️ Patient Leak #1: Slow Mobile Loading
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Where:</div>
+          <div
+            class="leak-value"
+            data-key="leak1-where"
+            contenteditable="false"
+          >
+            Homepage, all mobile pages
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Patient Effect:</div>
+          <div
+            class="leak-value"
+            data-key="leak1-effect"
+            contenteditable="false"
+          >
+            Patient searches your clinic, clicks your site, waits 9+ seconds,
+            leaves before seeing services
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Impact:</div>
+          <div
+            class="leak-value"
+            data-key="leak1-impact"
+            contenteditable="false"
+          >
+            53% of mobile visitors abandon sites that take over 3 seconds to
+            load
+          </div>
+        </div>
+        <div class="leak-fix">
+          <strong>Fix:</strong>
+          <span data-key="leak1-fix" contenteditable="false"
+            >Compress images, enable lazy loading, switch to faster hosting,
+            implement CDN</span
+          >
+        </div>
+        <div class="leak-item" style="margin-top: 8px">
+          <div class="leak-label">Effort:</div>
+          <div
+            class="leak-value"
+            data-key="leak1-effort"
+            contenteditable="false"
+          >
+            3–5 days
+          </div>
+        </div>
+      </div>
+
+      <div class="leak-card">
+        <div class="leak-title" data-key="leak2-title" contenteditable="false">
+          ⚠️ Patient Leak #2: No WhatsApp Booking Button
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Where:</div>
+          <div
+            class="leak-value"
+            data-key="leak2-where"
+            contenteditable="false"
+          >
+            Mobile homepage, treatment pages
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Patient Effect:</div>
+          <div
+            class="leak-value"
+            data-key="leak2-effect"
+            contenteditable="false"
+          >
+            Patient ready to book, can't find easy contact method, closes tab
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Impact:</div>
+          <div
+            class="leak-value"
+            data-key="leak2-impact"
+            contenteditable="false"
+          >
+            67% of Indian patients prefer WhatsApp for clinic booking. Missing
+            button = 40%+ conversion loss
+          </div>
+        </div>
+        <div class="leak-fix">
+          <strong>Fix:</strong>
+          <span data-key="leak2-fix" contenteditable="false"
+            >Add sticky WhatsApp button with pre-filled message: "Hi, I'd like
+            to book an appointment for [treatment]"</span
+          >
+        </div>
+        <div class="leak-item" style="margin-top: 8px">
+          <div class="leak-label">Effort:</div>
+          <div
+            class="leak-value"
+            data-key="leak2-effort"
+            contenteditable="false"
+          >
+            1 day
+          </div>
+        </div>
+      </div>
+
+      <div class="leak-card">
+        <div class="leak-title" data-key="leak3-title" contenteditable="false">
+          ⚠️ Patient Leak #3: Hidden Doctor Credentials
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Where:</div>
+          <div
+            class="leak-value"
+            data-key="leak3-where"
+            contenteditable="false"
+          >
+            Doctor info buried in "About Us" page
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Patient Effect:</div>
+          <div
+            class="leak-value"
+            data-key="leak3-effect"
+            contenteditable="false"
+          >
+            Patient can't verify doctor qualifications immediately, loses trust,
+            leaves to find another clinic
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Impact:</div>
+          <div
+            class="leak-value"
+            data-key="leak3-impact"
+            contenteditable="false"
+          >
+            No doctor visibility = 30-40% lower conversion to booking
+          </div>
+        </div>
+        <div class="leak-fix">
+          <strong>Fix:</strong>
+          <span data-key="leak3-fix" contenteditable="false"
+            >Add doctor profile card on homepage + each treatment page with:
+            Photo, Name, Qualifications, Registration #, Experience,
+            Testimonial</span
+          >
+        </div>
+        <div class="leak-item" style="margin-top: 8px">
+          <div class="leak-label">Effort:</div>
+          <div
+            class="leak-value"
+            data-key="leak3-effort"
+            contenteditable="false"
+          >
+            2–3 days
+          </div>
+        </div>
+      </div>
+
+      <div class="leak-card">
+        <div class="leak-title" data-key="leak4-title" contenteditable="false">
+          ⚠️ Patient Leak #4: No Treatment-Specific Pages
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Where:</div>
+          <div
+            class="leak-value"
+            data-key="leak4-where"
+            contenteditable="false"
+          >
+            Generic "Services" page instead of individual treatment pages
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Patient Effect:</div>
+          <div
+            class="leak-value"
+            data-key="leak4-effect"
+            contenteditable="false"
+          >
+            Patient searching "dental implants in [city]" can't find you, finds
+            competitor instead
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Impact:</div>
+          <div
+            class="leak-value"
+            data-key="leak4-impact"
+            contenteditable="false"
+          >
+            Weak SEO + generic content = invisible in Google searches + low
+            conversion
+          </div>
+        </div>
+        <div class="leak-fix">
+          <strong>Fix:</strong>
+          <span data-key="leak4-fix" contenteditable="false"
+            >Create dedicated pages for top 8-12 treatments with: Problem
+            description, Solution, Before/After photos, FAQ, Pricing range,
+            CTA</span
+          >
+        </div>
+        <div class="leak-item" style="margin-top: 8px">
+          <div class="leak-label">Effort:</div>
+          <div
+            class="leak-value"
+            data-key="leak4-effort"
+            contenteditable="false"
+          >
+            2–3 weeks
+          </div>
+        </div>
+      </div>
+
+      <div class="leak-card">
+        <div class="leak-title" data-key="leak5-title" contenteditable="false">
+          ⚠️ Patient Leak #5: No Google Reviews Visible
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Where:</div>
+          <div
+            class="leak-value"
+            data-key="leak5-where"
+            contenteditable="false"
+          >
+            Homepage, footer, contact page
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Patient Effect:</div>
+          <div
+            class="leak-value"
+            data-key="leak5-effect"
+            contenteditable="false"
+          >
+            Patient can't see proof of quality, checks Google directly, loses
+            confidence in website
+          </div>
+        </div>
+        <div class="leak-item">
+          <div class="leak-label">Impact:</div>
+          <div
+            class="leak-value"
+            data-key="leak5-impact"
+            contenteditable="false"
+          >
+            92% of patients trust online reviews. Hidden reviews = immediate
+            trust loss
+          </div>
+        </div>
+        <div class="leak-fix">
+          <strong>Fix:</strong>
+          <span data-key="leak5-fix" contenteditable="false"
+            >Embed Google reviews widget on homepage + testimonial section. Add
+            "Leave us a review" CTA</span
+          >
+        </div>
+        <div class="leak-item" style="margin-top: 8px">
+          <div class="leak-label">Effort:</div>
+          <div
+            class="leak-value"
+            data-key="leak5-effort"
+            contenteditable="false"
+          >
+            1 day
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span>Page 5 — Patient Revenue Leaks Analysis</span
+        ><span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ====================== PAGE 6: 30 days ROADMAP ====================== -->
+    <section class="page">
+      <div class="header">
+        <div>
+          <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" style="width: 5.5rem; height: 3.2rem;">
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Action Roadmap</div>
+      </div>
+
+      <h2 style="margin-top: 16px; margin-bottom: 12px">
+        30-Day <span class="highlight">Improvement Roadmap</span>
+      </h2>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-label">Week 1: Foundation</div>
+          <div
+            class="timeline-content"
+            data-key="road-w1"
+            contenteditable="false"
+          >
+            Mobile CTAs, doctor credibility, reviews display, speed
+            optimization, WhatsApp booking setup
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-label">Week 2: Content</div>
+          <div
+            class="timeline-content"
+            data-key="road-w2"
+            contenteditable="false"
+          >
+            Create 3-5 treatment-specific pages, FAQ section, pricing clarity,
+            before/after gallery expansion
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-label">Week 3: SEO &amp; Local</div>
+          <div
+            class="timeline-content"
+            data-key="road-w3"
+            contenteditable="false"
+          >
+            Fix NAP consistency, optimize title tags, Google Map embed, Google
+            Business Profile alignment, schema markup
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-label">Week 4: Analytics</div>
+          <div
+            class="timeline-content"
+            data-key="road-w4"
+            contenteditable="false"
+          >
+            Set up GA4, conversion tracking, heatmaps installation, first round
+            of A/B testing on CTAs
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom: 10px">
+        Expected Results Timeline
+      </h3>
+      <div
+        style="
+          background: var(--light);
+          border-radius: 8px;
+          padding: 14px;
+          margin-bottom: 20px;
+        "
+      >
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+          "
+        >
+          <div style="font-weight: 700; font-size: 12px">After Week 1</div>
+          <div
+            style="font-size: 12px"
+            data-key="res-w1"
+            contenteditable="false"
+          >
+            15–25% increase in booking attempts
+          </div>
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+          "
+        >
+          <div style="font-weight: 700; font-size: 12px">After Week 2</div>
+          <div
+            style="font-size: 12px"
+            data-key="res-w2"
+            contenteditable="false"
+          >
+            30–50% more organic search traffic
+          </div>
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+          "
+        >
+          <div style="font-weight: 700; font-size: 12px">After Week 3</div>
+          <div
+            style="font-size: 12px"
+            data-key="res-w3"
+            contenteditable="false"
+          >
+            Local ranking improvement for key treatment searches
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 140px 1fr; gap: 10px">
+          <div style="font-weight: 700; font-size: 12px">After Month 1</div>
+          <div
+            style="font-size: 12px"
+            data-key="res-m1"
+            contenteditable="false"
+          >
+            Estimated +5–15 new patient enquiries per month
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="note-box">
+          <h3>Estimated Revenue Impact</h3>
+          <p data-key="rev-impact" contenteditable="false">
+            If the website converts just 10 additional patients per month at an
+            average treatment value of ₹5,000, the clinic can generate
+            approximately ₹50,000/month or ₹6,00,000/year in additional revenue.
+          </p>
+        </div>
+        <div class="note-box">
+          <h3>Suggested Next Step</h3>
+          <p data-key="next-step" contenteditable="false">
+            Start with conversion and mobile fixes first (Week 1), followed by
+            SEO treatment pages (Week 2). This approach gives fastest
+            improvement in enquiries while building long-term Google visibility.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span>Page 6 — Quick Wins &amp; Improvement Roadmap</span
+        ><span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ====================== PAGE 7: RECOMMENDATIONS + CTA ====================== -->
+    <section class="page">
+      <div class="header">
+        <div>
+          <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" style="width: 8rem; height: 4.8rem;">
+          <div class="tagline">Powering Your Digital World</div>
+        </div>
+        <div class="doc-tag">Action Plan</div>
+      </div>
+
+      <h2>Priority <span class="highlight">Action Plan</span></h2>
+      <p style="margin-bottom: 20px">
+        Based on the audit, these are the highest-impact fixes ranked by urgency
+        and expected return on investment.
+      </p>
+
+      <div class="recommendation high">
+        <span class="priority red" style="color: red" data-key="p1-badge" contenteditable="false"
+          >Priority 1 — Immediate</span
+        >
+        <h3 data-key="p1-title" contenteditable="false">
+          Add Direct WhatsApp + Click-to-Call Booking
+        </h3>
+        <p data-key="p1-body" contenteditable="false">
+          The website currently does not make it easy for mobile visitors to
+          contact the clinic quickly. Adding sticky WhatsApp and click-to-call
+          buttons can immediately improve appointment enquiries by 25–40%.
+        </p>
+      </div>
+
+      <div class="recommendation high">
+        <span class="priority" style="color:red;" data-key="p2-badge" contenteditable="false"
+          >Priority 2 — Immediate</span
+        >
+        <h3 data-key="p2-title" contenteditable="false">
+          Improve Mobile Page Speed
+        </h3>
+        <p data-key="p2-body" contenteditable="false">
+          Mobile load speed is slower than recommended (9+ seconds). This causes
+          50%+ of visitors to leave before seeing services. Compressing images,
+          improving hosting, and optimizing scripts should be addressed within 7
+          days.
+        </p>
+      </div>
+
+      <div class="recommendation medium">
+        <span
+          class="priority"
+          style="color: orange;"
+          data-key="p3-badge"
+          contenteditable="false"
+          >Priority 3 — Within 30 Days</span
+        >
+        <h3 data-key="p3-title" contenteditable="false">
+          Create Treatment-Specific SEO Pages
+        </h3>
+        <p data-key="p3-body" contenteditable="false">
+          Create dedicated pages for high-value treatments such as dental
+          implants, braces, laser hair removal, acne treatment, physiotherapy
+          for back pain, cataract surgery, etc. Each page should target specific
+          local searches and convert visitors into enquiries.
+        </p>
+      </div>
+
+      <div class="recommendation medium">
+        <span
+          class="priority"
+          style="color: orange;"
+          data-key="p4-badge"
+          contenteditable="false"
+          >Priority 4 — Within 30 Days</span
+        >
+        <h3 data-key="p4-title" contenteditable="false">
+          Display Trust Assets: Reviews, Doctor Profile, Results
+        </h3>
+        <p data-key="p4-body" contenteditable="false">
+          Patients need proof before booking. The website should display Google
+          reviews, doctor credentials, clinic photos, treatment results, and
+          patient testimonials more prominently on the homepage and treatment
+          pages.
+        </p>
+      </div>
+
+      <div class="recommendation low">
+        <span class="priority" style="color: green;" data-key="p5-badge" contenteditable="false"
+          >Priority 5 — Next Phase</span
+        >
+        <h3 data-key="p5-title" contenteditable="false">
+          Install Analytics and Conversion Tracking
+        </h3>
+        <p data-key="p5-body" contenteditable="false">
+          Track calls, WhatsApp clicks, form submissions, treatment page visits,
+          and appointment enquiries so future marketing decisions are based on
+          real patient behavior data, not assumptions.
+        </p>
+      </div>
+
+      <div class="cta">
+        <div>
+          <h2>Ready to Fix These Issues?</h2>
+          <p>
+            Tron Labz builds high-performance clinic websites designed to
+            convert visitors into patient enquiries. We can help you improve
+            speed, SEO, trust, WhatsApp booking, and appointment conversions.
+          </p>
+          <div class="contact">
+            <p>📱 WhatsApp: +91 95400 43695</p>
+            <p><a href="mailto:support@tronlabz.com" style="text-decoration: none; color: #fff;">📧 Email: support@tronlabz.com</a></p>
+            <p><a href="http://tronlabz.com" target="_blank" style="text-decoration: none; color: #fff;">🌐 Website: www.tronlabz.com</a></p>
+          </div>
+        </div>
+        <div class="qr">
+          <a href="https://wa.me/+919540043695?text=Hello">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="90px" height="90px" viewBox="0 0 231 231" enable-background="new 0 0 231 231" xml:space="preserve">
+<rect x="0" y="0" width="0" height="0" fill="rgb(255,255,255)"/><g transform="translate(14,14)"><g><defs>
+    <radialGradient id="grad">
+    <stop offset="5%" stop-color="rgb(197,26,26)"/>
+    <stop offset="95%" stop-color="rgb(24,51,192)"/>
+    </radialGradient>
+<mask id="gmask"><g>
+<g transform="translate(70,0) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,0) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,0) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,0) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,7) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,7) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,7) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,7) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,14) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,14) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,14) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,14) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,14) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,14) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,14) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,21) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,21) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,21) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,21) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,21) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,21) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,21) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,28) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,28) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,28) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,28) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,28) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,28) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,28) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,35) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,35) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,35) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,35) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,35) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,35) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,35) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,42) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,42) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,42) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,42) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,42) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,42) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,42) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,49) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,49) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,49) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,49) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,49) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(42,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(189,56) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(14,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(189,63) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(7,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(14,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(28,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(42,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(49,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,70) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(7,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(49,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,77) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(7,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(28,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(42,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,84) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(189,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,91) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(7,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(14,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(42,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(49,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,98) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(14,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,105) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(28,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(42,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(49,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,112) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(189,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,119) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(7,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(14,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(42,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(49,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,126) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,133) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(14,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(21,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(28,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(35,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(42,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(189,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,140) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,147) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,154) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,161) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,161) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,161) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,161) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,161) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(140,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(147,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,168) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,175) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(112,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(154,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(189,182) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(63,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(70,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(126,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(133,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(196,189) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(56,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(77,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(84,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(91,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(98,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(105,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(119,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(161,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(168,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(175,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(182,196) scale(0.07,0.07)"><g transform="" style="fill: rgb(255, 255, 255);">
+<polygon points="0,50 50,100 100,50 50,0"/>
+</g></g><g transform="translate(0,0) scale(0.48514851485149, 0.48514851485149)"><g transform="" style="fill: rgb(255, 255, 255);">
+<g>
+	<polygon style="fill:none;" points="85,83.837 87.791,79.004 85,74.17 87.791,69.336 85,64.502 87.791,59.668 85,54.834 87.791,50    85,45.166 87.791,40.332 85,35.498 87.791,30.665 85,25.831 87.791,20.997 85,16.163 86.589,13.411 83.837,15 79.004,12.209    74.17,15 69.336,12.209 64.502,15 59.668,12.209 54.834,15 50,12.209 45.166,15 40.332,12.209 35.498,15 30.665,12.209 25.831,15    20.997,12.209 16.163,15 13.412,13.412 15,16.163 12.209,20.997 15,25.831 12.209,30.665 15,35.498 12.209,40.332 15,45.166    12.209,50 15,54.834 12.209,59.668 15,64.502 12.209,69.336 15,74.17 12.209,79.004 15,83.837 13.411,86.589 16.163,85    20.997,87.791 25.831,85 30.665,87.791 35.498,85 40.332,87.791 45.166,85 50,87.791 54.834,85 59.668,87.791 64.502,85    69.336,87.791 74.17,85 79.004,87.791 83.837,85 86.589,86.589  "/>
+	<path d="M97.623,2.377L96.25,0h-7.5l-1.229,2.127L83.837,0l-4.833,2.791L74.17,0l-4.834,2.791L64.502,0l-4.834,2.791L54.834,0   L50,2.791L45.166,0l-4.834,2.791L35.498,0l-4.833,2.791L25.831,0l-4.834,2.791L16.163,0l-3.685,2.127L11.25,0h-7.5L2.377,2.377   L0,3.75v7.5l2.127,1.228L0,16.163l2.791,4.834L0,25.831l2.791,4.833L0,35.498l2.791,4.834L0,45.166L2.791,50L0,54.834l2.791,4.834   L0,64.502l2.791,4.834L0,74.17l2.791,4.834L0,83.837l2.127,3.685L0,88.75v7.5l2.377,1.373L3.75,100h7.5l1.228-2.127L16.163,100   l4.834-2.791L25.831,100l4.833-2.791L35.498,100l4.834-2.791L45.166,100L50,97.209L54.834,100l4.834-2.791L64.502,100l4.834-2.791   L74.17,100l4.834-2.791L83.837,100l3.685-2.127L88.75,100h7.5l1.373-2.377L100,96.25v-7.5l-2.127-1.229L100,83.837l-2.791-4.833   L100,74.17l-2.791-4.834L100,64.502l-2.791-4.834L100,54.834L97.209,50L100,45.166l-2.791-4.834L100,35.498l-2.791-4.833   L100,25.831l-2.791-4.834L100,16.163l-2.127-3.685L100,11.25v-7.5L97.623,2.377z M79.004,87.791L74.17,85l-4.834,2.791L64.502,85   l-4.834,2.791L54.834,85L50,87.791L45.166,85l-4.834,2.791L35.498,85l-4.833,2.791L25.831,85l-4.834,2.791L16.163,85l-2.751,1.589   L15,83.837l-2.791-4.833L15,74.17l-2.791-4.834L15,64.502l-2.791-4.834L15,54.834L12.209,50L15,45.166l-2.791-4.834L15,35.498   l-2.791-4.833L15,25.831l-2.791-4.834L15,16.163l-1.588-2.751L16.163,15l4.834-2.791L25.831,15l4.833-2.791L35.498,15l4.834-2.791   L45.166,15L50,12.209L54.834,15l4.834-2.791L64.502,15l4.834-2.791L74.17,15l4.834-2.791L83.837,15l2.752-1.589L85,16.163   l2.791,4.834L85,25.831l2.791,4.833L85,35.498l2.791,4.834L85,45.166L87.791,50L85,54.834l2.791,4.834L85,64.502l2.791,4.834   L85,74.17l2.791,4.834L85,83.837l1.589,2.752L83.837,85L79.004,87.791z"/>
+</g>
+</g></g><g transform="translate(154,0) scale(0.48514851485149, 0.48514851485149)"><g transform="" style="fill: rgb(255, 255, 255);">
+<g>
+	<polygon style="fill:none;" points="85,83.837 87.791,79.004 85,74.17 87.791,69.336 85,64.502 87.791,59.668 85,54.834 87.791,50    85,45.166 87.791,40.332 85,35.498 87.791,30.665 85,25.831 87.791,20.997 85,16.163 86.589,13.411 83.837,15 79.004,12.209    74.17,15 69.336,12.209 64.502,15 59.668,12.209 54.834,15 50,12.209 45.166,15 40.332,12.209 35.498,15 30.665,12.209 25.831,15    20.997,12.209 16.163,15 13.412,13.412 15,16.163 12.209,20.997 15,25.831 12.209,30.665 15,35.498 12.209,40.332 15,45.166    12.209,50 15,54.834 12.209,59.668 15,64.502 12.209,69.336 15,74.17 12.209,79.004 15,83.837 13.411,86.589 16.163,85    20.997,87.791 25.831,85 30.665,87.791 35.498,85 40.332,87.791 45.166,85 50,87.791 54.834,85 59.668,87.791 64.502,85    69.336,87.791 74.17,85 79.004,87.791 83.837,85 86.589,86.589  "/>
+	<path d="M97.623,2.377L96.25,0h-7.5l-1.229,2.127L83.837,0l-4.833,2.791L74.17,0l-4.834,2.791L64.502,0l-4.834,2.791L54.834,0   L50,2.791L45.166,0l-4.834,2.791L35.498,0l-4.833,2.791L25.831,0l-4.834,2.791L16.163,0l-3.685,2.127L11.25,0h-7.5L2.377,2.377   L0,3.75v7.5l2.127,1.228L0,16.163l2.791,4.834L0,25.831l2.791,4.833L0,35.498l2.791,4.834L0,45.166L2.791,50L0,54.834l2.791,4.834   L0,64.502l2.791,4.834L0,74.17l2.791,4.834L0,83.837l2.127,3.685L0,88.75v7.5l2.377,1.373L3.75,100h7.5l1.228-2.127L16.163,100   l4.834-2.791L25.831,100l4.833-2.791L35.498,100l4.834-2.791L45.166,100L50,97.209L54.834,100l4.834-2.791L64.502,100l4.834-2.791   L74.17,100l4.834-2.791L83.837,100l3.685-2.127L88.75,100h7.5l1.373-2.377L100,96.25v-7.5l-2.127-1.229L100,83.837l-2.791-4.833   L100,74.17l-2.791-4.834L100,64.502l-2.791-4.834L100,54.834L97.209,50L100,45.166l-2.791-4.834L100,35.498l-2.791-4.833   L100,25.831l-2.791-4.834L100,16.163l-2.127-3.685L100,11.25v-7.5L97.623,2.377z M79.004,87.791L74.17,85l-4.834,2.791L64.502,85   l-4.834,2.791L54.834,85L50,87.791L45.166,85l-4.834,2.791L35.498,85l-4.833,2.791L25.831,85l-4.834,2.791L16.163,85l-2.751,1.589   L15,83.837l-2.791-4.833L15,74.17l-2.791-4.834L15,64.502l-2.791-4.834L15,54.834L12.209,50L15,45.166l-2.791-4.834L15,35.498   l-2.791-4.833L15,25.831l-2.791-4.834L15,16.163l-1.588-2.751L16.163,15l4.834-2.791L25.831,15l4.833-2.791L35.498,15l4.834-2.791   L45.166,15L50,12.209L54.834,15l4.834-2.791L64.502,15l4.834-2.791L74.17,15l4.834-2.791L83.837,15l2.752-1.589L85,16.163   l2.791,4.834L85,25.831l2.791,4.833L85,35.498l2.791,4.834L85,45.166L87.791,50L85,54.834l2.791,4.834L85,64.502l2.791,4.834   L85,74.17l2.791,4.834L85,83.837l1.589,2.752L83.837,85L79.004,87.791z"/>
+</g>
+</g></g><g transform="translate(0,154) scale(0.48514851485149, 0.48514851485149)"><g transform="" style="fill: rgb(255, 255, 255);">
+<g>
+	<polygon style="fill:none;" points="85,83.837 87.791,79.004 85,74.17 87.791,69.336 85,64.502 87.791,59.668 85,54.834 87.791,50    85,45.166 87.791,40.332 85,35.498 87.791,30.665 85,25.831 87.791,20.997 85,16.163 86.589,13.411 83.837,15 79.004,12.209    74.17,15 69.336,12.209 64.502,15 59.668,12.209 54.834,15 50,12.209 45.166,15 40.332,12.209 35.498,15 30.665,12.209 25.831,15    20.997,12.209 16.163,15 13.412,13.412 15,16.163 12.209,20.997 15,25.831 12.209,30.665 15,35.498 12.209,40.332 15,45.166    12.209,50 15,54.834 12.209,59.668 15,64.502 12.209,69.336 15,74.17 12.209,79.004 15,83.837 13.411,86.589 16.163,85    20.997,87.791 25.831,85 30.665,87.791 35.498,85 40.332,87.791 45.166,85 50,87.791 54.834,85 59.668,87.791 64.502,85    69.336,87.791 74.17,85 79.004,87.791 83.837,85 86.589,86.589  "/>
+	<path d="M97.623,2.377L96.25,0h-7.5l-1.229,2.127L83.837,0l-4.833,2.791L74.17,0l-4.834,2.791L64.502,0l-4.834,2.791L54.834,0   L50,2.791L45.166,0l-4.834,2.791L35.498,0l-4.833,2.791L25.831,0l-4.834,2.791L16.163,0l-3.685,2.127L11.25,0h-7.5L2.377,2.377   L0,3.75v7.5l2.127,1.228L0,16.163l2.791,4.834L0,25.831l2.791,4.833L0,35.498l2.791,4.834L0,45.166L2.791,50L0,54.834l2.791,4.834   L0,64.502l2.791,4.834L0,74.17l2.791,4.834L0,83.837l2.127,3.685L0,88.75v7.5l2.377,1.373L3.75,100h7.5l1.228-2.127L16.163,100   l4.834-2.791L25.831,100l4.833-2.791L35.498,100l4.834-2.791L45.166,100L50,97.209L54.834,100l4.834-2.791L64.502,100l4.834-2.791   L74.17,100l4.834-2.791L83.837,100l3.685-2.127L88.75,100h7.5l1.373-2.377L100,96.25v-7.5l-2.127-1.229L100,83.837l-2.791-4.833   L100,74.17l-2.791-4.834L100,64.502l-2.791-4.834L100,54.834L97.209,50L100,45.166l-2.791-4.834L100,35.498l-2.791-4.833   L100,25.831l-2.791-4.834L100,16.163l-2.127-3.685L100,11.25v-7.5L97.623,2.377z M79.004,87.791L74.17,85l-4.834,2.791L64.502,85   l-4.834,2.791L54.834,85L50,87.791L45.166,85l-4.834,2.791L35.498,85l-4.833,2.791L25.831,85l-4.834,2.791L16.163,85l-2.751,1.589   L15,83.837l-2.791-4.833L15,74.17l-2.791-4.834L15,64.502l-2.791-4.834L15,54.834L12.209,50L15,45.166l-2.791-4.834L15,35.498   l-2.791-4.833L15,25.831l-2.791-4.834L15,16.163l-1.588-2.751L16.163,15l4.834-2.791L25.831,15l4.833-2.791L35.498,15l4.834-2.791   L45.166,15L50,12.209L54.834,15l4.834-2.791L64.502,15l4.834-2.791L74.17,15l4.834-2.791L83.837,15l2.752-1.589L85,16.163   l2.791,4.834L85,25.831l2.791,4.833L85,35.498l2.791,4.834L85,45.166L87.791,50L85,54.834l2.791,4.834L85,64.502l2.791,4.834   L85,74.17l2.791,4.834L85,83.837l1.589,2.752L83.837,85L79.004,87.791z"/>
+</g>
+</g></g><g transform="translate(14,14) scale(0.21, 0.21)"><g transform="" style="fill: rgb(255, 255, 255);">
+<path d="M0,100C5.883,66.733,5.883,33.283-0.003,0.001C16.67,2.956,33.395,4.447,50,4.447c16.601,0,33.321-1.49,50-4.447  c-5.886,33.269-5.886,66.715,0.003,100C83.331,97.045,66.605,95.553,50,95.553C33.398,95.553,16.676,97.044,0,100z"/>
+</g></g><g transform="translate(168,14) scale(0.21, 0.21)"><g transform="" style="fill: rgb(255, 255, 255);">
+<path d="M0,100C5.883,66.733,5.883,33.283-0.003,0.001C16.67,2.956,33.395,4.447,50,4.447c16.601,0,33.321-1.49,50-4.447  c-5.886,33.269-5.886,66.715,0.003,100C83.331,97.045,66.605,95.553,50,95.553C33.398,95.553,16.676,97.044,0,100z"/>
+</g></g><g transform="translate(14,168) scale(0.21, 0.21)"><g transform="" style="fill: rgb(255, 255, 255);">
+<path d="M0,100C5.883,66.733,5.883,33.283-0.003,0.001C16.67,2.956,33.395,4.447,50,4.447c16.601,0,33.321-1.49,50-4.447  c-5.886,33.269-5.886,66.715,0.003,100C83.331,97.045,66.605,95.553,50,95.553C33.398,95.553,16.676,97.044,0,100z"/>
+</g></g></g></mask></defs></g><rect x="0" y="0" width="203" height="203" fill="url(#grad)" mask="url(#gmask)"/></g>
+          </svg>
+        </a>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span>Page 7 — Priority Recommendations</span><span>Tron Labz</span>
+      </div>
+    </section>
+
+    <script>
+      // ===== CONFIG =====
+      const SECTION_NAMES = [
+        "Speed & Performance",
+        "Mobile Experience",
+        "Local SEO",
+        "Trust & Credibility",
+        "Patient Conversion",
+        "Booking Experience",
+        "Security & Compliance",
+      ];
+
+      const STATUS_CYCLE = ["pass", "warn", "fail"];
+      const STATUS_LABELS = { pass: "Good", warn: "Partial", fail: "Issue" };
+
+      // ===== STATE =====
+      let sectionScores = [3, 5, 4, 6, 3, 2, 6]; // default
+
+      // ===== GRADE LOGIC =====
+      function getGrade(score) {
+        if (score <= 25) return { label: "Critical", cls: "grade-critical" };
+        if (score <= 45) return { label: "Average", cls: "grade-average" };
+        if (score <= 60) return { label: "Good", cls: "grade-good" };
+        return { label: "Excellent", cls: "grade-excellent" };
+      }
+
+      function getBarColor(score) {
+        if (score <= 3) return "#d62828";
+        if (score <= 6) return "#f77f00";
+        return "#2a9d8f";
+      }
+
+      // ===== BUILD SCORE SUMMARY ROWS =====
+      function buildScoreSummary() {
+        const container = document.getElementById("score-summary");
+        container.innerHTML = "";
+        SECTION_NAMES.forEach((name, i) => {
+          const s = sectionScores[i];
+          const pct = (s / 10) * 100;
+          const row = document.createElement("div");
+          row.className = "score-row";
+          row.innerHTML = `
+      <div class="score-name">${name}</div>
+      <div class="score-display">
+        <div class="score-value">
+          <input type="number" class="score-input summary-input" data-idx="${i}" value="${s}" min="0" max="10" style="width:1.8ch;" />
+          <span style="font-size:12px;color:var(--muted)">/10</span>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar" id="sum-bar-${i}" style="width:${pct}%;background:${getBarColor(s)};"></div>
+        </div>
+      </div>`;
+          container.appendChild(row);
+        });
+
+        // Bind summary inputs
+        container.querySelectorAll(".summary-input").forEach((inp) => {
+          inp.addEventListener("input", () => {
+            const idx = parseInt(inp.dataset.idx);
+            let v = Math.max(0, Math.min(10, parseInt(inp.value) || 0));
+            sectionScores[idx] = v;
+            // sync section-score-input
+            const secInp = document.querySelector(
+              `.section-score-input[data-section="${idx}"]`,
+            );
+            if (secInp) secInp.value = v;
+            updateBar(idx);
+            updateOverall();
+          });
+        });
+      }
+
+      function updateBar(idx) {
+        const s = sectionScores[idx];
+        const bar = document.getElementById(`sum-bar-${idx}`);
+        if (bar) {
+          bar.style.width = (s / 10) * 100 + "%";
+          bar.style.background = getBarColor(s);
+        }
+        // update summary input value
+        const inp = document.querySelector(`.summary-input[data-idx="${idx}"]`);
+        if (inp) inp.value = s;
+      }
+
+      // ===== OVERALL SCORE =====
+      function updateOverall() {
+        const total = sectionScores.reduce((a, b) => a + b, 0);
+        const overallInp = document.getElementById("overall-score");
+        if (overallInp) overallInp.value = total;
+
+        const badge = document.getElementById("grade-badge");
+        if (badge) {
+          const g = getGrade(total);
+          badge.textContent = g.label;
+          badge.className = "score-grade-badge " + g.cls;
+        }
+      }
+
+      // ===== SECTION SCORE INPUTS =====
+      function bindSectionInputs() {
+        document.querySelectorAll(".section-score-input").forEach((inp) => {
+          inp.addEventListener("input", () => {
+            const idx = parseInt(inp.dataset.section);
+            let v = Math.max(0, Math.min(10, parseInt(inp.value) || 0));
+            inp.value = v;
+            sectionScores[idx] = v;
+            updateBar(idx);
+            updateOverall();
+          });
+        });
+      }
+
+      // ===== OVERALL SCORE INPUT (manual override) =====
+      document
+        .getElementById("overall-score")
+        .addEventListener("input", function () {
+          let v = Math.max(0, Math.min(70, parseInt(this.value) || 0));
+          this.value = v;
+          const badge = document.getElementById("grade-badge");
+          if (badge) {
+            const g = getGrade(v);
+            badge.textContent = g.label;
+            badge.className = "score-grade-badge " + g.cls;
+          }
+        });
+
+      // ===== STATUS BADGE CYCLE =====
+      function cycleStatus(el) {
+        if (!document.body.classList.contains("edit-mode")) return;
+        const cur = el.dataset.status;
+        const idx = STATUS_CYCLE.indexOf(cur);
+        const next = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length];
+        el.dataset.status = next;
+        el.textContent = STATUS_LABELS[next];
+      }
+
+      // ===== EDIT MODE =====
+      function toggleEditMode() {
+        const body = document.body;
+        const btn = document.getElementById("toggle-edit");
+        const isEdit = body.classList.toggle("edit-mode");
+
+        if (isEdit) {
+          btn.textContent = "✅ Disable Editing";
+          btn.classList.add("active");
+          // Enable all contenteditable
+          document.querySelectorAll("[data-key]").forEach((el) => {
+            el.contentEditable = "true";
+          });
+          // Enable score inputs
+          document
+            .querySelectorAll(
+              ".score-input, .section-score-input, .big-score-input, .summary-input",
+            )
+            .forEach((el) => {
+              el.disabled = false;
+            });
+        } else {
+          btn.textContent = "✏️ Enable Editing";
+          btn.classList.remove("active");
+          document.querySelectorAll("[data-key]").forEach((el) => {
+            el.contentEditable = "false";
+          });
+          document
+            .querySelectorAll(
+              ".score-input, .section-score-input, .big-score-input, .summary-input",
+            )
+            .forEach((el) => {
+              el.disabled = false; // keep enabled for display; edit-mode CSS controls pointer
+            });
+        }
+      }
+
+      // ===== SAVE =====
+      function saveData() {
+        const data = {};
+
+        // Text content
+        document.querySelectorAll("[data-key]").forEach((el) => {
+          data[el.dataset.key] = el.textContent.trim();
+        });
+
+        // Section scores
+        data["__scores"] = sectionScores;
+        data["__overall"] = document.getElementById("overall-score").value;
+
+        // Status badges
+        const statuses = [];
+        document.querySelectorAll(".status").forEach((el, i) => {
+          statuses.push(el.dataset.status);
+        });
+        data["__statuses"] = statuses;
+
+        localStorage.setItem("tronlabz_audit", JSON.stringify(data));
+
+        // Visual feedback
+        const btn = document.getElementById("save-btn");
+        btn.textContent = "✅ Saved!";
+        btn.style.color = "#2a9d8f";
+        setTimeout(() => {
+          btn.textContent = "💾 Save";
+          btn.style.color = "";
+        }, 2000);
+      }
+
+      // ===== LOAD =====
+      function loadData() {
+        try {
+          const raw = localStorage.getItem("tronlabz_audit");
+          if (!raw) return;
+          const data = JSON.parse(raw);
+
+          document.querySelectorAll("[data-key]").forEach((el) => {
+            if (data[el.dataset.key] !== undefined) {
+              el.textContent = data[el.dataset.key];
+            }
+          });
+
+          if (data["__scores"]) {
+            sectionScores = data["__scores"];
+            sectionScores.forEach((s, i) => {
+              const secInp = document.querySelector(
+                `.section-score-input[data-section="${i}"]`,
+              );
+              if (secInp) secInp.value = s;
+            });
+            buildScoreSummary();
+          }
+
+          if (data["__overall"]) {
+            document.getElementById("overall-score").value = data["__overall"];
+            const g = getGrade(parseInt(data["__overall"]));
+            const badge = document.getElementById("grade-badge");
+            if (badge) {
+              badge.textContent = g.label;
+              badge.className = "score-grade-badge " + g.cls;
+            }
+          }
+
+          if (data["__statuses"]) {
+            document.querySelectorAll(".status").forEach((el, i) => {
+              if (data["__statuses"][i]) {
+                el.dataset.status = data["__statuses"][i];
+                el.textContent = STATUS_LABELS[data["__statuses"][i]];
+              }
+            });
+          }
+        } catch (e) {
+          console.warn("Load error", e);
+        }
+      }
+
+      // ===== CLEAR =====
+      function clearData() {
+        if (!confirm("Clear all saved data and reset to defaults?")) return;
+        localStorage.removeItem("tronlabz_audit");
+        location.reload();
+      }
+
+      // ===== PRINT PDF =====
+      function printPDF() {
+        // Always disable edit mode before printing
+        if (document.body.classList.contains("edit-mode")) {
+          toggleEditMode();
+        }
+        setTimeout(() => window.print(), 150);
+      }
+
+      // Auto-disable edit mode when print dialog opens
+      window.addEventListener("beforeprint", () => {
+        if (document.body.classList.contains("edit-mode")) {
+          document.body.classList.remove("edit-mode");
+          document.querySelectorAll("[data-key]").forEach((el) => {
+            el.contentEditable = "false";
+          });
+        }
+      });
+
+      // ===== INIT =====
+      buildScoreSummary();
+      bindSectionInputs();
+      updateOverall();
+      loadData();
+
+      // Disable inputs by default (edit mode off)
+      document.querySelectorAll("[data-key]").forEach((el) => {
+        el.contentEditable = "false";
+      });
+
+      // Auto-save on any input change
+      document.addEventListener("input", (e) => {
+        if (
+          e.target.classList.contains("section-score-input") ||
+          e.target.classList.contains("big-score-input") ||
+          e.target.classList.contains("summary-input")
+        )
+          return; // handled separately
+        // Debounce auto-save
+        clearTimeout(window._autoSave);
+        window._autoSave = setTimeout(saveData, 1200);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Redesign Contract Agreement - Tron Labz</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+      --primary: #0f4c5c;
+      --primary-dark: #08313c;
+      --secondary: #FFC81E;
+      --light: #f4f7f6;
+      --border: #d9e4e2;
+      --text: #1a1a1a;
+      --muted: #5d6b6e;
+      --danger: #d62828;
+      --warning: #f77f00;
+      --success: #2a9d8f;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      text-align: justify;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #d8d8d8;
+      color: var(--text);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      background: white;
+      margin: 8mm auto;
+      padding: 20mm;
+      position: relative;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .page:not(:last-child) {
+      page-break-after: always;
+    }
+
+    /* Control Panel */
+    .control-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      z-index: 1000;
+      width: 280px;
+    }
+
+    .control-panel h3 {
+      font-size: 16px;
+      margin-bottom: 14px;
+      color: var(--primary);
+      border-bottom: 2px solid var(--light);
+      padding-bottom: 8px;
+    }
+
+    .control-btn {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-edit {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background: #c85611;
+      transform: translateY(-2px);
+    }
+
+    .btn-edit.active {
+      background: var(--success);
+    }
+
+    .btn-select-all {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-select-all:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-deselect-all {
+      background: #666;
+      color: white;
+    }
+
+    .btn-deselect-all:hover {
+      background: #444;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .page {
+        margin: 0;
+        box-shadow: none;
+        width: 210mm;
+        min-height: 297mm;
+        page-break-after: always;
+        padding: 15mm;
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .control-panel {
+        display: none !important;
+      }
+
+      .section-checkbox {
+        display: none !important;
+      }
+
+      .div-checkbox{
+        display: none !important;
+      }
+
+      .item-checkbox {
+        display: none !important;
+      }
+
+      /* Hide unchecked sections */
+      .section-container:has(.section-checkbox:not(:checked)) {
+        display: none !important;
+      }
+
+      .div-container:has(.div-checkbox:not(:checked)) {
+        display: none !important;
+      }
+
+      .clause-item:has(.item-checkbox:not(:checked)) {
+        display: none !important;
+      }
+
+      .list-item:has(.item-checkbox:not(:checked)) {
+        display: none !important;
+      }
+
+      .table-row:has(.item-checkbox:not(:checked)) {
+        display: none !important;
+      }
+    }
+
+    /* Checkbox Styling */
+    .section-checkbox,
+    .item-checkbox,
+    .div-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      margin-right: 8px;
+      accent-color: var(--secondary);
+      flex-shrink: 0;
+    }
+
+    .section-container {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .div-container {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .section-header-with-checkbox {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .clause-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .table-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .editable {
+      outline: none;
+      min-height: 18px;
+      display: inline-block;
+      padding: 2px 4px;
+      color: var(--text);
+      transition: all 0.2s ease;
+    }
+
+    .editable.block {
+      display: block;
+      min-height: 24px;
+      width: 100%;
+    }
+
+    /* Edit Mode Styles */
+    body.edit-mode .editable {
+      border-bottom: 1px dashed #b6c5c2;
+      background: #fffbf5;
+      border-radius: 3px;
+    }
+
+    body.edit-mode .editable:hover {
+      background: #fff7ed;
+      border-bottom-color: var(--secondary);
+    }
+
+    body.edit-mode .editable:focus {
+      background: #fff7ed;
+      border-bottom-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(227, 100, 20, 0.1);
+    }
+
+    h1 {
+      font-size: 36px;
+      line-height: 1.1;
+      color: var(--primary);
+      font-weight: 900;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 22px;
+      color: var(--primary);
+      font-weight: 850;
+      margin-bottom: 14px;
+      letter-spacing: -0.3px;
+      border-bottom: 2px solid var(--secondary);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: var(--primary);
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    h4 {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .highlight {
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+
+    .logo-container img {
+      width: 8rem;
+      height: 4.8rem;
+      object-fit: contain;
+    }
+
+    .tagline {
+      font-size: 9px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--secondary);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .doc-tag {
+      background: var(--primary);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Contract Specific Styles */
+    .contract-title {
+      text-align: center;
+      margin: 40px 0 30px 0;
+    }
+
+    .parties-section {
+      background: var(--light);
+      border-left: 4px solid var(--secondary);
+      border-radius: 8px;
+      padding: 18px;
+      margin: 16px 0;
+    }
+
+    .party-block {
+      margin-bottom: 20px;
+    }
+
+    .party-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .party-label {
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .party-details {
+      padding-left: 16px;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+    }
+
+    .detail-label {
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .detail-value {
+      color: var(--text);
+    }
+
+    /* Clause Boxes */
+    .clause-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .clause-number {
+      display: inline-block;
+      background: var(--secondary);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 28px;
+      font-weight: 800;
+      font-size: 13px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    .clause-content {
+      flex: 1;
+    }
+
+    .clause-title {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .clause-text {
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    
+    /* Timeline */
+      .timeline {
+        margin: 20px 0;
+      }
+
+      .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .timeline-item:last-child {
+        border-bottom: none;
+      }
+
+      .timeline-phase {
+        min-width: 160px;
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 13px;
+      }
+
+      .timeline-duration {
+        flex: 1;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+    /* Lists */
+    .bullet-list {
+      margin: 12px 0;
+      padding-left: 20px;
+    }
+
+    .bullet-item {
+      margin-bottom: 8px;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* Warning/Important Boxes */
+    .important-box {
+      background: #fff9f0;
+      border-left: 4px solid var(--warning);
+      border-radius: 6px;
+      padding: 14px;
+      margin: 16px 0;
+    }
+
+    .important-box h4 {
+      color: var(--warning);
+      margin-bottom: 8px;
+    }
+
+    /* Signature Section */
+    .signature-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .signature-block {
+      border-top: 2px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .signature-label {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--primary);
+      margin-bottom: 30px;
+    }
+
+    .signature-field {
+      border-bottom: 1px solid var(--text);
+      min-height: 24px;
+      margin-bottom: 6px;
+    }
+
+    .field-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Footer */
+    .footer-note {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    /* Exclusion List */
+    .exclusion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .exclusion-item {
+      background: #fff5f5;
+      border-left: 3px solid var(--danger);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Payment Structure */
+    .payment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin: 20px 0;
+    }
+
+    .payment-card {
+      background: var(--light);
+      border-top: 4px solid var(--secondary);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .payment-percentage {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .payment-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center !important;
+    }
+
+    .payment-desc {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 6px;
+      text-align: center !important;
+    }
+
+     /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px dashed var(--border);
+      margin: 24px 0;
+    }
+
+    /* ── PLAN CARDS ── */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .plan-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .plan-card.highlight {
+      border-color: var(--secondary);
+      box-shadow: 0 4px 20px rgba(227,100,20,0.15);
+    }
+
+    .plan-head {
+      background: var(--light);
+      padding: 14px;
+      text-align: center !important;
+    }
+    .plan-card.highlight .plan-head {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .plan-name {
+      font-size: 13px; font-weight: 900 !important;
+      text-transform: uppercase; letter-spacing: 0.5px !important;
+      color: var(--primary); margin-bottom: 4px;
+    }
+    .plan-card.highlight .plan-name { color: white; }
+
+    .plan-price {
+      font-size: 26px; font-weight: 900;
+      color: var(--primary); line-height: 1.1;
+    }
+    .plan-card.highlight .plan-price { color: white; }
+
+    .plan-period {
+      font-size: 10px; color: var(--muted);
+      font-weight: 600; margin-top: 3px !important;
+      text-align: center !important;
+    }
+    .plan-card.highlight .plan-period { color: rgba(255,255,255,0.8); }
+
+    .plan-body { padding: 12px 10px; }
+
+    .plan-feature {
+      display: flex; align-items: flex-start;
+      gap: 8px; margin-bottom: 8px;
+      font-size: 11.5px; color: var(--text); line-height: 1.5 !important;
+      /* text-align: left !important;   */
+    }
+    .plan-feature::before {
+      content: '✓';
+      color: var(--success); font-weight: 900 !important;
+      font-size: 11px; flex-shrink: 0; margin-top: 1px !important;
+    }
+
+    /* Tag Annexure */
+
+    .tag {
+      display: inline-block;
+      font-size: 9.5px; font-weight: 800;
+      padding: 2px 8px; border-radius: 10px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      margin-left: 6px; vertical-align: middle;
+    }
+    .tag.popular { background: #fef3e2; color: var(--secondary); }
+    .tag.best    { background: #e8f5e9; color: var(--success); }
+    .tag.new     { background: #e3f2fd; color: #1565c0; }
+
+    /* ── NOTES BOX ── */
+    .note-box {
+      background: #fff9f0;
+      border-left: 4px solid var(--warning);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .note-box strong { color: var(--warning); }
+
+    .info-box {
+      background: var(--light);
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    /* ── PRICING TABLE ── */
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 12px;
+  table-layout: fixed; /* Ensures equal column widths */
+}
+
+.price-table thead tr {
+  background: var(--primary, #333);
+  color: white;
+}
+
+.price-table th {
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border: none;
+}
+
+.price-table td {
+  padding: 12px 10px;
+  /* Changed to middle for better visual alignment with checkmarks */
+  vertical-align: middle; 
+  color: var(--text, #333);
+  text-align: center; /* Centers all data */
+  
+}
+.price-table tr{
+  border-bottom: 1px solid #efefef;
+}
+
+/* Align the first column to the left for readability, 
+   or keep it centered if you prefer */
+.price-table td:first-child, 
+.price-table th:first-child {
+  text-align: left;
+}
+
+/* ── GROUP HEADER FIX ── */
+.group-header td {
+  background: #eef3f4 !important;
+  font-weight: 800;
+  color: var(--primary, #2c3e50);
+  font-size: 12px;
+  padding: 10px;
+  /* Ensure no flex or float is breaking the table layout */
+  display: table-cell; 
+}
+
+/* ── SIGNATURE STRIP ── */
+    .sign-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 36px;
+    }
+    .sign-block { border-top: 2px solid var(--border); padding-top: 10px; }
+    .sign-label { font-size: 10px; font-weight: 800; color: var(--primary); margin-bottom: 26px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .sign-field { border-bottom: 1px solid var(--text); min-height: 20px; margin-bottom: 6px; }
+    .sign-field-label { font-size: 9.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+  </style>
+</head>
+<body>
+
+<!-- CONTROL PANEL -->
+<div class="control-panel no-print">
+  <h3>Contract Controls</h3>
+  
+  <button class="control-btn btn-edit" onclick="toggleEditMode()">
+    ✏️ Enable Edit Mode
+  </button>
+  
+  <button class="control-btn btn-select-all" onclick="selectAll()">
+    ✓ Select All Sections
+  </button>
+  
+  <button class="control-btn btn-deselect-all" onclick="deselectAll()">
+    ✗ Deselect All
+  </button>
+
+  <div style="margin-top: 20px; padding-top: 16px; border-top: 2px solid var(--light);">
+    <p style="font-size: 11px; color: var(--muted); line-height: 1.5; margin: 0;">
+      <strong>Instructions:</strong><br>
+      • Click checkboxes to include/exclude sections<br>
+      • Enable edit mode to customize text<br>
+      • Press Ctrl+P to print as PDF
+    </p>
+  </div>
+</div>
+
+<!-- ==================== PAGE 1: TITLE PAGE & PARTIES ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Title Page & Parties</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Agreement</div>
+  </div>
+
+  <div class="contract-title">
+    <h1 class="editable" contenteditable="true">Website Redesign &<br>Development Agreement</h1>
+    <p style="text-align: center; font-size: 11px; color: var(--muted); margin-top: 12px;" class="editable" contenteditable="true">
+      This agreement is entered into on <strong>[DATE]</strong>
+    </p>
+  </div>
+
+  <!-- Parties Section -->
+  <div class="section-container" style="margin-top: 30px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="section-checkbox" checked />
+      <h2 style="margin: 0;">Parties Involved</h2>
+    </div>
+
+    <div class="parties-section">
+      <div class="party-block">
+        <div class="party-label">Service Provider</div>
+        <div class="party-details">
+          <div class="detail-row">
+            <div class="detail-label">Company Name:</div>
+            <div class="detail-value editable" contenteditable="true">Tron Labz</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Address:</div>
+            <div class="detail-value editable" contenteditable="true">E Block, Shastri Ppark, Delhi 110053</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Email:</div>
+            <div class="detail-value editable" contenteditable="true">support@tronlabz.com</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Phone:</div>
+            <div class="detail-value editable" contenteditable="true">+91 95400 43695</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="party-block">
+        <div class="party-label">Client</div>
+        <div class="party-details">
+          <div class="detail-row">
+            <div class="detail-label">Company Name:</div>
+            <div class="detail-value editable" contenteditable="true">[Client Company Name]</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Address:</div>
+            <div class="detail-value editable" contenteditable="true">[Client Address]</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Email:</div>
+            <div class="detail-value editable" contenteditable="true">[Client Email]</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Phone:</div>
+            <div class="detail-value editable" contenteditable="true">[Client Phone]</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size: 12px; font-style: italic; margin-top: 16px; margin-bottom: 0;" class="editable block" contenteditable="true">
+        All the pricing quoted is in <strong> Indian Rupees (INR ₹)</strong> & inclusive of all taxes, stated otherwise.
+      </p>
+      <p style="font-size: 12px; font-style: italic; margin-top: 4px; margin-bottom: 0;">
+        Collectively referred to as <strong>"Parties"</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Project Overview -->
+  <div class="section-container" style="margin-top: 12px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="section-checkbox" checked />
+      <h2 style="margin: 0;">Project Overview</h2>
+    </div>
+
+    <p class="editable block" contenteditable="true">
+      The Client hereby hires Tron Labz to redesign, develop, optimize, and deploy a updated and optimized version 
+      of the Client's website to improve user experience, branding, functionality, performance, and 
+      conversion rates.
+    </p>
+
+    <p class="editable block" contenteditable="true">
+      The purpose of this project is to create a professional, high-performing website that serves as an 
+      effective business tool for attracting customers, and supporting the Client's 
+      business objectives.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable">Page 1 — Agreement Title & Parties</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- ==================== PAGE 2: SCOPE OF WORK (A) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Scope of Work</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Scope Details</div>
+  </div>
+
+  <h2>Scope of Work</h2>
+
+  <p style="margin-bottom: 20px;">
+    This section defines the services included in this Agreement and protects both parties from scope creep.
+  </p>
+
+  <!-- Included Services -->
+  <div class="section-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="section-checkbox" checked />
+      <h3 style="margin: 0;">Included Services</h3>
+    </div>
+
+    <!-- Design Services -->
+    <h4 style="margin-top: 20px; margin-bottom: 12px;">Design Services</h4>
+    
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Custom UI/UX redesign aligned with brand identity</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Mobile responsive layouts for all devices</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Homepage redesign with conversion-focused elements</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Inner page templates for consistent branding</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Navigation restructuring for better user experience</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Call-to-action (CTA) optimization</p>
+      </div>
+    </div>
+
+    <!-- Development Services -->
+    <h4 style="margin-top: 20px; margin-bottom: 12px;">Development Services</h4>
+    
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Frontend development with modern technologies</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Backend/CMS integration for content management</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Contact form implementation and testing</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Appointment booking system integration</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Website speed optimization and performance tuning</p>
+      </div>
+    </div>
+
+   
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Security configuration and SSL implementation</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable">Page 2 — Scope of Work: Included Services</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- ==================== PAGE 3: SCOPE OF WORK (B) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Scope of Work</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Scope Details</div>
+  </div>
+
+    <!-- SEO -->
+    <h4 style="margin-top: 20px; margin-bottom: 12px;">SEO Setup</h4>
+    
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Meta titles and descriptions for all pages</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">XML sitemap generation and submission</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Basic schema markup implementation</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Technical SEO setup and optimization</p>
+      </div>
+    </div>
+
+    <!-- Content Integration -->
+    <h4 style="margin-top: 20px; margin-bottom: 12px;">Content Integration</h4>
+    
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Uploading client-provided content to website</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Image optimization and compression</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Formatting pages for readability and aesthetics</p>
+      </div>
+    </div>
+
+    <h4 style="margin-top: 20px; margin-bottom: 12px;">Deployment</h4>
+    
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Hosting deployment and configuration</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">Domain configuration and DNS setup</p>
+      </div>
+    </div>
+
+    <div class="list-item">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div style="flex: 1;">
+        <p class="editable" contenteditable="true">SSL certificate installation</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable">Page 3 — Scope of Work: Included Services</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- ==================== PAGE 4: EXCLUSIONS ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Explicit Exclusions</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Exclusions</div>
+  </div>
+
+  <h2>Explicit Exclusions</h2>
+
+  <div class="important-box">
+    <h4>Important Notice</h4>
+    <p style="margin: 0;">
+      The following services are <strong>NOT included</strong> in this Agreement unless separately agreed 
+      to in writing with revised scope and pricing.
+    </p>
+  </div>
+
+  <div class="exclusion-grid">
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Copywriting Services</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Logo Design</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Branding Strategy</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Ongoing SEO Campaigns</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Paid Advertising</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Custom Third-Party Integrations</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Stock Photography Licensing</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Post-Support Maintenance</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Advanced Animations</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Unlimited Revisions</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Hosting Fees</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Domain Registration Fees</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">E-commerce Functionality</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Social Media Management</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Email Marketing Setup</div>
+    </div>
+
+    <div class="clause-item" style="margin: 0;">
+      <input type="checkbox" class="item-checkbox" checked />
+      <div class="exclusion-item" style="flex: 1; margin: 0;">Video Production</div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable">Page 4 — Explicit Exclusion </span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 5: Timeline ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Project Timeline</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Timeline</div>
+  </div>
+
+  <h2>Project Timeline</h2>
+
+  <div class="important-box">
+    <h4>Important Notice</h4>
+    <p style="margin: 0;">
+      Estimated project timeline: <strong>4–8 weeks</strong> depending on content availability, feedback 
+      turnaround time, and approval timelines.
+    </p>
+  </div>
+
+  <!-- Project Timeline -->
+  <div class="section-container" style="margin-top: 40px;">
+
+     <div class="timeline">
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Discovery & Research
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            2 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Wireframing
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            2 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            UI/UX Design
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            5–7 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Development
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            7–10 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Testing & Revisions
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            3 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Final Launch
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            1 Day
+          </div>
+        </div>
+
+        <div
+          class="timeline-item"
+          style="border-bottom: 2px solid var(--primary); padding-bottom: 14px"
+        >
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div
+            class="timeline-phase"
+            style="font-weight: 900; color: var(--primary)"
+          >
+            Total Duration
+          </div>
+          <div
+            class="timeline-duration editable"
+            contenteditable="true"
+            style="font-weight: 800; color: var(--primary)"
+          >
+            20–25 Days
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="footer-note">
+    <span>Page 5 — Project Timeline</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- ==================== PAGE 6: CLIENT RESPONSIBILITIES (A) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Client Responsibilities</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Responsibilities</div>
+  </div>
+
+  <h2>Client Responsibilities</h2>
+
+  <p>
+    The Client agrees to fulfill the following responsibilities to ensure timely project completion:
+  </p>
+
+  <div class="clause-item">
+    <input type="checkbox" class="item-checkbox" checked />
+    <div class="clause-box" style="flex: 1;">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">1</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Provide Required Content & Assets</div>
+          <p class="clause-text editable" contenteditable="true">
+            Client will provide all necessary content (text, images, videos, logos, brand materials) 
+            in a timely manner as per the agreed schedule.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clause-item">
+    <input type="checkbox" class="item-checkbox" checked />
+    <div class="clause-box" style="flex: 1;">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">2</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Review Submissions Promptly</div>
+          <p class="clause-text editable" contenteditable="true">
+            Client will review design mockups, development progress, and other deliverables within 
+            reasonable timeframes to avoid project delays.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clause-item">
+    <input type="checkbox" class="item-checkbox" checked />
+    <div class="clause-box" style="flex: 1;">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">3</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Provide Approvals & Feedback</div>
+          <p class="clause-text editable" contenteditable="true">
+            Client agrees to provide clear approvals and constructive feedback within 3 business days 
+            of receiving deliverables for review.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clause-item">
+    <input type="checkbox" class="item-checkbox" checked />
+    <div class="clause-box" style="flex: 1;">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">4</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Ensure Legal Rights to Content</div>
+          <p class="clause-text editable" contenteditable="true">
+            Client warrants that all content, images, and materials provided are legally owned or 
+            properly licensed, and Tron Labz is held harmless from any copyright claims.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+ 
+
+  <div class="footer-note">
+    <span>Page 6 — Client Responsibilities</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 7: CLIENT RESPONSIBILITIES (B) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Client Responsibilities</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Responsibilities</div>
+  </div>
+
+
+  <div class="clause-item">
+    <input type="checkbox" class="item-checkbox" checked />
+    <div class="clause-box" style="flex: 1;">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">5</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Maintain Clear Communication</div>
+          <p class="clause-text editable" contenteditable="true">
+            Client will maintain responsive communication throughout the project, responding to 
+            queries and providing clarifications as needed.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="clause-item">
+    <input type="checkbox" class="item-checkbox" checked />
+    <div class="clause-box" style="flex: 1;">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">6</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Provide Necessary Access</div>
+          <p class="clause-text editable" contenteditable="true">
+            Client will provide timely access to hosting accounts, domain registrars, existing website 
+            admin panels, and any other systems required for project completion.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delayed Feedback Clause -->
+  <div class="section-container" style="margin-top: 30px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="section-checkbox" checked />
+      <h2 style="margin: 0;">Delayed Feedback Policy</h2>
+    </div>
+
+    <div class="important-box">
+      <h4>Project Pause Conditions</h4>
+      <p class="editable block" contenteditable="true">
+        If the Client fails to provide feedback, approvals, or required materials for more than 
+        <strong>14 consecutive days</strong>, the project may be considered paused.
+      </p>
+      <p class="editable block" contenteditable="true" style="margin-bottom: 0;">
+        Projects paused beyond <strong>30 days</strong> may incur restart fees, require timeline 
+        renegotiation, or be terminated at Tron Labz's discretion with payment due for work completed.
+      </p>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span>Page 7 — Client Responsibilities</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+
+<!-- OUR TERMS -->
+<!-- ==================== PAGE 8: OUR TERMS -> REVISION POLICY ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Revisions Terms</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Our Terms</div>
+  </div>
+
+   <h2>Revision Policy</h2>
+
+  
+    <p style="margin: 4px 0;" class="editable block" contenteditable="true">
+      This Agreement includes the following revision allowances to ensure client satisfaction while 
+      maintaining project efficiency:
+    </p>
+
+  <!-- Revisions Policy -->
+  <div class="section-container">
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">✓</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Design Phase: 2 Rounds of Revisions</div>
+          <p class="clause-text editable" contenteditable="true">
+            Two complete rounds of design revisions are included during the UI/UX design phase. 
+            This allows refinement of layouts, colors, typography, and visual elements.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">✓</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Development Phase: 1 Round of Revisions</div>
+          <p class="clause-text editable" contenteditable="true">
+            One round of functional revisions is included during development to address bugs, 
+            adjustment requests, and minor modifications.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="important-box">
+      <h4>Additional Revisions</h4>
+      <p style="margin-bottom: 0;" class="editable" contenteditable="true">
+        Additional revisions beyond the agreed scope will be billed at <strong>₹[amount]/hour</strong> 
+        or as per separately agreed pricing. Major scope changes will require a new quote and timeline.
+      </p>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 8 — Revisions & Payment Terms</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 9: OUR TERMS-> PAYMENT TERMS ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Payment Terms</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Our Terms</div>
+  </div>
+
+  <h2>Payment Terms</h2>
+  <!-- Payment Terms -->
+  <div class="section-container">
+
+    <div class="parties-section" style="text-align: center;">
+      <h3 style="color: var(--primary); margin-bottom:8px;" class="editable" contenteditable="true">
+        Total Project Cost: ₹1,50,000 INR
+      </h3>
+      <p style="font-size: 11px; color: var(--muted); margin: 0; text-align: center;">
+        (Amount is customizable based on project scope)
+      </p>
+    </div>
+
+    <div class="payment-grid">
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="payment-card" style="flex: 1; margin: 0;">
+          <div class="payment-percentage editable" contenteditable="true">50%</div>
+          <div class="payment-label">Upfront Deposit</div>
+          <div class="payment-desc editable" contenteditable="true">
+            Required before project commencement
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="payment-card" style="flex: 1; margin: 0;">
+          <div class="payment-percentage editable" contenteditable="true">30%</div>
+          <div class="payment-label">Design Approval</div>
+          <div class="payment-desc editable" contenteditable="true">
+            Due upon approval of final designs
+          </div>
+        </div>
+      </div>
+
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="payment-card" style="flex: 1; margin: 0;">
+          <div class="payment-percentage editable" contenteditable="true">20%</div>
+          <div class="payment-label">Before Launch</div>
+          <div class="payment-desc editable" contenteditable="true">
+            Final payment before going live
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="important-box">
+      <h4>Important Payment Terms</h4>
+      <p class="editable" contenteditable="true">
+        Work begins only after initial payment clearance. All payments are due as per the agreed 
+        milestone schedule.
+      </p>
+    </div>
+  </div>
+
+  <!-- Late Payment Policy -->
+  <div class="div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin: 0;">Late Payment Clause</h3>
+    </div>
+    <h3>Late Payment Policy</h3>
+    <p class="editable block" contenteditable="true">
+      Invoices unpaid beyond <strong>7 days</strong> of the due date may get a reminder 
+      <strong>notice</strong>. After that, Tron Labz reserves the right to pause work until outstanding 
+      balances are cleared.
+    </p>
+  </div>
+
+  <!-- Refund Policy -->
+  <div class="div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin: 0;">Refund Policy</h3>
+    </div>
+    <h3>Refund Policy</h3>
+    <p class="editable block" contenteditable="true">
+      Due to the nature of digital services, <strong>deposits are non-refundable</strong>. Completed 
+      work is billable regardless of project continuation. Partially completed milestones remain payable 
+      based on work delivered.
+    </p>
+  </div>
+
+  <!-- Emergency Rush Fee -->
+  <div class="div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin: 0;">Emergency Rush Fee</h3>
+    </div>
+
+    <h3>Emergency Rush Fee</h3>
+
+    <p class="editable block" contenteditable="true">
+      Projects requiring completion in less than <strong>50% of the standard timeline</strong> will be 
+      subject to an emergency rush fee of <strong>25-50%</strong> of the total project cost, depending 
+      on the level of urgency and resource reallocation required.
+    </p>
+
+    <p class="editable block" contenteditable="true">
+      Rush projects take priority over standard projects but must be mutually agreed upon before 
+      commencement.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 9 — Revisions & Payment Terms</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 10: OUR TERMS-> ADDITIONAL TERMS (A) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Additional Terms A</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Our Terms</div>
+  </div>
+
+  <h2>Additional Terms</h2>
+
+   <!-- Change Request Clause -->
+  <div class="div-container" style="margin-top: 4px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Change Request Clause</h2>
+    </div>
+    <h3>Change Request Clause</h3>
+    <p class="editable block" contenteditable="true">
+      Any change to the agreed project scope, features, or deliverables requires:
+    </p>
+
+    <ul class="bullet-list">
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Written approval from both parties</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Revised quote detailing additional costs</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Revised timeline reflecting new deliverables</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Formal amendment to this Agreement</span>
+      </li>
+    </ul>
+
+    <p class="editable block" contenteditable="true">
+      Verbal change requests are not binding. All scope modifications must be documented in writing.
+    </p>
+  </div>
+
+  <!-- Abandoned Project Clause -->
+  <div class="div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Abandoned Project Clause</h2>
+    </div>
+
+    <h3>Abandoned Project Clause</h3>
+    <p class="editable block" contenteditable="true">
+      If the Client becomes unresponsive or fails to provide required materials/feedback for a period 
+      exceeding <strong>60 days</strong>, the project may be considered abandoned.
+    </p>
+
+    <p class="editable block" contenteditable="true">
+      In such cases:
+    </p>
+
+    <ul class="bullet-list">
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Tron Labz may terminate the project and invoice for all work completed</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Deposit and milestone payments are non-refundable</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Partial deliverables may be provided upon payment settlement</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Restarting the project requires a new agreement and restart fee</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Access Delay Clause -->
+  <div class="div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Access Delay Clause</h2>
+    </div>
+
+    <h3>Access Delay Clause</h3>
+    <p class="editable block" contenteditable="true">
+      If access to hosting accounts, domain registrars, or existing website systems is delayed beyond 
+      <strong>7 days</strong> from the agreed start date, the project timeline will be adjusted 
+      accordingly.
+    </p>
+
+    <p class="editable block" contenteditable="true">
+      Tron Labz is not responsible for timeline delays caused by Client's failure to provide necessary 
+      system access.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 10 — Additional Terms</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 11: OUR TERMS-> ADDITIONAL TERMS (B) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Additional Terms B</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Our Terms</div>
+  </div>
+
+ <!-- Browser Compatibility -->
+  <div class="div-container" style="margin-top: 8px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Browser & Device Compatibility</h2>
+    </div>
+
+    <h3>Browser & Device Compatibility</h3>
+    <p class="editable block" contenteditable="true">
+      The website will be optimized for modern versions of the following browsers:
+    </p>
+
+    <ul class="bullet-list">
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Google Chrome (latest 2 versions)</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Safari (latest 2 versions)</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Microsoft Edge (latest 2 versions)</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Mozilla Firefox (latest 2 versions)</span>
+      </li>
+    </ul>
+
+    <p class="editable block" contenteditable="true">
+      Compatibility with outdated or unsupported browsers (e.g., Internet Explorer) is not guaranteed.
+    </p>
+  </div>
+
+  <!-- Maintenance & Ongoing Support -->
+  <div class="div-container" style="margin-top: 8px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Maintenance & Ongoing Support</h2>
+    </div>
+
+   <h3>Maintenance & Ongoing Support</h3>
+    <p class="editable block" contenteditable="true">
+      Ongoing website maintenance, content updates, and technical support beyond the 30 day warranty 
+      period are <strong>not included</strong> in this Agreement unless covered under a separate 
+      maintenance agreement or support contract.
+    </p>
+
+    <p class="editable block" contenteditable="true">
+      Tron Labz offers optional monthly maintenance packages that can be arranged separately.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 11 — Additional Terms</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- LEGAL TERMS -->
+<!-- ==================== PAGE 12: LEGAL TERMS-> INTELLECTUAL PROPERTY OWNERSHIP ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Intellectual Rights</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Terms</div>
+  </div>
+
+  <!-- Intellectual Property -->
+  <div class="section-container">
+
+    <h2>Intellectual Property Ownership</h2>
+
+    <!-- Add more clauses as needed -->
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">©</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Ownership During Project</div>
+          <p class="clause-text editable" contenteditable="true">
+            All design work, code, graphics, and deliverables remain the exclusive property of 
+            Tron Labz until full payment is received.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">©</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Transfer of Ownership</div>
+          <p class="clause-text editable" contenteditable="true">
+            Upon receipt of final payment, full ownership of the website (design, code, content) 
+            transfers to the Client, excluding third-party licensed assets and tools.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">©</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Third-Party Assets</div>
+          <p class="clause-text editable" contenteditable="true">
+            Any third-party tools, plugins, frameworks, or licensed assets remain subject to their 
+            respective licenses and are not transferred as part of ownership.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 12 — Intellectual Property & Rights</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 13: LEGAL TERMS-> CONFIDENTIALITY ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Confidentiality</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Terms</div>
+  </div>
+
+  <h2>Confidentiality Clause</h2>
+
+  <!-- Confidentiality -->
+  <div class="section-container">
+
+    <p class="editable block" contenteditable="true">
+      Both parties agree to maintain strict confidentiality regarding all sensitive business, technical, 
+      financial, and proprietary information shared during the course of this project.
+    </p>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">🔒</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Protected Information</div>
+          <p class="clause-text editable" contenteditable="true">
+            Confidential information includes business strategies, customer data, financial records, 
+            proprietary processes, trade secrets, and any information marked as confidential.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">🔒</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Non-Disclosure Obligation</div>
+          <p class="clause-text editable" contenteditable="true">
+            Neither party shall disclose confidential information to third parties without prior 
+            written consent, except as required by law.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">🔒</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Duration of Confidentiality</div>
+          <p class="clause-text editable" contenteditable="true">
+            Confidentiality obligations survive the termination of this Agreement and remain in effect 
+            for a period of 3 years following project completion.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 13 — Confidentiality</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 14: LEGAL TERMS-> TERMINATION CLAUSE ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Termination Clause</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Terms</div>
+  </div>
+
+    <h2>Termination Clause</h2>
+     <!-- Termination Clause -->
+  <div class="section-container" style="margin-top: 30px;">
+
+    <p class="editable block" contenteditable="true">
+      Either party may terminate this Agreement under the following conditions:
+    </p>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">1</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Termination for Breach</div>
+          <p class="clause-text editable" contenteditable="true">
+            If either party materially breaches the terms of this Agreement and fails to remedy the 
+            breach within 14 days of written notice, the non-breaching party may terminate immediately.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">2</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Termination for Non-Payment</div>
+          <p class="clause-text editable" contenteditable="true">
+            Tron Labz may terminate this Agreement if payments remain unpaid beyond 14 days of the 
+            due date, despite written reminders.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">3</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Termination for Communication Failure</div>
+          <p class="clause-text editable" contenteditable="true">
+            Either party may terminate if communication becomes unreasonably delayed (30+ days without 
+            response) despite multiple attempts to reconnect.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="clause-box">
+      <div style="display: flex; align-items: flex-start;">
+        <span class="clause-number">4</span>
+        <div class="clause-content">
+          <div class="clause-title editable" contenteditable="true">Client-Initiated Termination</div>
+          <p class="clause-text editable" contenteditable="true">
+            The Client may terminate this Agreement at any time with written notice. However, the Client 
+            remains responsible for payment of all work completed up to the termination date.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="important-box">
+      <h4>Payment Upon Termination</h4>
+      <p style="margin-bottom: 0;" class="editable" contenteditable="true">
+        Upon termination, all outstanding invoices for completed work become immediately due. Deposit 
+        payments are non-refundable. Tron Labz will deliver all completed work upon receipt of payment.
+      </p>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 14 — Termination Clause</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 15: LEGAL TERMS-> ADDITIONAL LEGAL RIGHTS ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Additional Legal Rights</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Terms</div>
+  </div>
+
+  <h2>Additional Legal Rights</h2>
+
+  <!-- Portfolio Rights -->
+  <div class="div-container" style="margin-top: 30px;" >
+     <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Portfolio Rights</h2>
+    </div>
+    <h3 >Portfolio Rights</h3>
+    <p class="editable block" contenteditable="true">
+      Tron Labz may showcase the completed project in the following contexts unless otherwise agreed 
+      in writing:
+    </p>
+
+    <ul class="bullet-list">
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Portfolio website and case studies</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Social media marketing and promotion</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Marketing materials and presentations</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Design awards and competition submissions</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Professional networking and business development</span>
+      </li>
+    </ul>
+
+    <p class="editable block" contenteditable="true">
+      If the Client requires confidentiality and wishes to exclude the project from Tron Labz's portfolio, 
+      this must be agreed upon in writing before project commencement.
+    </p>
+  </div>
+
+  
+
+  <!-- Governing Law -->
+  <div class="div-container" style="margin-top: 30px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Governing Law</h2>
+    </div>
+
+     <h3>Governing Law</h3>
+    <p class="editable block" contenteditable="true">
+      This Agreement shall be governed by and construed in accordance with the laws of 
+      <strong>India</strong>. Any disputes arising from this Agreement shall be subject to the 
+      exclusive jurisdiction of the courts in <strong>Delhi, India</strong>.
+    </p>
+  </div>
+  
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 15 — Additional Legal Rights</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- LEGAL PROTECTION -->
+<!-- ==================== PAGE 16: LEGAL PROTECTION-> Disclaimers & LIABILITY ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Disclaimerss & Liability</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Protection</div>
+  </div>
+
+  <!-- SEO Disclaimer -->
+  <div class="div-container" style="margin-top: 16px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">SEO Performance Disclaimer</h2>
+    </div>
+    <h3>SEO Performance Disclaimer</h3>
+    <div class="important-box">
+      <h4>No Ranking Guarantees</h4>
+      <p class="editable block" contenteditable="true">
+        Tron Labz does not guarantee specific search engine rankings, traffic increases, lead volume, 
+        or conversion rates. SEO results depend on numerous external factors including:
+      </p>
+      <ul class="bullet-list" style="margin-top: 8px;">
+        <li class="bullet-item editable" contenteditable="true">Search engine algorithm changes</li>
+        <li class="bullet-item editable" contenteditable="true">Industry competition levels</li>
+        <li class="bullet-item editable" contenteditable="true">Content quality and freshness</li>
+        <li class="bullet-item editable" contenteditable="true">Domain age and authority</li>
+        <li class="bullet-item editable" contenteditable="true">Ongoing content and link-building efforts</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Third-Party Services -->
+  <div class="div-container" style="margin-top: 30px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Third-Party Services Disclaimer</h2>
+    </div>
+    <h3>Third-Party Services Disclaimer</h3>
+    <p class="editable block" contenteditable="true">
+      Tron Labz is not responsible for issues arising from third-party services beyond reasonable control:
+    </p>
+
+    <div class="exclusion-grid">
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="exclusion-item" style="flex: 1; margin: 0; background: #fff9f0; border-left-color: var(--warning);">
+          Hosting Server Outages
+        </div>
+      </div>
+
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="exclusion-item" style="flex: 1; margin: 0; background: #fff9f0; border-left-color: var(--warning);">
+          Third-Party Plugin Failures
+        </div>
+      </div>
+
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="exclusion-item" style="flex: 1; margin: 0; background: #fff9f0; border-left-color: var(--warning);">
+          API Service Downtime
+        </div>
+      </div>
+
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="exclusion-item" style="flex: 1; margin: 0; background: #fff9f0; border-left-color: var(--warning);">
+          Platform Policy Changes
+        </div>
+      </div>
+
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="exclusion-item" style="flex: 1; margin: 0; background: #fff9f0; border-left-color: var(--warning);">
+          Cyberattacks Beyond Security
+        </div>
+      </div>
+
+      <div class="clause-item" style="margin: 0;">
+        <input type="checkbox" class="item-checkbox" checked />
+        <div class="exclusion-item" style="flex: 1; margin: 0; background: #fff9f0; border-left-color: var(--warning);">
+          External Service Disruptions
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Limitation of Liability -->
+  <div class="div-container" style="margin-top: 30px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Limitation of Liability</h2>
+    </div>
+    <h3>Limitation of Liability</h3>
+    <div class="important-box" style="background: #fff5f5; border-left-color: var(--danger);">
+      <h4 style="color: var(--danger);">Important Legal Protection</h4>
+      <p class="editable block" contenteditable="true">
+        Tron Labz shall not be held liable for any indirect, incidental, consequential, or special 
+        damages arising from website use, downtime, or malfunction, including but not limited to:
+      </p>
+      <ul class="bullet-list" style="margin-top: 8px; margin-bottom: 0;">
+        <li class="bullet-item editable" contenteditable="true">Lost profits or business revenue</li>
+        <li class="bullet-item editable" contenteditable="true">Business interruption or downtime</li>
+        <li class="bullet-item editable" contenteditable="true">Data loss or corruption</li>
+        <li class="bullet-item editable" contenteditable="true">Loss of business opportunities</li>
+        <li class="bullet-item editable" contenteditable="true">Damage to business reputation</li>
+      </ul>
+    </div>
+
+    <p class="editable block" contenteditable="true">
+      Tron Labz's entire liability for damages resulting from this Agreement shall not at any time exceed the total project fees paid by the Client pursuant to this Agreement.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 16 — Disclaimers & Liability Limitations</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 17: LEGAL PROTECTION-> ADDITIONAL PROTECTIVE CLAUSES (A) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Additional Protective Clauses</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Protection</div>
+  </div>
+
+  <h2>Additional Protective Clauses</h2>
+
+  <!-- Warranty Period -->
+  <div class="div-container" style="margin-top: 24px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h2 style="margin: 0;">Warranty / Bug Fix Period</h2>
+    </div>
+    <h3>Warranty / Bug Fix Period</h3>
+    <p class="editable block" contenteditable="true">
+      A <strong>30-day post-launch warranty period</strong> is included for bug fixes related to 
+      delivered functionality. This warranty covers:
+    </p>
+
+    <ul class="bullet-list">
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Bugs in delivered features and functionality</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Broken links or navigation issues</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Display issues on supported browsers</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Form submission failures</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Mobile responsiveness issues</span>
+      </li>
+    </ul>
+
+    <p class="editable block" contenteditable="true" style="margin-top: 12px;">
+      This warranty does <strong>NOT</strong> include:
+    </p>
+
+    <ul class="bullet-list">
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">New feature requests or additions</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Content changes or updates</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Third-party plugin or service updates</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Issues caused by client modifications</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Hosting or server-related problems</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 17 — Additional Protective Clauses</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 18: LEGAL PROTECTION-> ADDITIONAL PROTECTIVE CLAUSES (B) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Additional Protective Clauses</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Legal Protection</div>
+  </div>
+
+  <h2>Additional Protective Clauses</h2>
+
+  <!-- Content Responsibility Clause -->
+  <div class="div-container" style="margin-top: 24px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin: 0;">Content Responsibility Clause</h3>
+    </div>
+    <h3>Content Responsibility Clause</h3>
+    <p class="editable block" contenteditable="true">
+      The Client is solely responsible for the accuracy, legality, and appropriateness of all content 
+      provided for the website, including:
+    </p>
+
+    <ul class="bullet-list">
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Text, images, videos, and multimedia content</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Product descriptions, pricing, and service information</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Legal disclaimers, privacy policies, and terms of service</span>
+      </li>
+      <li class="clause-item">
+        <input type="checkbox" class="item-checkbox" checked />
+        <span class="bullet-item editable" contenteditable="true">Compliance with industry regulations and laws</span>
+      </li>
+    </ul>
+
+    <p class="editable block" contenteditable="true">
+      Tron Labz is held harmless from any legal claims, copyright violations, or compliance issues 
+      arising from client-provided content.
+    </p>
+  </div>
+
+  <!-- Force Majeure -->
+  <div class="div-container" style="margin-top: 24px;">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin: 0;">Force Majeure</h3>
+    </div>
+    <h3>Force Majeure</h3>
+    <p class="editable block" contenteditable="true">
+      Neither party shall be held liable for delays or failures in performance resulting from 
+      circumstances beyond reasonable control, including natural disasters, pandemics, government 
+      actions, war, internet outages, or other force majeure events.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 18 — Additional Protective Clauses</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- ==================== PAGE 19: SIGNATURES ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Agreement Signatures</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img
+        src="https://tronlabz.com/assets/company_logo.png"
+        alt="Tron Labz Logo"
+      />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Binding Agreement</div>
+  </div>
+
+  <h2 style="text-align: center; margin-bottom: 12px;">Agreement Acceptance & Signatures</h2>
+
+  <p class="editable block" contenteditable="true" style="text-align: center; font-size: 13px; margin-bottom: 40px;">
+    By signing below, both parties acknowledge that they have read, understood, and agree to be bound 
+    by all terms and conditions outlined in this Website Redesign & Development Agreement.
+  </p>
+
+  <div class="signature-section">
+    <!-- Service Provider Signature -->
+    <div class="signature-block">
+      <div class="signature-label">SERVICE PROVIDER</div>
+      
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Company Name</div>
+        <div class="signature-field editable" contenteditable="true">Tron Labz</div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Authorized Signatory Name</div>
+        <div class="signature-field editable" contenteditable="true">[Name]</div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Signature</div>
+        <div class="signature-field" style="min-height: 50px;"></div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Date</div>
+        <div class="signature-field editable" contenteditable="true">[DD/MM/YYYY]</div>
+      </div>
+
+      <div>
+        <div class="field-label">Designation/Title</div>
+        <div class="signature-field editable" contenteditable="true">[Title]</div>
+      </div>
+    </div>
+
+    <!-- Client Signature -->
+    <div class="signature-block">
+      <div class="signature-label">CLIENT</div>
+      
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Company Name</div>
+        <div class="signature-field editable" contenteditable="true">[Client Company Name]</div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Authorized Signatory Name</div>
+        <div class="signature-field editable" contenteditable="true">[Name]</div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Signature</div>
+        <div class="signature-field" style="min-height: 50px;"></div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div class="field-label">Date</div>
+        <div class="signature-field editable" contenteditable="true">[DD/MM/YYYY]</div>
+      </div>
+
+      <div>
+        <div class="field-label">Designation/Title</div>
+        <div class="signature-field editable" contenteditable="true">[Title]</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="important-box div-container">
+    <div class="div-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+    </div>
+    <h4>Witness (Optional)</h4>
+    <p style="margin-bottom: 12px;">
+      If witnesses are required for legal enforceability in your jurisdiction:
+    </p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <div class="field-label">Witness 1 Name</div>
+        <div class="signature-field editable" contenteditable="true">[Name]</div>
+      </div>
+      <div>
+        <div class="field-label">Witness 1 Signature</div>
+        <div class="signature-field"></div>
+      </div>
+      <div>
+        <div class="field-label">Witness 2 Name</div>
+        <div class="signature-field editable" contenteditable="true">[Name]</div>
+      </div>
+      <div>
+        <div class="field-label">Witness 2 Signature</div>
+        <div class="signature-field"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:50px; padding: 10px; background: var(--light); border-radius: 8px; text-align: center;">
+    <p style="font-size: 11px; color: var(--muted); margin: 0; text-align: center !important; ">
+      <strong>Document Reference:</strong> TRONLABZ-CONTRACT-<span class="editable" contenteditable="true">[REF-NUMBER]</span><br>
+      <strong>Agreement Date:</strong> <span class="editable" contenteditable="true">[DATE]</span><br>
+      This agreement constitutes the entire understanding between the parties and supersedes all prior negotiations.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Page 19 — Signatures & Acceptance</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- ANNEXURE FOR ADD-ON SERVICES -->
+ <!-- ==================== PAGE 20: COVER + SEO PACKAGES ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Annexure A</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Annexure A</div>
+  </div>
+
+  <!-- Title block -->
+  <div style="margin-bottom: 28px;">
+    <h2>Additional/Optional Add-on Services & Pricing</h2>
+    <p class="editable block" style="margin-top: 10px;">
+      This Annexure forms part of the Website Redesign &amp; Development Agreement between
+      <strong class="editable" contenteditable="true">Tron Labz</strong> and
+      <strong class="editable" contenteditable="true">[Client Company Name]</strong>.
+      All services below are <em>optional add-ons</em> and are not included in the base project scope
+      unless signed and agreed separately. Prices are subject to revision based on project scope, requirements, or market conditions.
+    </p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ── SECTION 1: SEO ── -->
+  <div class="div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin: 0;">Section 1 — SEO Services</h3>
+    </div>
+    <h2>Section 1 — SEO Services</h2>
+    <p class="editable block" contenteditable="true">
+      Monthly search engine optimisation retainers designed to grow your organic visibility.
+      Choose a plan or mix individual services.
+    </p>
+
+    <!-- Plan Cards -->
+    <div class="plan-grid">
+      <!-- Starter -->
+      <div class="plan-card">
+        <div class="plan-head">
+          <div class="plan-name editable" contenteditable="true">Starter</div>
+          <div class="plan-price editable" contenteditable="true">₹8,000</div>
+          <div class="plan-period">/ month</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feature editable" contenteditable="true">5 target keywords</div>
+          <div class="plan-feature editable" contenteditable="true">On-page SEO audit</div>
+          <div class="plan-feature editable" contenteditable="true">Google My Business optimisation</div>
+          <div class="plan-feature editable" contenteditable="true">Monthly performance report</div>
+          <div class="plan-feature editable" contenteditable="true">2 blog posts / month</div>
+        </div>
+      </div>
+
+      <!-- Growth -->
+      <div class="plan-card highlight">
+        <div class="plan-head">
+          <div class="plan-name editable" contenteditable="true">Growth <span class="tag popular">Popular</span></div>
+          <div class="plan-price editable" contenteditable="true">₹16,000</div>
+          <div class="plan-period">/ month</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feature editable" contenteditable="true">15 target keywords</div>
+          <div class="plan-feature editable" contenteditable="true">Technical SEO fixes</div>
+          <div class="plan-feature editable" contenteditable="true">Local citation building</div>
+          <div class="plan-feature editable" contenteditable="true">4 blog posts / month</div>
+          <div class="plan-feature editable" contenteditable="true">Link building (5 backlinks)</div>
+          <div class="plan-feature editable" contenteditable="true">Bi-weekly report + call</div>
+        </div>
+      </div>
+
+      <!-- Premium -->
+      <div class="plan-card">
+        <div class="plan-head">
+          <div class="plan-name editable" contenteditable="true">Premium <span class="tag best" style="color:var(--success);">Best</span></div>
+          <div class="plan-price editable" contenteditable="true">₹28,000</div>
+          <div class="plan-period">/ month</div>
+        </div>
+        <div class="plan-body">
+          <div class="plan-feature editable" contenteditable="true">30+ target keywords</div>
+          <div class="plan-feature editable" contenteditable="true">Full technical SEO</div>
+          <div class="plan-feature editable" contenteditable="true">Content strategy & calendar</div>
+          <div class="plan-feature editable" contenteditable="true">8 blog posts / month</div>
+          <div class="plan-feature editable" contenteditable="true">Link building (15 backlinks)</div>
+          <div class="plan-feature editable" contenteditable="true">Competitor analysis monthly</div>
+          <div class="plan-feature editable" contenteditable="true">Weekly report + strategy call</div>
+        </div>
+      </div>
+    </div>
+    
+
+    <div class="note-box">
+      <strong>Note:</strong>
+      <span class="editable" contenteditable="true">
+        SEO results typically take 3–6 months to show measurable improvement. Tron Labz does not
+        guarantee specific rankings or traffic volumes. All plans require a minimum 3-month commitment.
+      </span>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Annexure A — Page 1 of 5 | SEO Services</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+
+<!-- ==================== PAGE 21: MAINTENANCE PLANS (A) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Annexure A</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Annexure A</div>
+  </div>
+
+  <!-- ── SECTION 2: MAINTENANCE  ── -->
+  <div class="div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin:0;">Section 2 — Website Maintenance Plans</h3>
+    </div>
+    <h2>Section 2 — Website Maintenance Plans</h2>
+    <p class="editable block" contenteditable="true">
+      Keep your website secure, fast, and up-to-date with a monthly maintenance retainer.
+      Plans below are billed monthly or annually (annual plans get 2 months free = <strong>12+2</strong>).
+    </p>
+
+    <!-- Plan comparison table -->
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th>What's Included</th>
+          <th style="text-align:center;">Basic</th>
+          <th style="text-align:center;">Standard</th>
+          <th style="text-align:center; background: var(--secondary);">Pro</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Price row -->
+        <tr class="group-header">
+          <td>Monthly Price</td>
+          <td  class="editable" contenteditable="true">₹500</td>
+          <td  class="editable" contenteditable="true">₹1,000</td>
+          <td  style="color:var(--secondary)" class="editable" contenteditable="true">₹2,000</td>
+        </tr>
+
+        <tr >
+          <td class="editable" contenteditable="true">Security Monitoring & Malware Scan</td>
+          <td style="text-align:center;">✓</td>
+          <td style="text-align:center;">✓</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+        <tr >
+          
+          <td class="editable" contenteditable="true">Weekly Automated Backups</td>
+          <td style="text-align:center;">✓</td>
+          <td style="text-align:center;">✓</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+
+        <tr>
+          <td class="editable" contenteditable="true">Monthly Uptime Report</td>
+          <td style="text-align:center;">✓</td>
+          <td style="text-align:center;">✓</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+
+        <tr>
+          <td class="editable" contenteditable="true">Speed & Performance Checks</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="text-align:center;">✓</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+
+        <tr>
+          <td class="editable" contenteditable="true">Minor Content Updates (image, font, color, text)</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="text-align:center;">2</td>
+          <td style="color:var(--secondary); font-weight:600;">3</td>
+        </tr>
+
+        <tr>
+          <td class="editable" contenteditable="true">Daily Backups</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+
+        <tr>  
+          <td class="editable" contenteditable="true">Priority Support Response</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+
+        <tr>  
+          <td class="editable" contenteditable="true">Google Analytics Review</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+
+        <tr>
+          <td class="editable" contenteditable="true">Dedicated Account Manager</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="text-align:center; color:var(--muted);">—</td>
+          <td style="color:var(--secondary); font-weight:600;">✓</td>
+        </tr>
+
+        <!-- Annual price row -->
+        <tr class="group-header">
+          <td>Annual Price (2 months free)</td>
+          <td style="text-align:center;" class="editable" contenteditable="true">₹5,500</td>
+          <td style="text-align:center;" class="editable" contenteditable="true">₹11,000</td>
+          <td style="text-align:center; color:var(--secondary);" class="editable" contenteditable="true">₹20,000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note-box" style="margin-top: 16px;">
+      <strong>Note:</strong>
+      <span class="editable" contenteditable="true">
+        Maintenance plans begin after the post-launch 30-day warranty period. Plans require a minimum
+        3-month commitment. Cancellation requires 30 days written notice. Emergency support outside
+        business hours is available on Pro plan only.
+      </span>
+    </div>
+  </div>
+
+  
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Annexure A — Page 2 of 5 | Maintenance Plans</span>
+    <span>Tron Labz </span>
+  </div>
+</section>
+<!-- ==================== PAGE 22: MAINTENANCE PLANS (B) ==================== -->
+<section class="page section-container">
+  <div class="section-header-with-checkbox no-print">
+    <input type="checkbox" class="section-checkbox" checked />
+    <h4 style="margin: 0; color: var(--muted);">Annexure A</h4>
+  </div>
+
+  <div class="header">
+    <div class="logo-container">
+      <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Annexure A</div>
+  </div>
+
+  <!-- ── ONE-TIME EMERGENCY SUPPORT ── -->
+  <div class="div-container">
+    <div class="sec-head no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin:0;">One-Time Emergency Support</h3>
+    </div>
+    <h3>One-Time Emergency Support (No Plan Required)</h3>
+
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Response Time</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Content Update (Images, Info, Color, Font)</td>
+          <td>Next business day</td>
+          <td class="editable block" contenteditable="true">₹500/hr</td>
+        </tr>
+        <tr>
+          <td>Site Down / Crash Recovery</td>
+          <td>Within 2 hours</td>
+          <td class="editable block" contenteditable="true">₹5,000</td>
+        </tr>
+        <tr>
+          <td>Malware / Hack Removal</td>
+          <td>Within 4 hours</td>
+          <td class="editable block" contenteditable="true">₹8,000</td>
+        </tr>
+        <tr>
+          <td>General Bug Fix (per hour)</td>
+          <td>Next business day</td>
+          <td class="editable block" contenteditable="true">₹500 / hr</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Annexure A — Page 3 of 5 | One Time Emergency Support</span>
+    <span>Tron Labz </span>
+  </div>
+</section>
+
+<!-- ==================== PAGE 23: WEBSITE UPDATE SERVICES + SIGN ==================== -->
+<section class="page section-container">
+
+  <div class="header">
+    <div class="logo-container">
+      <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Annexure A</div>
+  </div>
+
+  <!-- ── SECTION 3: UPDATE SERVICES ── -->
+  <div class="=div-container">
+    <div class="section-header-with-checkbox no-print">
+      <input type="checkbox" class="div-checkbox" checked />
+      <h3 style="margin:0;">Section 3 — Website Update & Change Services</h3>
+    </div>
+    <h2>Section 3 — Website Update & Change Services</h2>
+    <p class="editable block" contenteditable="true" style="margin-bottom: 16px;">
+      Need changes after the project is delivered? Use the menu below to add specific updates
+      without a full maintenance plan.
+    </p>
+
+    <!-- Content Updates -->
+    <h3>A. Content & Copy Updates</h3>
+    <table class="price-table">
+      <thead>
+        <tr>
+
+          <th>Update Type</th>
+          <th>Scope</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          
+          <td >Text / Copy Change</td>
+          <td >Up to 5 sections per page</td>
+          <td class="editable block" contenteditable="true">₹1,000 / page</td>
+        </tr>
+        <tr >
+          <td >Image Replacement</td>
+          <td >Swap existing images (client provides assets)</td>
+          <td class="editable block" contenteditable="true">₹500 / image</td>
+        </tr>
+        <tr class="hide-row">
+          
+          <td >New Page (basic)</td>
+          <td >Using existing design templates</td>
+          <td class="editable block" contenteditable="true">₹4,000 / page</td>
+        </tr>
+        <tr class="hide-row">
+          
+          <td >Blog Post Upload & Format</td>
+          <td>Client provides written content</td>
+          <td class="editable block" contenteditable="true">₹800 / post</td>
+        </tr>
+        <tr class="hide-row">
+          
+          <td >Pricing / Offer Banner Update</td>
+          <td >Homepage or landing page banners</td>
+          <td class="editable block" contenteditable="true">₹1,200 / banner</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Design Updates -->
+    <h3 style="margin-top: 20px;">B. Design & Layout Changes</h3>
+    <table class="price-table">
+      <thead>
+        <tr>
+          
+          <th>Update Type</th>
+          <th>Scope</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hide-row">
+          
+          <td >Section Redesign</td>
+          <td >Restyle one existing page section</td>
+          <td class="editable block" contenteditable="true">₹3,500</td>
+        </tr>
+        <tr class="hide-row">
+          
+          <td >Colour / Font Scheme Change</td>
+          <td >Global brand colour or typography update</td>
+          <td class="editable block" contenteditable="true">₹5,000</td>
+        </tr>
+        <tr class="hide-row">
+          
+          <td >New Landing Page (custom design)</td>
+          <td >Full custom design + development</td>
+          <td class="editable block" contenteditable="true">₹10,000+</td>
+        </tr>
+        <tr class="hide-row">
+          
+          <td >Mobile Layout Adjustment</td>
+          <td >Fix or improve mobile view of specific pages</td>
+          <td class="editable block" contenteditable="true">₹2,500 / page</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <strong>How to Request Updates:</strong>
+      <span class="editable block" contenteditable="true">
+        Send your request via WhatsApp or email with a description and any reference assets.
+        Tron Labz will confirm scope, pricing, and turnaround time within 1 business day before work begins.
+        All update requests require written approval and prepayment.
+      </span>
+    </div>
+  </div>
+
+  
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Annexure A — Page 4 of 5 | Update Services</span>
+    <span>Tron Labz</span>
+  </div>
+</section>
+<!-- ==================== PAGE 24: ANNEXURE SIGNATURE ==================== -->
+<section class="page section-container">
+
+  <div class="header">
+    <div class="logo-container">
+      <img src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz Logo" />
+      <div class="tagline">Building Your Digital Home</div>
+    </div>
+    <div class="doc-tag">Annexure A</div>
+  </div>
+
+  <!-- ── ANNEXURE SIGNATURES ── -->
+  <div class="div-container" ">
+   
+    <h2>Annexure Acceptance</h2>
+    <p style="margin-bottom: 16px;">
+      By signing below, both parties confirm they have reviewed and understood the pricing schedule
+      outlined in this Annexure. Services will only be initiated upon written instruction and
+      confirmation of pricing.
+    </p>
+
+    <div class="sign-strip">
+      <div class="sign-block">
+        <div class="sign-label">Service Provider — Tron Labz</div>
+        <div style="margin-bottom: 18px;">
+          <div class="sign-field-label">Authorised Signature</div>
+          <div class="sign-field" style="min-height: 40px;"></div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div class="sign-field-label">Name</div>
+          <div class="sign-field editable" contenteditable="true">[Name]</div>
+        </div>
+        <div>
+          <div class="sign-field-label">Date</div>
+          <div class="sign-field editable" contenteditable="true">[DD / MM / YYYY]</div>
+        </div>
+      </div>
+
+      <div class="sign-block">
+        <div class="sign-label">Client</div>
+        <div style="margin-bottom: 18px;">
+          <div class="sign-field-label">Authorised Signature</div>
+          <div class="sign-field" style="min-height: 40px;"></div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div class="sign-field-label">Name</div>
+          <div class="sign-field editable" contenteditable="true">[Name]</div>
+        </div>
+        <div>
+          <div class="sign-field-label">Date</div>
+          <div class="sign-field editable" contenteditable="true">[DD / MM / YYYY]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <div class="footer-note">
+    <span class="editable" contenteditable="true">Annexure A — Page 5 of 5 | Acceptance</span>
+    <span>Tron Labz </span>
+  </div>
+</section>
+
+<script>
+  function toggleEditMode() {
+    const body = document.body;
+    const button = document.querySelector('.btn-edit');
+    
+    if (body.classList.contains('edit-mode')) {
+      // Disable edit mode
+      body.classList.remove('edit-mode');
+      document.querySelectorAll('.editable').forEach(el => {
+        el.contentEditable = 'false';
+      });
+      button.textContent = '✏️ Enable Edit Mode';
+      button.classList.remove('active');
+    } else {
+      // Enable edit mode
+      body.classList.add('edit-mode');
+      document.querySelectorAll('.editable').forEach(el => {
+        el.contentEditable = 'true';
+      });
+      button.textContent = '✅ Disable Edit Mode';
+      button.classList.add('active');
+    }
+  }
+
+  function selectAll() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.checked = true;
+    });
+  }
+
+  function deselectAll() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.checked = false;
+    });
+  }
+
+  // Auto-save functionality
+  document.addEventListener('input', function(e) {
+    if (e.target.classList.contains('editable')) {
+      const key = 'contract_' + Array.from(document.querySelectorAll('.editable')).indexOf(e.target);
+      localStorage.setItem(key, e.target.textContent);
+    }
+  });
+
+  // Load saved content
+  window.addEventListener('load', function() {
+    document.querySelectorAll('.editable').forEach((el, index) => {
+      const saved = localStorage.getItem('contract_' + index);
+      if (saved) {
+        el.textContent = saved;
+      }
+    });
+
+    // Load checkbox states
+    document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
+      const saved = localStorage.getItem('contract_checkbox_' + index);
+      if (saved !== null) {
+        checkbox.checked = saved === 'true';
+      }
+    });
+  });
+
+  // Save checkbox states
+  document.addEventListener('change', function(e) {
+    if (e.target.type === 'checkbox') {
+      const key = 'contract_checkbox_' + Array.from(document.querySelectorAll('input[type="checkbox"]')).indexOf(e.target);
+      localStorage.setItem(key, e.target.checked);
+    }
+  });
+</script>
+
+</body>
+</html>

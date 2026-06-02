@@ -25,7 +25,7 @@ import { videoToThumbnail } from "./Video Tools/video_to_thumbnail_generator.js"
 
 // Input and Output Paths
 
-const fileInputPath = "C:\\Users\\Assassin\\Downloads"; //Change as per requirement
+const fileInputPath = "D:\\Soul Code\\Soul Code Graphics"; //Change as per requirement
 // C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\input\\
 
 const fileOuptutPath =
@@ -104,7 +104,7 @@ ________________________________________________________________________________
 const inputVideoFormatType = ".mp4"; //Change as per requirement
 
 
-// compressVideo(fileInputPath, fileOuptutPath, inputVideoFormatType);
+compressVideo(fileInputPath, fileOuptutPath, inputVideoFormatType);
 
 /* 
   Function for video frame cropping
@@ -138,13 +138,13 @@ const duration = "00:00:15"; // Change as per requirement (format: HH:MM:SS)
   Function for video to thumbnail generation
 */
 
-const thumbnailMode = "SINGLE"; //Change as per requirement options: 'SINGLE', 'RANGE', 'ALL'
+const thumbnailMode = "ALL"; //Change as per requirement options: 'SINGLE', 'RANGE', 'ALL'
 const thumbnailConfig = {
-  time: "00:00:05", // For SINGLE mode (format: HH:MM:SS)
+  // time: "00:00:05", // For SINGLE mode (format: HH:MM:SS)
   // startTime: "00:00:02", // For RANGE mode (format: HH:MM:SS)
   // duration: "00:00:08", // For RANGE mode (format: HH:MM:SS)
-  // fps: 1, // For RANGE mode (frames per second to extract)
-  // size: "720x?", // For every mode (size of output thumbnails, maintain aspect ratio with '?')
+  fps: 10, // For RANGE mode (frames per second to extract)
+  size: "1080x?", // For every mode (size of output thumbnails, maintain aspect ratio with '?')
 };
 
 // videoToThumbnail(fileInputPath, fileOuptutPath, inputVideoFormatType, thumbnailMode, thumbnailConfig);

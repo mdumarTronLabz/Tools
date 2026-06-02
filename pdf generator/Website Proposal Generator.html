@@ -1,0 +1,3506 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Website Redesign Proposal - Tron Labz</title>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+      :root {
+        --primary: #0f4c5c;
+        --primary-dark: #08313c;
+        --secondary: #FFC81E;
+        --light: #f4f7f6;
+        --border: #d9e4e2;
+        --text: #1a1a1a;
+        --muted: #5d6b6e;
+        --danger: #d62828;
+        --warning: #f77f00;
+        --success: #2a9d8f;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #d8d8d8;
+        color: var(--text);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: white;
+        margin: 8mm auto;
+        padding: 18mm;
+        position: relative;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .page:not(:last-child) {
+        page-break-after: always;
+      }
+
+      /* Control Panel */
+      .control-panel {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 280px;
+      }
+
+      .control-panel h3 {
+        font-size: 16px;
+        margin-bottom: 14px;
+        color: var(--primary);
+        border-bottom: 2px solid var(--light);
+        padding-bottom: 8px;
+      }
+
+      .control-btn {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-edit {
+        background: var(--secondary);
+        color: white;
+      }
+
+      .btn-edit:hover {
+        background: #c85611;
+        transform: translateY(-2px);
+      }
+
+      .btn-edit.active {
+        background: var(--success);
+      }
+
+      .btn-select-all {
+        background: var(--primary);
+        color: white;
+      }
+
+      .btn-select-all:hover {
+        background: var(--primary-dark);
+      }
+
+      .btn-deselect-all {
+        background: #666;
+        color: white;
+      }
+
+      .btn-deselect-all:hover {
+        background: #444;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .page {
+          margin: 0;
+          box-shadow: none;
+          width: 210mm;
+          min-height: 297mm;
+          page-break-after: always;
+          padding: 15mm;
+        }
+
+        @page {
+          size: A4;
+          margin: 0;
+        }
+
+        .no-print {
+          display: none !important;
+        }
+
+        .control-panel {
+          display: none !important;
+        }
+
+        .section-checkbox {
+          display: none !important;
+        }
+
+        .item-checkbox {
+          display: none !important;
+        }
+
+        /* Hide unchecked sections */
+        .section-container:has(.section-checkbox:not(:checked)) {
+          display: none !important;
+        }
+
+        .list-item:has(.item-checkbox:not(:checked)) {
+          display: none !important;
+        }
+
+        .table-row:has(.item-checkbox:not(:checked)) {
+          display: none !important;
+        }
+      }
+
+      /* Checkbox Styling */
+      .section-checkbox,
+      .item-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin-right: 8px;
+        accent-color: var(--secondary);
+      }
+
+      .section-container {
+        position: relative;
+      }
+
+      .section-header-with-checkbox {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .list-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+
+      .editable {
+        outline: none;
+        min-height: 18px;
+        display: inline-block;
+        padding: 2px 4px;
+        color: var(--text);
+        transition: all 0.2s ease;
+        text-align: justify;
+      }
+
+      .editable.block {
+        display: block;
+        min-height: 24px;
+        width: 100%;
+        text-align: justify;
+      }
+
+      /* Edit Mode Styles */
+      body.edit-mode .editable {
+        border-bottom: 1px dashed #b6c5c2;
+        background: #fffbf5;
+        border-radius: 3px;
+      }
+
+      body.edit-mode .editable:hover {
+        background: #fff7ed;
+        border-bottom-color: var(--secondary);
+      }
+
+      body.edit-mode .editable:focus {
+        background: #fff7ed;
+        border-bottom-color: var(--secondary);
+        box-shadow: 0 0 0 2px rgba(227, 100, 20, 0.1);
+      }
+
+      h1 {
+        font-size: 42px;
+        line-height: 1.1;
+        color: var(--primary);
+        font-weight: 900;
+        margin-bottom: 12px;
+        letter-spacing: -1.2px;
+      }
+
+      h2 {
+        font-size: 26px;
+        color: var(--primary);
+        font-weight: 850;
+        margin-bottom: 14px;
+        letter-spacing: -0.4px;
+      }
+
+      h3 {
+        font-size: 18px;
+        color: var(--primary);
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+
+      h4 {
+        font-size: 15px;
+        color: var(--text);
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+
+      p {
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .highlight {
+        color: var(--secondary);
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 2px solid var(--light);
+        padding-bottom: 14px;
+        margin-bottom: 28px;
+      }
+
+      .logo {
+        font-size: 26px;
+        font-weight: 900;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+      }
+
+      .logo span {
+        color: var(--secondary);
+      }
+
+      .tagline {
+        font-size: 9px;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--secondary);
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      .doc-tag {
+        background: var(--primary);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      /* Cover Page Styles */
+      .cover-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .cover-tag {
+        background: var(--secondary);
+        color: white;
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: fit-content;
+      }
+
+      .client-info {
+        background: var(--light);
+        border-left: 4px solid var(--secondary);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 30px 0;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 12px;
+      }
+
+      .info-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .info-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      /* Problem Cards */
+      .problem-card {
+        background: #fff5f5;
+        border-left: 4px solid var(--danger);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .problem-card h4 {
+        color: var(--danger);
+        margin-bottom: 10px;
+      }
+
+      .solution-card {
+        background: #f0faf9;
+        border-left: 4px solid var(--success);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .solution-card h4 {
+        color: var(--success);
+        margin-bottom: 10px;
+      }
+
+      /* Lists */
+      .custom-list {
+        margin: 14px 0;
+      }
+
+      .custom-list .list-item {
+        padding: 10px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .custom-list .list-item:last-child {
+        border-bottom: none;
+      }
+
+      .list-content {
+        flex: 1;
+      }
+
+      .list-title {
+        font-weight: 700;
+        color: var(--text);
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+
+      .list-description {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* Tables */
+      .proposal-table {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+
+      .proposal-table tr {
+        display: flex;
+        width: 100%;
+      }
+
+      .proposal-table th {
+        background: var(--primary);
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .proposal-table td {
+        padding: 14px 4px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .table-row {
+        display: flex;
+        width: 100%;
+        align-items: center;
+      }
+
+      .proposal-table .table-row:hover {
+        background: #fafafa;
+      }
+      .table-row td:first-child {
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      /* Timeline */
+      .timeline {
+        margin: 20px 0;
+      }
+
+      .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .timeline-item:last-child {
+        border-bottom: none;
+      }
+
+      .timeline-phase {
+        min-width: 160px;
+        font-weight: 800;
+        color: var(--primary);
+        font-size: 13px;
+      }
+
+      .timeline-duration {
+        flex: 1;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* Pricing Section */
+      .pricing-box {
+        background: var(--light);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 20px 0;
+      }
+
+      .pricing-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .pricing-row:last-child {
+        border-bottom: none;
+        font-weight: 800;
+        font-size: 16px;
+        color: var(--primary);
+      }
+
+      .pricing-label {
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .pricing-value {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text);
+      }
+
+      /* Process Steps */
+      .process-step {
+        background: white;
+        border: 2px solid var(--light);
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 14px;
+      }
+
+      .step-arrow {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        background: var(--secondary);
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 32px;
+        font-weight: 800;
+        font-size: 14px;
+        margin-right: 12px;
+      }
+
+      .step-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .step-title {
+        font-weight: 800;
+        font-size: 14px;
+        color: var(--primary);
+      }
+
+      .step-description {
+        font-size: 12.5px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-left: 44px;
+      }
+
+      /* Why Choose Us Cards */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 20px 0;
+      }
+
+      .feature-card {
+        background: var(--light);
+        border-radius: 8px;
+        padding: 14px;
+        border-top: 3px solid var(--secondary);
+      }
+
+      .feature-card h4 {
+        font-size: 13px;
+        margin-bottom: 6px;
+        color: var(--primary);
+      }
+
+      .feature-card p {
+        font-size: 11.5px;
+        margin: 0;
+      }
+
+      /* CTA Section */
+      .cta-box {
+        background: var(--primary);
+        color: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: auto;
+        text-align: center;
+      }
+
+      .cta-box h2 {
+        color: white;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .cta-box p {
+        color: #cfe2e4;
+        font-size: 13px;
+        margin-bottom: 0;
+      }
+
+      /* Footer */
+      .footer-note {
+        margin-top: auto;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- CONTROL PANEL -->
+    <div class="control-panel no-print">
+      <h3>Proposal Controls</h3>
+
+      <button class="control-btn btn-edit" onclick="toggleEditMode()">
+        ✏️ Enable Edit Mode
+      </button>
+
+      <button class="control-btn btn-select-all" onclick="selectAll()">
+        ✓ Select All Sections
+      </button>
+
+      <button class="control-btn btn-deselect-all" onclick="deselectAll()">
+        ✗ Deselect All
+      </button>
+
+      <div
+        style="
+          margin-top: 20px;
+          padding-top: 16px;
+          border-top: 2px solid var(--light);
+        "
+      >
+        <p
+          style="
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 0;
+          "
+        >
+          <strong>Instructions:</strong><br />
+          • Click checkboxes to include/exclude sections<br />
+          • Enable edit mode to customize text<br />
+          • Press Ctrl+P to print as PDF
+        </p>
+      </div>
+    </div>
+
+    <!-- ==================== PAGE 1: COVER PAGE ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Cover Page</h4>
+      </div>
+
+      <!-- Logo -->
+      <div class="header">
+        <div>
+          <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cover-content">
+        <div class="cover-tag">Website Redesign Proposal</div>
+
+        <h1 class="editable" contenteditable="true">
+          Website Redesign &<br /><span class="highlight"
+            >Development Proposal</span
+          >
+        </h1>
+
+        <div class="client-info">
+          <div class="info-grid">
+            <div class="info-label">Prepared For:</div>
+            <div class="info-value editable" contenteditable="true">
+              ABC Dental Clinic
+            </div>
+
+            <div class="info-label">Prepared By:</div>
+            <div class="info-value editable" contenteditable="true">
+              Tron Labz
+            </div>
+
+            <div class="info-label">Date:</div>
+            <div class="info-value editable" contenteditable="true">
+              May 2026
+            </div>
+
+            <div class="info-label">Valid Until:</div>
+            <div class="info-value editable" contenteditable="true">
+              June 2026
+            </div>
+          </div>
+        </div>
+
+        <p
+          style="
+            font-size: 16px;
+            font-style: italic;
+            color: var(--muted);
+            margin-top: 24px;
+          "
+          class="editable"
+          contenteditable="true"
+        >
+          We create modern digital experiences for clinics and healthcare brands
+          focused on trust, clarity, and meaningful patient engagement.
+        </p>
+      </div>
+
+      <div class="cta-box">
+        <!-- For Redesigning -->
+        <h2 class="editable" contenteditable="true">
+          Reimagining Your Digital Presence
+        </h2>
+        <!--For Development -->
+        <!-- <h2 class="editable" contenteditable="true">Transforming Your Digital Presence</h2> -->
+        <p class="editable" contenteditable="true">
+          An optimized approach to website redesign that drives measurable
+          results
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 2: EXECUTIVE SUMMARY ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Executive Summary</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Executive Summary</div>
+      </div>
+
+      <h2><span class="highlight">Executive</span> Summary</h2>
+
+      <p class="editable block" contenteditable="true">
+        Thank you for giving us the chance to redesign and build a website for
+        you.
+      </p>
+
+      <p class="editable block" contenteditable="true">
+        After our analysis on your existing website, we identified several
+        opportunities to improve user experience, visual presentation, mobile
+        responsiveness, website speed, and overall client engagement.
+      </p>
+
+      <p class="editable block" contenteditable="true">
+        The Website plays a very important role when a prospective client tries
+        to connect with your brand for the first time. An updated design can be
+        extremely helpful in establishing this connection.
+      </p>
+
+      <p class="editable block" contenteditable="true">
+        Our goal is to create a premium, high-performing website that represents
+        your brand while giving it the professional edge that it requires.
+      </p>
+
+      <h3 style="margin-top: 30px">Key Objectives</h3>
+
+      <div class="custom-list">
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Modernize Visual Design
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Create a contemporary, professional aesthetic that reflects your
+              brand quality and builds immediate trust
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Improve User Experience
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Simplify navigation, enhance content hierarchy, and create
+              intuitive user journeys that guide visitors to conversion
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Optimize for Mobile
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Ensure flawless mobile experience with responsive design, fast
+              loading, and mobile-first interactions
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Increase Conversion Rate
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Implement strategic CTAs, lead capture forms, and
+              conversion-focused layouts to turn visitors into clients.
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Enhance Performance
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Optimize loading speed, improve SEO structure, and ensure
+              technical excellence for better search rankings
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 2 — Executive Summary</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 3: CURRENT WEBSITE PROBLEMS ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Current Website Problems</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Analysis</div>
+      </div>
+
+      <h2>Current Website <span class="highlight">Challenges</span></h2>
+
+      <p class="editable block" contenteditable="true">
+        Through comprehensive analysis of your existing website, we've
+        identified several opportunities for improvement across design,
+        technical infrastructure, and business impact.
+      </p>
+
+      <!-- Design & UX Issues -->
+      <div class="section-container" style="margin-top: 24px">
+        <div class="section-header-with-checkbox no-print">
+          <input type="checkbox" class="section-checkbox" checked />
+          <h3 style="margin: 0">A. Design & User Experience Issues</h3>
+        </div>
+
+        <div class="problem-card">
+          <h4>Visual & Usability Challenges</h4>
+          <p class="editable block" contenteditable="true">
+            The current website design does not fully reflect the
+            professionalism and quality of the brand. Several sections feel
+            visually outdated, with inconsistent layouts and unclear user
+            pathways that may reduce visitor engagement and trust.
+          </p>
+        </div>
+
+        <div class="custom-list">
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Outdated Visual Appearance
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Design elements feel dated and don't reflect modern web
+                standards
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Inconsistent Spacing & Typography
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Lack of design system creates visual chaos and reduces
+                readability
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Weak Visual Hierarchy
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Important content doesn't stand out, making it hard for visitors
+                to find what matters
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Generic Stock Design
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Lacks unique brand identity and differentiation from competitors
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Difficult Navigation
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Users struggle to find information quickly, increasing bounce
+                rates
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Cluttered Layout
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Too much information without proper organization overwhelms
+                visitors
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 3 — Current Website Challenges</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 4: TECHNICAL & BUSINESS IMPACT ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">
+          Technical Issues & Business Impact
+        </h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Analysis</div>
+      </div>
+
+      <!-- Technical Issues -->
+      <div class="section-container">
+        <div class="section-header-with-checkbox no-print">
+          <input type="checkbox" class="section-checkbox" checked />
+          <h3 style="margin: 0">B. Technical Infrastructure Issues</h3>
+        </div>
+
+        <div class="problem-card">
+          <h4>Performance & Technical Challenges</h4>
+          <p class="editable block" contenteditable="true">
+            Performance testing indicates opportunities for improvement in page
+            loading speed, mobile responsiveness, image optimization, and
+            technical SEO structure. These factors may negatively impact search
+            engine visibility and user retention.
+          </p>
+        </div>
+
+        <div class="custom-list">
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Slow Loading Speed
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Extended load times cause visitor drop-off and negatively impact
+                SEO rankings
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Poor Mobile Responsiveness
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Mobile experience is suboptimal, affecting majority of visitors
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                SEO Structure Issues
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Missing meta tags, poor URL structure, and weak content
+                optimization limit search visibility
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Outdated Backend Structure
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Legacy code makes updates difficult and increases maintenance
+                costs
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Broken or Inefficient Forms
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Contact forms may not be capturing leads effectively
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Difficult Content Management
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Current CMS makes it hard to update content without technical
+                help
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Impact -->
+      <div class="section-container" style="margin-top: 24px">
+        <div class="section-header-with-checkbox no-print">
+          <input type="checkbox" class="section-checkbox" checked />
+          <h3 style="margin: 0">C. Business Impact</h3>
+        </div>
+
+        <div class="problem-card">
+          <h4>Revenue & Growth Implications</h4>
+          <p class="editable block" contenteditable="true">
+            A website is no longer just an online brochure, it directly
+            influences customer trust and conversion decisions.
+          </p>
+          <p class="editable block" contenteditable="true">
+            Visitors often judge a business within seconds of landing on a
+            website. An outdated or confusing digital experience can lead to
+            higher bounce rates, reduced inquiries, and missed business
+            opportunities.
+          </p>
+          <p class="editable block" contenteditable="true">
+            The current website may be costing you potential clients who leave
+            to find competitors with better online experience.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 4 — Technical Issues & Business Impact</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 5: PROPOSED SOLUTION - DESIGN ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">
+          Proposed Solution - Design
+        </h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Our Solution</div>
+      </div>
+
+      <h2>Proposed <span class="highlight">Solution</span></h2>
+
+      <p class="editable block" contenteditable="true">
+        Our comprehensive redesign strategy addresses each identified challenge
+        with proven solutions that deliver measurable improvements in user
+        engagement and business results.
+      </p>
+
+      <!-- Design Solution -->
+      <div class="section-container" style="margin-top: 24px">
+        <div class="section-header-with-checkbox no-print">
+          <input type="checkbox" class="section-checkbox" checked />
+          <h3 style="margin: 0">A. Design Solution</h3>
+        </div>
+
+        <div class="solution-card">
+          <h4>UI/UX Redesign Strategy</h4>
+          <p class="editable block" contenteditable="true">
+            We will create a modern, conversion focused design that elevates
+            your brand and guides visitors toward meaningful actions.
+          </p>
+        </div>
+
+        <div class="custom-list">
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Premium Visual Identity
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Modern, sophisticated design that reflects brand quality and
+                builds immediate credibility
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Clean, High-Converting Layouts
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Strategic page structures designed to guide visitors smoothly
+                toward conversion points
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Improved Typography & Spacing
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Consistent design system with proper hierarchy for enhanced
+                readability and professionalism
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Mobile-First Responsive Design
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Optimized for all devices with seamless experience from desktop
+                to smartphone
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Strategic Visual Hierarchy
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Clear content organization that directs attention to key
+                messages and calls-to-action
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Optimized CTA Placements
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Strategically positioned conversion elements at critical
+                decision points
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Brand-Aligned Visual Elements
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Custom graphics, icons, and imagery that reinforce brand
+                identity
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Intuitive Navigation Structure
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Simplified menu architecture that helps visitors find
+                information quickly
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 5 — Proposed Solution: Design</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 6: PROPOSED SOLUTION - DEVELOPMENT & PERFORMANCE ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">
+          Proposed Solution - Development
+        </h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Our Solution</div>
+      </div>
+
+      <!-- Development Solution -->
+      <div class="section-container">
+        <div class="section-header-with-checkbox no-print">
+          <input type="checkbox" class="section-checkbox" checked />
+          <h3 style="margin: 0">B. Development & Performance</h3>
+        </div>
+
+        <div class="solution-card">
+          <h4>Technical Excellence</h4>
+          <p class="editable block" contenteditable="true">
+            Modern development practices that ensure your website is fast,
+            secure, and built for long-term success.
+          </p>
+        </div>
+
+        <div class="custom-list">
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Optimized Frontend Architecture
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Lightning-fast loading speeds with modern code optimization
+                techniques
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                SEO-Friendly Structure
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Clean URL structure, proper meta tags, and technical SEO best
+                practices
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Secure Development Practices
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                SSL implementation, security hardening, and data protection
+                measures
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Scalable Infrastructure
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Built to grow with your business without performance degradation
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Enhanced Mobile Performance
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Optimized for mobile networks with lazy loading and efficient
+                resource management
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Clean, Maintainable Codebase
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Well-documented code for easy updates and future development
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Cross-Browser Compatibility
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Consistent experience across all major browsers and devices
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 6 — Proposed Solution: Development & Performance</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+    <!-- ==================== PAGE 7: PROPOSED SOLUTION - BUSINESS FEATURES ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">
+          Proposed Solution - Business Features
+        </h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Our Solution</div>
+      </div>
+
+      <!-- Feature Enhancements -->
+      <div class="section-container">
+        <div class="section-header-with-checkbox no-print">
+          <input type="checkbox" class="section-checkbox" checked />
+          <h3 style="margin: 0">C. Feature Enhancements</h3>
+        </div>
+
+        <div class="solution-card">
+          <h4>Business Focused Features</h4>
+          <p class="editable block" contenteditable="true">
+            To improve customer interaction and lead generation, the new website
+            will include strategically placed contact forms, WhatsApp
+            integration, inquiry-focused call-to-actions, and a streamlined user
+            journey designed to encourage conversions.
+          </p>
+        </div>
+
+        <div class="custom-list">
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Appointment Booking System
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Easy-to-use booking interface that converts visitors into
+                appointments
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                WhatsApp Integration
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Direct communication channel with pre-filled messages for
+                instant engagement
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Lead Capture Forms
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Strategic contact forms optimized for maximum conversion rates
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Testimonials & Reviews Section
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Showcase social proof to build trust and credibility
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Blog/Content Management
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Easy-to-manage blog system for content marketing and SEO
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                User-Friendly Admin Panel
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Intuitive backend for content updates without technical
+                knowledge
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Analytics Integration
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Track visitor behavior and conversion metrics with Google
+                Analytics
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                Google Maps Integration
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Help customers find your location easily with embedded maps
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 7 — Proposed Solution: Business Features</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 8: SCOPE OF WORK (A) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Scope of Work</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Scope Details</div>
+      </div>
+
+      <h2>Scope of <span class="highlight">Work</span></h2>
+
+      <p class="editable block" contenteditable="true">
+        This section clearly defines what is included in the project
+        deliverables to ensure alignment and prevent scope creep.
+      </p>
+
+      <h3 style="margin-top: 24px">Pages Included</h3>
+
+      <div class="custom-list">
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Homepage
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Main landing page with hero section, services overview,
+              testimonials, and conversion elements
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              About Us
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Company story, team profiles, credentials, and brand values
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Services
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Detailed service offerings with descriptions, benefits, and CTAs
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Contact
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Contact form, location map, business hours, and multiple contact
+              methods
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">Blog</div>
+            <div class="list-description editable" contenteditable="true">
+              Content management system for articles and updates
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">FAQ</div>
+            <div class="list-description editable" contenteditable="true">
+              Frequently asked questions to address common customer queries
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Gallery/Portfolio
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Visual showcase of work, results, or clinic environment
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Privacy Policy & Terms
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Legal pages for compliance and data protection
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 8 — Scope of Work</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+    <!-- ==================== PAGE 8: SCOPE OF WORK (B) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Scope of Work</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Scope Details</div>
+      </div>
+
+      <h3>Included Services</h3>
+
+      <div class="custom-list">
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Website Design
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Complete UI/UX redesign of all pages
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Website Development
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Responsive frontend + backend development
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Mobile Optimization
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Mobile, tablet, desktop responsiveness
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              SEO Setup
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Meta titles, descriptions, sitemap, robots.txt
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Integrations
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              WhatsApp, contact forms, Google Maps, analytics
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Performance Optimization
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Image compression, lazy loading, caching
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Testing
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Cross-browser and device compatibility testing
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Deployment
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Website launch assistance and DNS configuration
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Training
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              Admin panel training for content management
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              Post-Launch Support
+            </div>
+
+            <div class="list-description editable" contenteditable="true">
+              30 days of technical support and bug fixes
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 9 — Scope of Work</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 9: DESIGN PROCESS (A) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Design Process</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Our Process</div>
+      </div>
+
+      <h2>Design <span class="highlight">Process & Workflow</span></h2>
+
+      <p class="editable block" contenteditable="true">
+        Our structured approach ensures quality, transparency, and client
+        satisfaction at every stage of the project.
+      </p>
+
+      <div class="section-container" style="margin-top: 24px">
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 16px"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style="rotate: 180deg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M3 11V12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12V11M8 7L12 3M12 3L16 7M12 3V15"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">
+                Discovery & Research
+              </h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Understanding your business goals, target audience, competitors,
+              and current website challenges through detailed consultations and
+              market analysis.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 16px"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M12 6V18M12 18L7 13M12 18L17 13"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">
+                Wireframing & Planning
+              </h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Creating structural layouts and user journey maps before visual
+              design begins. This ensures functionality and user experience are
+              optimized from the foundation.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 16px"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M12 6V18M12 18L7 13M12 18L17 13"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">
+                UI/UX Design
+              </h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Designing visually engaging, modern, and conversion-focused
+              interfaces aligned with your brand identity. Includes mockups for
+              all key pages and interactive elements.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 16px"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M12 6V18M12 18L7 13M12 18L17 13"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">
+                Design Review & Approval
+              </h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Presenting designs for your feedback and incorporating revisions.
+              We ensure complete satisfaction before moving to development
+              phase.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 10 — Design Process & Workflow</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+    <!-- ==================== PAGE 9: DESIGN PROCESS (A) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Design Process</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Our Process</div>
+      </div>
+
+      <div class="section-container">
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 16px"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M12 6V18M12 18L7 13M12 18L17 13"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">
+                Development
+              </h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Transforming approved designs into a fully responsive and
+              functional website using modern development practices and clean
+              code architecture.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 16px"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M12 6V18M12 18L7 13M12 18L17 13"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">
+                Testing & Quality Assurance
+              </h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Comprehensive testing for performance, responsiveness, browser
+              compatibility, and functionality. Identifying and fixing any
+              issues before launch.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 16px"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M12 6V18M12 18L7 13M12 18L17 13"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">Launch</h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Deploying the website to the live server, configuring DNS
+              settings, and ensuring everything functions correctly in the
+              production environment.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 0; margin-bottom: 0"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="process-step" style="flex: 1">
+            <div class="step-header">
+              <span class="step-arrow">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      d="M3 11V12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12V11M8 11L12 15M12 15L16 11M12 15V3"
+                      stroke="#ffffff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </g>
+                </svg>
+              </span>
+              <h4 class="step-title editable" contenteditable="true">
+                Post-Launch Support
+              </h4>
+            </div>
+            <p class="step-description editable" contenteditable="true">
+              Providing ongoing support, monitoring performance, fixing any
+              issues, and offering guidance on content management and website
+              maintenance.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 11 — Design Process & Workflow</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 10: TIMELINE & PRICING (A) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Timeline & Pricing</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Timeline & Investment</div>
+      </div>
+
+      <h2>Project <span class="highlight">Timeline</span></h2>
+
+      <p class="editable block" contenteditable="true">
+        Estimated project duration based on standard workflow. Timeline may vary
+        depending on feedback turnaround time, content availability, and
+        revision requests.
+      </p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Discovery & Research
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            2 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Wireframing
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            2 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            UI/UX Design
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            5–7 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Development
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            7–10 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Testing & Revisions
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            3 Days
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="timeline-phase editable" contenteditable="true">
+            Final Launch
+          </div>
+          <div class="timeline-duration editable" contenteditable="true">
+            1 Day
+          </div>
+        </div>
+
+        <div
+          class="timeline-item"
+          style="border-bottom: 2px solid var(--primary); padding-bottom: 14px"
+        >
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div
+            class="timeline-phase"
+            style="font-weight: 900; color: var(--primary)"
+          >
+            Total Duration
+          </div>
+          <div
+            class="timeline-duration editable"
+            contenteditable="true"
+            style="font-weight: 800; color: var(--primary)"
+          >
+            20–25 Days
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 12 — Timeline & Investment</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+    <!-- ==================== PAGE 10: TIMELINE & PRICING (B) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Timeline & Pricing</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Timeline & Investment</div>
+      </div>
+
+      <h2>Investment <span class="highlight">Breakdown</span></h2>
+
+      <div class="pricing-box">
+        <div class="pricing-row">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="pricing-label editable" contenteditable="true">
+            UI/UX Redesign
+          </div>
+          <div class="pricing-value editable" contenteditable="true">
+            ₹XX,XXX
+          </div>
+        </div>
+
+        <div class="pricing-row">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="pricing-label editable" contenteditable="true">
+            Website Development
+          </div>
+          <div class="pricing-value editable" contenteditable="true">
+            ₹XX,XXX
+          </div>
+        </div>
+
+        <div class="pricing-row">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="pricing-label editable" contenteditable="true">
+            SEO & Optimization
+          </div>
+          <div class="pricing-value editable" contenteditable="true">
+            ₹XX,XXX
+          </div>
+        </div>
+
+        <div class="pricing-row">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="pricing-label editable" contenteditable="true">
+            Content Migration
+          </div>
+          <div class="pricing-value editable" contenteditable="true">
+            ₹XX,XXX
+          </div>
+        </div>
+
+        <div class="pricing-row">
+          <input type="checkbox" class="item-checkbox no-print" checked />
+          <div class="pricing-label editable" contenteditable="true">
+            Training & Support
+          </div>
+          <div class="pricing-value editable" contenteditable="true">
+            ₹XX,XXX
+          </div>
+        </div>
+
+        <div class="pricing-row">
+          <div class="pricing-label" style="font-size: 16px">
+            Total Investment
+          </div>
+          <div
+            class="pricing-value editable"
+            contenteditable="true"
+            style="font-size: 18px; color: var(--secondary)"
+          >
+            ₹XX,XXX
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 30px">Payment Terms</h3>
+
+      <div class="custom-list">
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              50% Upfront Payment
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Required before project commencement to secure timeline and
+              resources
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              30% After Design Approval
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Due upon approval of final design mockups before development
+              begins
+            </div>
+          </div>
+        </div>
+
+        <div class="list-item">
+          <input type="checkbox" class="item-checkbox" checked />
+          <div class="list-content">
+            <div class="list-title editable" contenteditable="true">
+              20% Before Launch
+            </div>
+            <div class="list-description editable" contenteditable="true">
+              Final payment before website goes live in production environment
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p
+        style="margin-top: 20px; font-size: 12px; font-style: italic"
+        class="editable block"
+        contenteditable="true"
+      >
+        <strong>Note:</strong> Proposal includes 2 rounds of revisions during
+        the design phase. Additional revisions or scope changes may involve
+        extra charges.
+      </p>
+
+      <div class="footer-note">
+        <span class="editable">Page 13 — Timeline & Investment</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 11: WHY CHOOSE US ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Why Choose Us</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Our Advantage</div>
+      </div>
+
+      <h2>Why Choose <span class="highlight">Tron Labz</span></h2>
+
+      <p class="editable block" contenteditable="true">
+        We don't just build websites, we build digital experiences that drive
+        business growth and deliver measurable results.
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">
+            Modern, Conversion Focused Design
+          </h4>
+          <p class="editable" contenteditable="true">
+            Every design decision is backed by conversion optimization
+            principles and user psychology
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">
+            Fast & Responsive Communication
+          </h4>
+          <p class="editable" contenteditable="true">
+            Regular updates, clear communication, and quick response times
+            throughout the project
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">
+            Business Focused Development
+          </h4>
+          <p class="editable" contenteditable="true">
+            We understand that websites must generate ROI, not just look good
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">
+            Scalable Code Architecture
+          </h4>
+          <p class="editable" contenteditable="true">
+            Built to grow with your business without requiring complete rebuilds
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">
+            Long-Term Technical Support
+          </h4>
+          <p class="editable" contenteditable="true">
+            We're here for ongoing support, updates, and optimization even after
+            launch
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">
+            Performance Obsessed Approach
+          </h4>
+          <p class="editable" contenteditable="true">
+            Every website is optimized for speed, SEO, and exceptional user
+            experience
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">Proven Track Record</h4>
+          <p class="editable" contenteditable="true">
+            Successfully delivered projects across industries with measurable
+            business impact
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <input
+            type="checkbox"
+            class="item-checkbox no-print"
+            checked
+            style="margin-bottom: 8px"
+          />
+          <h4 class="editable" contenteditable="true">Transparent Process</h4>
+          <p class="editable" contenteditable="true">
+            Clear milestones, honest timelines, and no hidden costs or surprises
+          </p>
+        </div>
+      </div>
+
+      <div
+        style="
+          background: var(--light);
+          border-radius: 12px;
+          padding: 20px;
+          margin-top: 20px;
+        "
+      >
+        <h3 class="editable" contenteditable="true">
+          Our Commitment to Quality
+        </h3>
+        <p class="editable block" contenteditable="true">
+          Every website we build undergoes rigorous quality checks across design
+          consistency, code quality, performance metrics, security standards,
+          and user experience. We don't consider a project complete until it
+          exceeds industry standards and meets your business objectives.
+        </p>
+        <p class="editable block" contenteditable="true">
+          Your success is our success. We measure our work not by project
+          completion, but by the measurable business results your new website
+          generates.
+        </p>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 14 — Why Choose Tron Labz</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 12: TERMS & CONDITIONS (A) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Terms & Conditions</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Terms & Conditions</div>
+      </div>
+
+      <h2>Terms & <span class="highlight">Conditions</span></h2>
+
+      <div class="section-container" style="margin-top: 24px">
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Payment Terms
+            </h4>
+            <p class="editable block" contenteditable="true">
+              Work begins after initial deposit payment is received. Milestone
+              payments must be completed as per agreed schedule. Delayed
+              payments may result in project suspension.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Revisions Policy
+            </h4>
+            <p class="editable block" contenteditable="true">
+              This proposal includes 2 rounds of design revisions. Additional
+              revisions beyond this scope may involve extra charges. Major scope
+              changes will require separate quotation.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4 class="editable" contenteditable="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Client Responsibilities
+            </h4>
+            <p
+              class="editable block"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              Client is responsible for providing content, branding assets
+              (logos, images, copy), and timely approvals. Delays in providing
+              materials may extend project timeline.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Hosting & Domain
+            </h4>
+            <p class="editable block" contenteditable="true">
+              Hosting and domain registration costs are not included in this
+              proposal unless specifically mentioned. Client may use their
+              preferred hosting provider or we can recommend suitable options.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Ownership & Rights
+            </h4>
+            <p class="editable block" contenteditable="true">
+              Full ownership of the final website, source code, and design files
+              will be transferred to the client upon completion of full payment.
+              Tron Labz retains the right to showcase the project in portfolio
+              unless otherwise agreed.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 15 — Terms & Conditions</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+    <!-- ==================== PAGE 12: TERMS & CONDITIONS (B) ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Terms & Conditions</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Terms & Conditions</div>
+      </div>
+
+      <div class="section-container">
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Timeline Variations
+            </h4>
+            <p class="editable block" contenteditable="true">
+              Project timeline is estimated based on standard workflow. Actual
+              timeline may vary depending on feedback response time, content
+              availability, scope changes, and unforeseen technical challenges.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Post-Launch Support
+            </h4>
+            <p class="editable block" contenteditable="true">
+              30 days of technical support and bug fixes are included
+              post-launch. Extended support packages or ongoing maintenance can
+              be arranged separately.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Confidentiality
+            </h4>
+            <p class="editable block" contenteditable="true">
+              Both parties agree to maintain confidentiality of proprietary
+              information shared during the project. Client data and business
+              information will not be disclosed to third parties.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Cancellation Policy
+            </h4>
+            <p class="editable block" contenteditable="true">
+              If the project is cancelled by the client, payment for work
+              completed up to that point will be due. Deposit payments are
+              non-refundable.
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="list-item"
+          style="border-bottom: none; padding: 14px 0; align-items: flex-start"
+        >
+          <input type="checkbox" class="item-checkbox" checked />
+          <div style="flex: 1">
+            <h4
+              class="editable"
+              contenteditable="true"
+              style="display: flex; align-items: center; gap: 2px"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                height="18px"
+                width="18px"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              Third-Party Services
+            </h4>
+            <p class="editable block" contenteditable="true">
+              Integration with third-party services (payment gateways, APIs,
+              plugins) depends on their availability and compliance with their
+              terms of service. Additional costs may apply for premium
+              third-party services.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable">Page 16 — Terms & Conditions</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 13: CALL TO ACTION ==================== -->
+    <section class="page section-container">
+      <div class="section-header-with-checkbox no-print">
+        <input type="checkbox" class="section-checkbox" checked />
+        <h4 style="margin: 0; color: var(--muted)">Call to Action</h4>
+      </div>
+
+      <div class="header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="doc-tag">Next Steps</div>
+      </div>
+
+      <div
+        style="
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        "
+      >
+        <h2 style="font-size: 32px; margin-bottom: 20px">
+          Let's Transform Your <span class="highlight">Digital Presence</span>
+        </h2>
+
+        <p
+          class="editable block"
+          contenteditable="true"
+          style="font-size: 15px; line-height: 1.7; margin-bottom: 20px"
+        >
+          We're excited about the opportunity to transform your website into a
+          modern, high-performing digital experience that reflects your brand
+          professionally and helps drive measurable business growth.
+        </p>
+
+        <p
+          class="editable block"
+          contenteditable="true"
+          style="font-size: 15px; line-height: 1.7; margin-bottom: 30px"
+        >
+          We look forward to collaborating with you and bringing this vision to
+          life.
+        </p>
+
+        <h3 style="margin-bottom: 16px">Next Steps</h3>
+
+        <div class="custom-list" style="margin-bottom: 30px">
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                1. Review this proposal
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Take time to review the scope, timeline, and investment details
+                with your team
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                2. Schedule a discussion call
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Let's discuss any questions, clarifications, or customizations
+                you'd like
+              </div>
+            </div>
+          </div>
+
+          <div class="list-item">
+            <input type="checkbox" class="item-checkbox" checked />
+            <div class="list-content">
+              <div class="list-title editable" contenteditable="true">
+                3. Approve and proceed
+              </div>
+              <div class="list-description editable" contenteditable="true">
+                Once approved, we'll send the agreement and begin work
+                immediately
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            background: var(--light);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+          "
+        >
+          <h3
+            style="margin-bottom: 12px"
+            class="editable"
+            contenteditable="true"
+          >
+            Contact Information
+          </h3>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 120px 1fr;
+              gap: 12px;
+              margin-bottom: 10px;
+            "
+          >
+            <div style="font-weight: 700; font-size: 13px">Phone:</div>
+            <div
+              class="editable"
+              contenteditable="true"
+              style="font-size: 13px"
+            >
+              <a href="tel:+91 9540043695" style="text-decoration: none; color: black;" > +91 95400 43695 </a>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 120px 1fr;
+              gap: 12px;
+              margin-bottom: 10px;
+            "
+          >
+            <div style="font-weight: 700; font-size: 13px">Email:</div>
+            <div
+              class="editable"
+              contenteditable="true"
+              style="font-size: 13px"
+            >
+            <a href="mailto:support@tronlabz.com" style="text-decoration: none; color: black;" target="_blank">
+              support@tronlabz.com
+              </a>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 120px 1fr;
+              gap: 12px;
+              margin-bottom: 10px;
+            "
+          >
+            <div style="font-weight: 700; font-size: 13px">Website:</div>
+            <div
+              class="editable"
+              contenteditable="true"
+              style="font-size: 13px"
+            >
+            <a href="https://tronlabz.com/" style="text-decoration: none; color: black;" target="_blank">
+              www.tronlabz.com
+              </a>
+            </div>
+
+          </div>
+
+          <div
+            style="display: grid; grid-template-columns: 120px 1fr; gap: 12px"
+          >
+            <div style="font-weight: 700; font-size: 13px">WhatsApp:</div>
+            <div
+              class="editable"
+              contenteditable="true"
+              style="font-size: 13px"
+            >
+             <a href="https://wa.me/+919540043695?text=Hello" target="_blank" style="text-decoration: none; color: black;"> +91 95400 43695</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-box">
+        <h2 class="editable" contenteditable="true">Ready to Get Started?</h2>
+        <p class="editable" contenteditable="true" style="margin-bottom: 14px">
+          Contact us today to discuss your project and begin your website
+          transformation journey
+        </p>
+        <p
+          style="font-size: 11px; opacity: 0.8; margin: 0"
+          class="editable"
+          contenteditable="true"
+        >
+          This proposal is valid for 30 days from the date mentioned on the
+          cover page
+        </p>
+      </div>
+
+      <div class="footer-note">
+        <span class="editable"">Page 17 — Let's Work Together</span>
+        <span>Tron Labz</span>
+      </div>
+    </section>
+
+    <script>
+      function toggleEditMode() {
+        const body = document.body;
+        const button = document.querySelector(".btn-edit");
+
+        if (body.classList.contains("edit-mode")) {
+          // Disable edit mode
+          body.classList.remove("edit-mode");
+          document.querySelectorAll(".editable").forEach((el) => {
+            el.contentEditable = "false";
+          });
+          button.textContent = "✏️ Enable Edit Mode";
+          button.classList.remove("active");
+        } else {
+          // Enable edit mode
+          body.classList.add("edit-mode");
+          document.querySelectorAll(".editable").forEach((el) => {
+            el.contentEditable = "true";
+          });
+          button.textContent = "✅ Disable Edit Mode";
+          button.classList.add("active");
+        }
+      }
+
+      function selectAll() {
+        document
+          .querySelectorAll('input[type="checkbox"]')
+          .forEach((checkbox) => {
+            checkbox.checked = true;
+          });
+      }
+
+      function deselectAll() {
+        document
+          .querySelectorAll('input[type="checkbox"]')
+          .forEach((checkbox) => {
+            checkbox.checked = false;
+          });
+      }
+
+      // Auto-save functionality
+      document.addEventListener("input", function (e) {
+        if (e.target.classList.contains("editable")) {
+          const key =
+            "proposal_" +
+            Array.from(document.querySelectorAll(".editable")).indexOf(
+              e.target,
+            );
+          localStorage.setItem(key, e.target.textContent);
+        }
+      });
+
+      // Load saved content
+      window.addEventListener("load", function () {
+        document.querySelectorAll(".editable").forEach((el, index) => {
+          const saved = localStorage.getItem("proposal_" + index);
+          if (saved) {
+            el.textContent = saved;
+          }
+        });
+
+        // Load checkbox states
+        document
+          .querySelectorAll('input[type="checkbox"]')
+          .forEach((checkbox, index) => {
+            const saved = localStorage.getItem("checkbox_" + index);
+            if (saved !== null) {
+              checkbox.checked = saved === "true";
+            }
+          });
+      });
+
+      // Save checkbox states
+      document.addEventListener("change", function (e) {
+        if (e.target.type === "checkbox") {
+          const key =
+            "checkbox_" +
+            Array.from(
+              document.querySelectorAll('input[type="checkbox"]'),
+            ).indexOf(e.target);
+          localStorage.setItem(key, e.target.checked);
+        }
+      });
+    </script>
+  </body>
+</html>

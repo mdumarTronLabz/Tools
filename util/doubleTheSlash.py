@@ -1,4 +1,4 @@
-path = r"C:\Users\Assassin\Desktop\TRON LABZ\Tron Labz Projects\Official Projects\Tron Labz\frontend\public\assets\images\projects\ashia_studio.png"
+path = r"D:\Soul Code\Soul Code Graphics"
 
 # Replace single backslash with double backslash
 escaped_path = path.replace("\\", "\\\\")

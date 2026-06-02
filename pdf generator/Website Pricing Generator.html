@@ -1,0 +1,2278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Website Building Packages · Tron Labz</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+      /* ── TOKENS ── */
+      :root {
+        --bg: #f5f2ec;
+        --page: #fffefb;
+        --ink: #1c1917;
+        --ink-2: #292524;
+        --mid: #78716c;
+        --light: #e7e5e0;
+        --lighter: #f0ede8;
+        --border: #ddd9d3;
+        --accent: #c2410c;
+        --accent-2: #ea580c;
+        --accent-lt: #fff7ed;
+        --accent-bd: #fed7aa;
+        --blue: #1d4ed8;
+        --blue-lt: #eff6ff;
+        --green: #15803d;
+        --green-lt: #f0fdf4;
+        --gold: #92400e;
+        --gold-lt: #fffbeb;
+        --gold-bd: #fde68a;
+        --serif: "Fraunces", Georgia, serif;
+        --sans: "Plus Jakarta Sans", system-ui, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ── A4 PAGE ── */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: var(--page);
+        margin: 8mm auto;
+        padding: 16mm 15mm 14mm;
+        position: relative;
+        box-shadow:
+          0 2px 20px rgba(0, 0, 0, 0.08),
+          0 0 0 1px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .tagline {
+        font-size: 9px;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: #e81515;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      /* left ruled line accent */
+      .page::after {
+        content: "";
+        position: absolute;
+        left: 10mm;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, var(--accent) 0%, transparent 30%);
+        opacity: 0.18;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          padding: 14mm 13mm 12mm;
+          page-break-after: always;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .currency-panel {
+          display: none !important;
+        }
+      }
+
+      /* ── CURRENCY PANEL ── */
+      .currency-panel {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 290px;
+        background: var(--page);
+        border: 1px solid var(--border);
+        border-top: 3px solid var(--accent);
+        border-radius: 10px;
+        padding: 18px;
+        z-index: 1000;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        font-family: var(--sans);
+      }
+
+      .panel-title {
+        font-family: var(--serif);
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel-title::before {
+        content: "";
+        width: 3px;
+        height: 16px;
+        background: var(--accent);
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+
+      .plabel {
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        margin-bottom: 5px;
+      }
+
+      .country-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        margin-bottom: 14px;
+      }
+
+      .cbtn {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        color: var(--mid);
+        padding: 7px 8px;
+        border-radius: 5px;
+        font-size: 10.5px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.18s;
+        font-family: var(--sans);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .cbtn:hover {
+        border-color: var(--accent);
+        color: var(--ink);
+      }
+      .cbtn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      .override-grid {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+
+      .pinput {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        color: var(--ink);
+        padding: 8px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-family: var(--mono);
+        width: 100%;
+        outline: none;
+        transition: border 0.2s;
+      }
+      .pinput:focus {
+        border-color: var(--accent);
+      }
+
+      .apply-btn {
+        width: 100%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: 700;
+        font-size: 11.5px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-family: var(--sans);
+        transition: background 0.2s;
+        margin-top: 6px;
+      }
+      .apply-btn:hover {
+        background: var(--accent-2);
+      }
+
+      .print-btn {
+        width: 100%;
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--border);
+        padding: 9px;
+        border-radius: 5px;
+        font-weight: 600;
+        font-size: 11px;
+        cursor: pointer;
+        font-family: var(--sans);
+        transition: all 0.2s;
+        margin-top: 6px;
+      }
+      .print-btn:hover {
+        background: var(--lighter);
+      }
+
+      .panel-divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 12px 0;
+      }
+
+      .ptip {
+        font-size: 10px;
+        color: var(--mid);
+        line-height: 1.6;
+      }
+
+      /* ── DOC HEADER ── */
+      .doc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .logo-img {
+        width: 7rem;
+        height: 4.2rem;
+        object-fit: contain;
+      }
+      .logo-tagline {
+        font-size: 8px;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-top: 4px;
+      }
+
+      .hdr-right {
+        text-align: right;
+      }
+      .hdr-title {
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: 0.3px;
+      }
+      .hdr-sub {
+        font-size: 8.5px;
+        color: var(--mid);
+        margin-top: 3px;
+      }
+      .hdr-conf {
+        font-size: 7.5px;
+        color: var(--border);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+      }
+
+      /* ── TYPOGRAPHY ── */
+      .doc-eyebrow {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--accent);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
+
+      h1 {
+        font-family: var(--serif);
+        font-size: 40px;
+        font-weight: 900;
+        color: var(--ink);
+        letter-spacing: -1.5px;
+        line-height: 1;
+        margin-bottom: 12px;
+      }
+
+      h2 {
+        font-family: var(--serif);
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 10px;
+        letter-spacing: -0.3px;
+      }
+
+      h3 {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--ink);
+        margin-bottom: 8px;
+      }
+
+      p {
+        font-size: 12px;
+        line-height: 1.7;
+        color: var(--mid);
+      }
+
+      /* ── SECTION HEADER ── */
+      .sec-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .sec-num {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--accent);
+        background: var(--accent-lt);
+        border: 1px solid var(--accent-bd);
+        padding: 3px 8px;
+        border-radius: 4px;
+        letter-spacing: 1px;
+      }
+
+      /* ── INFO CARDS ── */
+      .info-card {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+      .info-card p {
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+
+      .note-card {
+        background: var(--gold-lt);
+        border: 1px solid var(--gold-bd);
+        border-left: 3px solid var(--gold);
+        border-radius: 6px;
+        padding: 12px 14px;
+        margin-bottom: 14px;
+      }
+      .note-card p {
+        font-size: 11.5px;
+        color: var(--gold);
+      }
+      .note-card strong {
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      /* ── PACKAGE CARDS (4 across) ── */
+      .pkg-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 10px;
+        margin: 16px 0;
+      }
+
+      .pkg-card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--page);
+        position: relative;
+      }
+      .pkg-card.standard-card {
+        border-color: var(--accent);
+        box-shadow:
+          0 0 0 1px rgba(194, 65, 12, 0.15),
+          0 4px 16px rgba(194, 65, 12, 0.08);
+      }
+      .pkg-card.enterprise-card {
+        background: var(--ink);
+        border-color: var(--ink-2);
+      }
+
+      .pkg-head {
+        padding: 14px 12px 12px;
+        border-bottom: 1px solid var(--border);
+        background: var(--lighter);
+      }
+      .pkg-card.standard-card .pkg-head {
+        background: linear-gradient(
+          135deg,
+          rgba(194, 65, 12, 0.08) 0%,
+          var(--lighter) 100%
+        );
+        border-bottom-color: var(--accent-bd);
+      }
+      .pkg-card.enterprise-card .pkg-head {
+        background: var(--ink-2);
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .pkg-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 7.5px;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 8px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .pkg-name {
+        font-family: var(--serif);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 3px;
+        line-height: 1;
+      }
+      .pkg-card.enterprise-card .pkg-name {
+        color: #fff;
+      }
+
+      .pkg-tagline {
+        font-size: 9.5px;
+        color: var(--mid);
+        line-height: 1.4;
+        margin-bottom: 10px;
+      }
+      .pkg-card.enterprise-card .pkg-tagline {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .pkg-price {
+        display: flex;
+        align-items: baseline;
+        gap: 2px;
+        flex-wrap: wrap;
+      }
+      .pkg-sym {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .pkg-card.enterprise-card .pkg-sym {
+        color: #f87171;
+      }
+      .pkg-amt {
+        font-family: var(--mono);
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .pkg-card.enterprise-card .pkg-amt {
+        color: #fff;
+      }
+      .pkg-period {
+        font-size: 9px;
+        color: var(--mid);
+        margin-left: 2px;
+      }
+      .pkg-meta {
+        font-size: 9.5px;
+        color: var(--mid);
+        margin-top: 5px;
+      }
+      .pkg-card.enterprise-card .pkg-meta {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .pkg-body {
+        padding: 12px;
+      }
+      .pkg-feature {
+        font-size: 10.5px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        padding: 4px 0;
+        border-bottom: 1px solid var(--lighter);
+        display: flex;
+        gap: 6px;
+        align-items: flex-start;
+      }
+      .pkg-feature:last-child {
+        border-bottom: none;
+      }
+      .pkg-card.enterprise-card .pkg-feature {
+        color: rgba(255, 255, 255, 0.75);
+        border-bottom-color: rgba(255, 255, 255, 0.06);
+      }
+      .feat-tick {
+        color: var(--green);
+        font-size: 10px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .pkg-card.enterprise-card .feat-tick {
+        color: #86efac;
+      }
+
+      /* ── COMPARISON TABLE ── */
+      .cmp-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10.5px;
+        margin-top: 10px;
+      }
+      .cmp-table thead th {
+        background: var(--ink);
+        color: #fff;
+        padding: 9px 8px;
+        text-align: left;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .cmp-table thead th:not(:first-child) {
+        text-align: center;
+      }
+      .cmp-table thead th.col-std {
+        background: var(--accent);
+      }
+      .cmp-table thead th.col-ent {
+        background: var(--ink-2);
+      }
+
+      .cmp-table .group-row td {
+        background: var(--lighter);
+        font-size: 8.5px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cmp-table td {
+        padding: 8px;
+        border-bottom: 1px solid var(--lighter);
+        color: var(--ink-2);
+        vertical-align: middle;
+      }
+      .cmp-table td:not(:first-child) {
+        text-align: center;
+      }
+      .cmp-table tr:hover td:not(.group-row td) {
+        background: rgba(0, 0, 0, 0.01);
+      }
+
+      .tick {
+        color: var(--green);
+        font-weight: 700;
+        font-size: 11px;
+      }
+      .cross {
+        color: #ef4444;
+        font-size: 12px;
+      }
+      .addon {
+        color: var(--accent);
+        font-size: 9.5px;
+        font-weight: 700;
+      }
+      .val {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .val.std-val {
+        color: var(--accent);
+      }
+
+      /* ── ADD-ON TABLE ── */
+      .addon-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-top: 10px;
+      }
+      .addon-table thead th {
+        background: var(--ink);
+        color: #fff;
+        padding: 9px 10px;
+        text-align: left;
+        font-size: 8.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .addon-table thead th:last-child {
+        text-align: right;
+      }
+      .addon-table td {
+        padding: 10px;
+        border-bottom: 1px solid var(--lighter);
+        color: var(--ink-2);
+        vertical-align: top;
+        font-size: 11px;
+      }
+      .addon-table td:last-child {
+        text-align: right;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--ink);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .addon-table td:first-child {
+        font-weight: 700;
+      }
+      .addon-table .note-td {
+        font-size: 9.5px;
+        color: var(--mid);
+      }
+      .addon-table tr:hover td {
+        background: rgba(0, 0, 0, 0.01);
+      }
+
+      /* ── MAINTENANCE CARDS ── */
+      .maint-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .maint-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px;
+        background: var(--page);
+      }
+      .maint-card.priority-card {
+        border-color: var(--accent);
+        background: linear-gradient(
+          135deg,
+          var(--accent-lt) 0%,
+          var(--page) 100%
+        );
+      }
+      .maint-label {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        margin-bottom: 4px;
+      }
+      .maint-card.priority-card .maint-label {
+        color: var(--accent);
+      }
+      .maint-name {
+        font-family: var(--serif);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 6px;
+      }
+      .maint-price {
+        display: flex;
+        align-items: baseline;
+        gap: 2px;
+        margin-bottom: 8px;
+      }
+      .maint-sym {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .maint-amt {
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .maint-period {
+        font-size: 10px;
+        color: var(--mid);
+      }
+      .maint-desc {
+        font-size: 11px;
+        color: var(--mid);
+        line-height: 1.6;
+      }
+
+      /* ── PAYMENT SECTION ── */
+      .pay-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 14px;
+      }
+      .pay-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+      }
+      .pay-card h3 {
+        font-size: 12px;
+        color: var(--accent);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+      }
+
+      .pay-step {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+      .pay-num {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 700;
+        background: var(--accent);
+        color: #fff;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .pay-text {
+        font-size: 11.5px;
+        color: var(--ink-2);
+        line-height: 1.5;
+      }
+      .pay-text strong {
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      /* ── FAQ ── */
+      .faq-item {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--lighter);
+      }
+      .faq-item:last-child {
+        border-bottom: none;
+      }
+      .faq-q {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+      .faq-a {
+        font-size: 11.5px;
+        color: var(--mid);
+        line-height: 1.6;
+      }
+
+      /* ── MULTILINGUAL TABLE ── */
+      .multi-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-top: 12px;
+      }
+      .multi-table thead th {
+        background: var(--ink);
+        color: #fff;
+        padding: 9px 10px;
+        text-align: left;
+        font-size: 8.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .multi-table thead th:last-child,
+      .multi-table thead th:nth-child(2) {
+        text-align: right;
+      }
+      .multi-table td {
+        padding: 10px;
+        border-bottom: 1px solid var(--lighter);
+        color: var(--ink-2);
+      }
+      .multi-table td:first-child {
+        font-weight: 600;
+      }
+      .multi-table td:nth-child(2) {
+        text-align: right;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .multi-table td:last-child {
+        font-size: 10px;
+        color: var(--mid);
+      }
+      .multi-table .inc-td {
+        color: var(--green);
+        font-weight: 700;
+        font-size: 10.5px;
+        text-align: right;
+      }
+      .multi-table tr:hover td {
+        background: rgba(0, 0, 0, 0.01);
+      }
+
+      .example-box {
+        background: var(--blue-lt);
+        border: 1px solid #bfdbfe;
+        border-radius: 6px;
+        padding: 12px 14px;
+        margin-top: 12px;
+        font-size: 11px;
+        color: #1e40af;
+        line-height: 1.7;
+        font-style: italic;
+      }
+
+      /* ── RULED LINE ── */
+      .ruled {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 18px 0;
+      }
+
+      /* ── FOOTER ── */
+      .page-footer {
+        margin-top: auto;
+        padding-top: 14px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 8.5px;
+        color: var(--mid);
+      }
+      .footer-brand {
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      /* ── DISCLAIMER ── */
+      .disclaimer {
+        background: var(--lighter);
+        border-radius: 6px;
+        padding: 12px 14px;
+        font-size: 10px;
+        color: var(--mid);
+        line-height: 1.65;
+        font-style: italic;
+        margin-top: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════════════════
+     CURRENCY PANEL
+═══════════════════════════════ -->
+    <div class="currency-panel no-print">
+      <div class="panel-title">Currency Settings</div>
+
+      <div class="plabel">Select Region</div>
+      <div class="country-grid">
+        <button class="cbtn active" onclick="setPreset('INR', '₹', 1, event)">
+          🇮🇳 India (INR)
+        </button>
+        <button class="cbtn" onclick="setPreset('EUR', '€', 0.011, event)">
+          🇪🇺 Europe (EUR)
+        </button>
+        <button class="cbtn" onclick="setPreset('GBP', '£', 0.0094, event)">
+          🇬🇧 UK (GBP)
+        </button>
+        <button class="cbtn" onclick="setPreset('USD', '$', 0.012, event)">
+          🇺🇸 USA (USD)
+        </button>
+        <button class="cbtn" onclick="setPreset('AED', 'AED ', 0.044, event)">
+          🇦🇪 UAE (AED)
+        </button>
+        <button class="cbtn" onclick="setPreset('SGD', 'S$', 0.016, event)">
+          🇸🇬 Singapore
+        </button>
+        <button class="cbtn" onclick="setPreset('AUD', 'A$', 0.018, event)">
+          🇦🇺 Australia
+        </button>
+        <button class="cbtn" onclick="setPreset('CAD', 'C$', 0.016, event)">
+          🇨🇦 Canada
+        </button>
+      </div>
+
+      <hr class="panel-divider" />
+      <div class="plabel" style="margin-bottom: 8px">Custom Override</div>
+
+      <div class="override-grid">
+        <div>
+          <div class="plabel" style="margin-bottom: 3px">Symbol</div>
+          <input class="pinput" id="inp-sym" value="₹" placeholder="₹" />
+        </div>
+        <div>
+          <div class="plabel" style="margin-bottom: 3px">Code</div>
+          <input class="pinput" id="inp-code" value="INR" placeholder="INR" />
+        </div>
+      </div>
+
+      <div class="plabel" style="margin-bottom: 3px">Multiplier vs INR</div>
+      <input
+        class="pinput"
+        id="inp-rate"
+        value="1"
+        placeholder="1"
+        style="margin-bottom: 4px"
+      />
+      <p style="font-size: 9px; color: var(--mid); margin-bottom: 8px">
+        ₹1 × multiplier = target amount<br />e.g. for EUR enter
+        <strong>0.011</strong>
+      </p>
+
+      <button class="apply-btn" onclick="applyCustom()">
+        Apply & Convert All Prices
+      </button>
+      <button class="print-btn" onclick="window.print()">
+        🖨 Print / Save as PDF
+      </button>
+
+      <hr class="panel-divider" />
+      <p class="ptip">
+        Prices update instantly across all pages. Set your rate → Apply → Print.
+      </p>
+    </div>
+
+    <!-- ═══════════════════════════════
+     PAGE 1 — COVER + PACKAGES
+═══════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+        <div class="hdr-right">
+          <div class="hdr-title">Website Building Packages</div>
+          <div class="hdr-sub">
+            www.tronlabz.com · support@tronlabz.com · +91 95400 43695
+          </div>
+          <div class="hdr-conf">Confidential — For Client Use Only</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px">
+        <div class="doc-eyebrow">Professional Web Solutions</div>
+        <h1>
+          Website<br /><em style="color: var(--accent)">Building</em> Packages
+        </h1>
+        <p
+          style="
+            max-width: auto;
+            margin-top: 8px;
+            font-size: 12.5px;
+            color: var(--ink-2);
+            text-align: justify;
+          "
+        >
+          Results-driven websites tailored to your business goals from simple
+          brochure sites to complex booking platforms. Every package includes
+          responsive mobile-first design, SSL security, and a 30-day post-launch
+          support period.
+        </p>
+      </div>
+
+      <!-- Section Label -->
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 style="margin: 0">Website Packages</h2>
+      </div>
+      <p style="margin-bottom: 14px; font-size: 11px">
+        Choose the package that fits your business stage and goals
+      </p>
+
+      <!-- 4 Package Cards -->
+      <div class="pkg-row">
+        <!-- STARTER -->
+        <div class="pkg-card">
+          <div class="pkg-head">
+            <div class="pkg-name">Starter</div>
+            <div class="pkg-tagline">
+              Perfect for small brands & new launches
+            </div>
+            <div class="pkg-price">
+              <span class="pkg-sym price-sym">₹</span>
+              <span
+                class="pkg-amt price-atom"
+                data-inr-lo="35000"
+                data-inr-hi="50000"
+                >35,000 – 50,000</span
+              >
+            </div>
+            <div class="pkg-meta">Up to 5 pages · 1–2 weeks</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Responsive Design (Mobile-first)
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Up to 5 pages
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Contact Form
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Google Maps Integration
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>WhatsApp Chat Button
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Basic On-page SEO setup
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>SSL + Hosting setup guidance
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>2 Revision Rounds
+            </div>
+          </div>
+        </div>
+
+        <!-- STANDARD -->
+        <div class="pkg-card standard-card">
+          <div class="pkg-head">
+            <span class="pkg-badge">Popular</span>
+            <div class="pkg-name">Standard</div>
+            <div class="pkg-tagline">
+              Best for clinics, services & growing brands
+            </div>
+            <div class="pkg-price">
+              <span class="pkg-sym price-sym">₹</span>
+              <span
+                class="pkg-amt price-atom"
+                data-inr-lo="80000"
+                data-inr-hi="170000"
+                >80,000 – 1,70,000</span
+              >
+            </div>
+            <div class="pkg-meta">Up to 12 pages · 3–4 weeks</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Everything in Starter
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Up to 12 pages
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>CMS (edit content yourself)
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Simple Booking / Contact Form
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Testimonials Section
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Blog / Articles Section
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Multiple Service Pages
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Google Analytics Integration
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>1 Revision Rounds (1+2)
+            </div>
+          </div>
+        </div>
+
+        <!-- PREMIUM -->
+        <div class="pkg-card">
+          <div class="pkg-head">
+            <div class="pkg-name">Premium</div>
+            <div class="pkg-tagline">
+              For established businesses needing advanced features
+            </div>
+            <div class="pkg-price">
+              <span class="pkg-sym price-sym">₹</span>
+              <span
+                class="pkg-amt price-atom"
+                data-inr-lo="210000"
+                data-inr-hi="380000"
+                >2,10,000 – 3,80,000</span
+              >
+            </div>
+            <div class="pkg-meta">Unlimited pages · 5–8 weeks</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Everything in Standard
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Unlimited pages
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Advanced Booking (Time Slots)
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Multiple Doctor/Staff Profiles
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Patient/User Login Portal
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Payment Gateway Integration
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Custom Design System
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>Performance Optimization
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick">✓</span>1 Revision Rounds (1+3)
+            </div>
+          </div>
+        </div>
+
+        <!-- ENTERPRISE -->
+        <div class="pkg-card enterprise-card">
+          <div class="pkg-head">
+            <div class="pkg-name">Enterprise</div>
+            <div class="pkg-tagline">
+              Custom solutions for complex requirements
+            </div>
+            <div class="pkg-price">
+              <span class="pkg-sym price-sym" style="color: #f87171">₹</span>
+              <span
+                class="pkg-amt price-atom"
+                data-inr-lo="420000"
+                style="color: #fff"
+                >4,20,000+</span
+              >
+            </div>
+            <div class="pkg-meta">Fully custom · 8–16 weeks</div>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span>Everything
+              in Premium
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span>Custom web
+              application
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span>API
+              integrations
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span
+              >Multi-location / franchise
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span>ERP / CRM
+              integration
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span>Dedicated
+              project manager
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span>Custom
+              analytics dashboard
+            </div>
+            <div class="pkg-feature">
+              <span class="feat-tick" style="color: #86efac">✓</span>Priority
+              support & SLA
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span>Page 1</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+     PAGE 2 — FEATURE COMPARISON Pt1
+═══════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="hdr-right">
+          <div class="hdr-title">Website Building Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 style="margin: 0">Detailed Feature Comparison</h2>
+      </div>
+      <p style="margin-bottom: 10px; font-size: 11px">
+        What's included in each package
+      </p>
+
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th style="width: 38%">Feature</th>
+            <th>Starter</th>
+            <th class="col-std">Standard</th>
+            <th>Premium</th>
+            <th class="col-ent">Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group-row">
+            <td colspan="5">Design & Layout</td>
+          </tr>
+          <tr>
+            <td>Responsive / Mobile-first Design</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Custom UI Design</td>
+            <td><span class="val">Basic</span></td>
+            <td><span class="val std-val">Standard</span></td>
+            <td><span class="val">Premium</span></td>
+            <td><span class="val">Fully Custom</span></td>
+          </tr>
+          <tr>
+            <td>Animated / Interactive Elements</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="val">Limited</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Design Style Options</td>
+            <td><span class="val">1 style</span></td>
+            <td><span class="val std-val">3 styles</span></td>
+            <td><span class="val">7 styles</span></td>
+            <td><span class="val">10+ styles</span></td>
+          </tr>
+
+          <tr class="group-row">
+            <td colspan="5">Pages & Content</td>
+          </tr>
+          <tr>
+            <td>Number of Pages</td>
+            <td><span class="val">Up to 5</span></td>
+            <td><span class="val std-val">Up to 12</span></td>
+            <td><span class="val">Up to 20</span></td>
+            <td><span class="val">Up to 25</span></td>
+          </tr>
+          <tr>
+            <td>Home Page</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>About / Team Page</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Services / Products Pages</td>
+            <td><span class="val">Up to 3</span></td>
+            <td><span class="val std-val">Up to 8</span></td>
+            <td><span class="val">Up to 10</span></td>
+            <td><span class="val">Up to 20</span></td>
+          </tr>
+          <tr>
+            <td>Blog / Articles</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Gallery / Portfolio</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>FAQ Section</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Content Writing</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="addon">+Add-on</span></td>
+            <td><span class="addon">+Add-on</span></td>
+            <td><span class="addon">+Add-on</span></td>
+          </tr>
+          <tr class="group-row">
+            <td colspan="5">Technical</td>
+          </tr>
+          <tr>
+            <td>CMS (Self-editable content)</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>SSL Certificate Setup</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Domain & Hosting Setup</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Speed / Performance Optimization</td>
+            <td><span class="val">Basic</span></td>
+            <td><span class="val std-val">Standard</span></td>
+            <td><span class="val">Advanced</span></td>
+            <td><span class="val">Advanced</span></td>
+          </tr>
+          <tr>
+            <td>Google Analytics Integration</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>On-page SEO Basics</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Schema Markup / Sitemap</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>API Integrations</td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="addon">+Add-on</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span>Page 2</span>
+      </div>
+    </section>
+    <!-- ═══════════════════════════════
+     PAGE 3 — FEATURE COMPARISON Pt2
+═══════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="hdr-right">
+          <div class="hdr-title">Website Building Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th style="width: 38%">Feature</th>
+            <th>Starter</th>
+            <th class="col-std">Standard</th>
+            <th>Premium</th>
+            <th class="col-ent">Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        <tr class="group-row">
+          <td colspan="5">Features & Functionality</td>
+        </tr>
+        <tr>
+          <td>Contact Form</td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>WhatsApp Chat Button</td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Google Maps Integration</td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Testimonials / Reviews Section</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Simple Booking Form</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Advanced Booking (Time Slots)</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Multiple Staff / Doctor Profiles</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>User Login / Patient Portal</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Payment Gateway Integration</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Live Chat Integration</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="addon">+Add-on</span></td>
+          <td><span class="addon">+Add-on</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr>
+          <td>Custom Calculator / Quiz</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="addon">+Add-on</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        <tr class="group-row">
+          <td colspan="5">Support & Revisions</td>
+        </tr>
+        <tr>
+          <td>Revision Rounds</td>
+          <td><span class="val">2</span></td>
+          <td><span class="val std-val">3</span></td>
+          <td><span class="val">4</span></td>
+          <td><span class="val">5</span></td>
+        </tr>
+        <tr>
+          <td>Post-launch Support</td>
+          <td><span class="val">30 days</span></td>
+          <td><span class="val std-val">30 days</span></td>
+          <td><span class="val">90 days</span></td>
+          <td><span class="val">Custom SLA</span></td>
+        </tr>
+        <tr>
+          <td>Training / Handover Session</td>
+          <td><span class="cross">✕</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+          <td><span class="tick">✓</span></td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span>Page 3</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+     PAGE 4 — MULTILINGUAL WEBSITE ADD-ON 
+═══════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="hdr-right">
+          <div class="hdr-title">Website Building Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <!-- Multilingual Add-on -->
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <h2 style="margin: 0">Multilingual Website Add-On</h2>
+      </div>
+
+      <div class="info-card">
+        <p>
+          Need your website in Hindi, Arabic, French, or any other language? We
+          build fully multilingual websites with a language switcher, separate
+          SEO per language, and proper RTL support for Arabic, Hebrew, or Urdu.
+          Priced per extra language added to your base package.
+        </p>
+      </div>
+
+      <table class="multi-table">
+        <thead>
+          <tr>
+            <th style="width: 46%">Multilingual Component</th>
+            <th>Price</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Framework Setup (one-time, per project)</td>
+            <td
+              class="price-atom"
+              data-inr-lo="6400"
+              data-inr-hi="9600"
+              data-prefix="true"
+            >
+              ₹6,400 – ₹9,600
+            </td>
+            <td>i18n routing & config</td>
+          </tr>
+          <tr>
+            <td>Per Extra Language — UI & Content Adaptation</td>
+            <td class="price-atom" data-inr-lo="4800" data-prefix="true">
+              ₹4,800 / language
+            </td>
+            <td>All pages adapted</td>
+          </tr>
+          <tr>
+            <td>Translation — AI-assisted (you review)</td>
+            <td class="price-atom" data-inr-lo="3200" data-prefix="true">
+              ₹3,200 / language
+            </td>
+            <td>Fast, cost-effective</td>
+          </tr>
+          <tr>
+            <td>Translation — Professional Human</td>
+            <td class="price-atom" data-inr-lo="8000" data-prefix="true">
+              ₹8,000 / language
+            </td>
+            <td>Best quality</td>
+          </tr>
+          <tr>
+            <td>RTL Layout (Arabic / Hebrew / Urdu)</td>
+            <td class="price-atom" data-inr-lo="9600" data-prefix="true">
+              ₹9,600 flat
+            </td>
+            <td>Full layout overhaul</td>
+          </tr>
+          <tr>
+            <td>Language Switcher UI</td>
+            <td class="inc-td">Included</td>
+            <td>Flag/text toggle</td>
+          </tr>
+          <tr>
+            <td>hreflang SEO per Extra Language</td>
+            <td class="price-atom" data-inr-lo="2000" data-prefix="true">
+              ₹2,000 / language
+            </td>
+            <td>Multilingual SEO tags</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="example-box">
+        <strong>Example:</strong> A Standard website with English + Hindi +
+        Arabic (RTL) = Base price +
+        <span class="price-atom" data-inr-lo="6400" data-prefix="true"
+          >₹6,400</span
+        >
+        (setup) + 2 ×
+        <span class="price-atom" data-inr-lo="4800" data-prefix="true"
+          >₹4,800</span
+        >
+        (languages) +
+        <span class="price-atom" data-inr-lo="9600" data-prefix="true"
+          >₹9,600</span
+        >
+        (RTL) = approx.
+        <strong
+          ><span class="price-atom" data-inr-lo="25600" data-prefix="true"
+            >₹25,600</span
+          ></strong
+        >
+        added to your base package.
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span>Page 4</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+     PAGE 5 — ADD-ONS
+═══════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="hdr-right">
+          <div class="hdr-title">Website Building Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <h2 style="margin: 0">Optional Add-Ons</h2>
+      </div>
+      <p style="margin-bottom: 10px; font-size: 11px">
+        Enhance your package with any of these extras
+      </p>
+
+      <table class="addon-table">
+        <thead>
+          <tr>
+            <th style="width: 36%">Add-on</th>
+            <th style="width: 26%">Notes</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Content Writing (per page)</td>
+            <td class="note-td">Professional copywriting</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="1500" data-inr-hi="3000"
+                >1,500 – 3,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Professional Photo Sourcing</td>
+            <td class="note-td">Licensed stock images</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="2000" data-inr-hi="5000"
+                >2,000 – 5,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Logo Design</td>
+            <td class="note-td">Brand identity</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="5000" data-inr-hi="15000"
+                >5,000 – 15,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Advanced Booking System</td>
+            <td class="note-td">Time slots, staff management</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="20000" data-inr-hi="30000"
+                >20,000 – 30,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>E-commerce Store (up to 50 products)</td>
+            <td class="note-td">Cart, checkout, orders</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="25000" data-inr-hi="40000"
+                >25,000 – 40,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Patient / User Login Portal</td>
+            <td class="note-td">Secure authentication</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="12000" data-inr-hi="18000"
+                >12,000 – 18,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Payment Gateway Integration</td>
+            <td class="note-td">Razorpay / Stripe / PayPal</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="10000" data-inr-hi="15000"
+                >10,000 – 15,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Live Chat (third-party setup)</td>
+            <td class="note-td">Tawk.to / Intercom setup</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="3000" data-inr-hi="5000"
+                >3,000 – 5,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Email Newsletter Integration</td>
+            <td class="note-td">Mailchimp / Brevo</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="4000" data-inr-hi="6000"
+                >4,000 – 6,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Custom Domain & Hosting Setup</td>
+            <td class="note-td">First-year setup included</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="2000" data-inr-hi="5000"
+                >2,000 – 5,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Speed & Core Web Vitals Audit</td>
+            <td class="note-td">Performance report + fixes</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="4000" data-inr-hi="8000"
+                >4,000 – 8,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>ADA / WCAG Accessibility Compliance</td>
+            <td class="note-td">Legal accessibility standard</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="8000" data-inr-hi="15000"
+                >8,000 – 15,000</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span>Page 5</span>
+      </div>
+    </section>
+    <!-- ═══════════════════════════════
+     PAGE 6 — MAINTENANCE
+═══════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="hdr-right">
+          <div class="hdr-title">Website Building Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2 style="margin: 0">Website Maintenance Plans</h2>
+      </div>
+      <p style="margin-bottom: 12px; font-size: 11px">
+        Keep your website secure, updated, and running smoothly
+      </p>
+
+      <div class="maint-grid">
+        <div class="maint-card">
+          <div class="maint-label">Basic</div>
+          <div class="maint-name">Basic</div>
+          <div class="maint-price">
+            <span class="maint-sym price-sym">₹</span>
+            <span
+              class="maint-amt price-atom"
+              data-inr-lo="2000"
+              data-inr-hi="5000"
+              >2,000 – 5,000</span
+            >
+            <span class="maint-period">/ month</span>
+          </div>
+          <div class="maint-desc">
+            Security patches, backups, uptime monitoring
+          </div>
+        </div>
+
+        <div class="maint-card">
+          <div class="maint-label">Active</div>
+          <div class="maint-name">Active</div>
+          <div class="maint-price">
+            <span class="maint-sym price-sym">₹</span>
+            <span
+              class="maint-amt price-atom"
+              data-inr-lo="8000"
+              data-inr-hi="15000"
+              >8,000 – 15,000</span
+            >
+            <span class="maint-period">/ month</span>
+          </div>
+          <div class="maint-desc">
+            Everything Basic + content updates, plugin upgrades, minor design
+            changes
+          </div>
+        </div>
+
+        <div class="maint-card priority-card">
+          <div class="maint-label">Priority</div>
+          <div class="maint-name">Priority</div>
+          <div class="maint-price">
+            <span class="maint-sym price-sym">₹</span>
+            <span
+              class="maint-amt price-atom"
+              data-inr-lo="20000"
+              data-inr-hi="35000"
+              >20,000 – 35,000</span
+            >
+            <span class="maint-period">/ month</span>
+          </div>
+          <div class="maint-desc">
+            Everything Active + priority response, monthly reports, new feature
+            additions
+          </div>
+        </div>
+
+        <div class="maint-card">
+          <div class="maint-label">Ad-hoc</div>
+          <div class="maint-name">Hourly</div>
+          <div class="maint-price">
+            <span class="maint-sym price-sym">₹</span>
+            <span
+              class="maint-amt price-atom"
+              data-inr-lo="500"
+              data-inr-hi="1000"
+              >500 – 1,000</span
+            >
+            <span class="maint-period">/ hour</span>
+          </div>
+          <div class="maint-desc">
+            Pay only when you need us, no monthly commitment
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span>Page 6</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+     PAGE 7 — PAYMENT TERMS + FAQ
+═══════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="hdr-right">
+          <div class="hdr-title">Website Building Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <div class="sec-head">
+        <span class="sec-num">06</span>
+        <h2 style="margin: 0">Payment Terms & Process</h2>
+      </div>
+
+      <div class="pay-grid">
+        <div class="pay-card">
+          <h3>Payment Schedule</h3>
+          <div class="pay-step">
+            <div class="pay-num">1</div>
+            <div class="pay-text">
+              <strong>50% Upfront</strong> — before project begins
+            </div>
+          </div>
+          <div class="pay-step">
+            <div class="pay-num">2</div>
+            <div class="pay-text">
+              <strong>30% Mid-project</strong> — at 50% completion
+            </div>
+          </div>
+          <div class="pay-step">
+            <div class="pay-num">3</div>
+            <div class="pay-text">
+              <strong>20% On delivery</strong> — before final handover
+            </div>
+          </div>
+
+          <h3 style="margin-top: 18px">Accepted Payment Methods</h3>
+          <p
+            style="
+              font-size: 12px;
+              color: var(--ink-2);
+              margin-top: 8px;
+              line-height: 1.8;
+            "
+          >
+            Bank Transfer &nbsp;·&nbsp; UPI &nbsp;·&nbsp; PayPal<br />
+            Wise &nbsp;·&nbsp; Razorpay &nbsp;·&nbsp; Stripe
+          </p>
+        </div>
+
+        <div class="pay-card">
+          <h3>Frequently Asked Questions</h3>
+
+          <div class="faq-item">
+            <div class="faq-q">Do prices include hosting?</div>
+            <div class="faq-a">
+              No, domain & hosting are separate annual costs. We help you set
+              it up and recommend the best options for your needs.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">What if I need changes after launch?</div>
+            <div class="faq-a">
+              2 revision rounds are included. Extra changes are billed at our
+              hourly rate or via a maintenance plan.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">Do you sign a contract?</div>
+            <div class="faq-a">
+              Yes. Every project starts with a written scope of work and signed
+              agreement.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">How long does delivery take?</div>
+            <div class="faq-a">
+              Timelines are estimates. Delays in client feedback or content
+              delivery extend timelines accordingly.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        All prices are estimates and may vary based on project complexity,
+        client requirements, number of revisions, timeline urgency, and
+        geographic location. A detailed quote will be shared after the initial
+        discovery call. Prices shown are approximate conversions and may vary
+        with exchange rates. VAT / GST may apply where applicable.
+      </div>
+
+      <div
+        style="
+          margin-top: 20px;
+          background: var(--ink);
+          border-radius: 10px;
+          padding: 20px 22px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <div>
+          <div
+            style="
+              font-family: var(--serif);
+              font-size: 20px;
+              color: #fff;
+              font-weight: 700;
+              margin-bottom: 4px;
+            "
+          >
+            Ready to get started?
+          </div>
+          <div style="font-size: 11.5px; color: rgba(255, 255, 255, 0.55)">
+            Let's discuss your project.
+          </div>
+        </div>
+        <div style="text-align: right">
+          <div
+            style="
+              font-size: 11px;
+              color: rgba(255, 255, 255, 0.6);
+              margin-bottom: 3px;
+            "
+          >
+            WhatsApp / Call
+          </div>
+          <div
+            style="
+              font-family: var(--mono);
+              font-size: 14px;
+              color: var(--accent-2);
+              font-weight: 600;
+            "
+          >
+            +91 95400 43695
+          </div>
+          <div
+            style="
+              font-size: 10px;
+              color: rgba(255, 255, 255, 0.4);
+              margin-top: 4px;
+            "
+          >
+            support@tronlabz.com
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span>Page 7</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════
+     JAVASCRIPT — CURRENCY ENGINE
+═══════════════════════════════ -->
+    <script>
+      // Every price is tagged:
+      //   .price-atom  → data-inr-lo (required), data-inr-hi (optional range hi)
+      //   .price-sym   → currency symbol spans
+      //   data-prefix="true" → these cells manage their own sym inline (multi-table)
+
+      let currentSym = "₹";
+      let currentRate = 1;
+
+      function smartRound(raw) {
+        if (raw >= 500000) return Math.round(raw / 10000) * 10000;
+        if (raw >= 100000) return Math.round(raw / 1000) * 1000;
+        if (raw >= 10000) return Math.round(raw / 500) * 500;
+        if (raw >= 1000) return Math.round(raw / 50) * 50;
+        if (raw >= 100) return Math.round(raw / 5) * 5;
+        return parseFloat(raw.toFixed(2));
+      }
+
+      function numFmt(n) {
+        if (n >= 10000000)
+          return (n / 10000000).toFixed(1).replace(/\.0$/, "") + "Cr";
+        if (n >= 100000)
+          return (n / 100000).toFixed(1).replace(/\.0$/, "") + "L";
+        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+        return n.toLocaleString("en-IN");
+      }
+
+      function applyConversion(sym, rate) {
+        currentSym = sym;
+        currentRate = rate;
+
+        // Update all price atoms
+        document.querySelectorAll(".price-atom").forEach((el) => {
+          const lo = parseFloat(el.dataset.inrLo || 0);
+          const hi = parseFloat(el.dataset.inrHi || 0);
+          const hasPrefix = el.dataset.prefix === "true";
+          const isPlus =
+            el.dataset.inrLo &&
+            !el.dataset.inrHi &&
+            el.textContent.includes("+");
+
+          const loC = smartRound(lo * rate);
+
+          let text = "";
+          if (hi && hi !== lo) {
+            const hiC = smartRound(hi * rate);
+            if (hasPrefix) {
+              text = sym + numFmt(loC) + " – " + sym + numFmt(hiC);
+            } else {
+              text = numFmt(loC) + " – " + numFmt(hiC);
+            }
+          } else {
+            if (hasPrefix) {
+              text = sym + numFmt(loC) + (isPlus ? "+" : "");
+            } else {
+              text =
+                numFmt(loC) +
+                (el.dataset.inrLo && el.textContent.trim().endsWith("+")
+                  ? "+"
+                  : "");
+            }
+          }
+          // preserve suffix text like "/ language", "/ month" etc. from original
+          const suffix = el.dataset.suffix || "";
+          el.textContent = text + suffix;
+        });
+
+        // Update all symbol spans
+        document.querySelectorAll(".price-sym").forEach((el) => {
+          el.textContent = sym;
+        });
+      }
+
+      function applyCustom() {
+        const sym = document.getElementById("inp-sym").value.trim() || "₹";
+        const rate = parseFloat(document.getElementById("inp-rate").value) || 1;
+        applyConversion(sym, rate);
+        document
+          .querySelectorAll(".cbtn")
+          .forEach((b) => b.classList.remove("active"));
+      }
+
+      const PRESETS = {
+        INR: ["₹", 1],
+        EUR: ["€", 0.011],
+        GBP: ["£", 0.0094],
+        USD: ["$", 0.012],
+        AED: ["AED ", 0.044],
+        SGD: ["S$", 0.016],
+        AUD: ["A$", 0.018],
+        CAD: ["C$", 0.016],
+      };
+
+      function setPreset(code, sym, rate, e) {
+        document.getElementById("inp-sym").value = sym;
+        document.getElementById("inp-rate").value = rate;
+        document.getElementById("inp-code").value = code;
+        applyConversion(sym, rate);
+        document
+          .querySelectorAll(".cbtn")
+          .forEach((b) => b.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+      }
+
+      // Store suffix text (/ language, / month etc.) before JS modifies content
+      window.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".price-atom").forEach((el) => {
+          // detect trailing suffix patterns and store them
+          const txt = el.textContent;
+          const match = txt.match(/(\/\s*.+)$/);
+          if (match) {
+            el.dataset.suffix = " " + match[1].trim();
+            // strip suffix from displayed content for clean re-render
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

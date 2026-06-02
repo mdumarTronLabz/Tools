@@ -1,0 +1,36 @@
+{
+  "recipients": [
+    {
+      "email": "Smith@westcoastdental.com",
+      "name": "West Coast Dental"
+    },
+    {
+      "email": "doe.j@wilshiredentist.com",
+      "name": "Wilshire Center Dental Group"
+    },
+    {
+      "email": "choicedentalapp@gmail.com",
+      "name": "Choice Dental Center"
+    },
+    {
+      "email": "smile@gcdental.com.my",
+      "name": "Gentle Care Dental"
+    },
+    {
+      "email": "cfdc4080@gmail.com",
+      "name": "California Family Dental Center"
+    },
+    {
+      "email": "impressivedental@yahoo.com",
+      "name": "Impressive Dental"
+    },
+    {
+      "email": "info@drleedentist.com",
+      "name": "Lee Sung w DDS"
+    },
+    {
+      "email": "info@smilefixer.com",
+      "name": "Dental Esthetics Center"
+    }
+  ]
+}

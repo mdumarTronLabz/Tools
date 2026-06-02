@@ -1,0 +1,2643 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>SEO Services & Packages · Tron Labz</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800;900&display=swap");
+
+      /* ─── DESIGN TOKENS ─── */
+      :root {
+        --ink: #f5f5f5;
+        --ink-2: #dff1f1;
+        --ink-3: #bbd5da;
+
+        --rule: #f79b72;
+
+        --text: #f53d3d;
+        --muted: #134e8e;
+
+        --accent: #ffaa00;
+        --accent-2: #db8a10;
+
+        --gold: #ffc107;
+        --gold-light: #776c0a;
+
+        --green: #1d9176;
+
+        --page-bg: #fcfcfc;
+
+        --serif: "DM Serif Display", Georgia, serif;
+        --sans: "Outfit", system-ui, sans-serif;
+        --mono: "DM Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: #1e2028;
+        color: var(--text);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ─── A4 PAGE ─── */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: var(--ink);
+        margin: 8mm auto;
+        padding: 18mm 16mm 16mm;
+        position: relative;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* decorative corner rule */
+      .page::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--accent) 0%,
+          var(--gold) 50%,
+          var(--accent) 100%
+        );
+      }
+
+      @media print {
+        body {
+          background: #000;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          padding: 15mm 14mm 13mm;
+          page-break-after: always;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        .currency-panel {
+          display: none !important;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+
+      .tagline {
+        font-size: 9px;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--secondary);
+        font-weight: 700;
+        margin-top: 2px;
+      }
+      
+      /* ─── CURRENCY CONTROL PANEL ─── */
+
+      .currency-panel {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 300px;
+        background: var(--ink-2);
+        border: 1px solid var(--rule);
+        border-top: 3px solid var(--accent);
+        border-radius: 12px;
+        padding: 20px;
+        z-index: 1000;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        font-family: var(--sans);
+      }
+
+      .currency-panel h3 {
+        font-family: var(--serif);
+        font-size: 17px;
+        color: var(--gold-light);
+        margin-bottom: 14px;
+        letter-spacing: 0.3px;
+      }
+
+      .panel-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      /* Country selector */
+      .country-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+
+      .country-btn {
+        background: var(--ink-3);
+        border: 1px solid var(--rule);
+        color: var(--muted);
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s;
+        font-family: var(--sans);
+      }
+      .country-btn:hover {
+        border-color: var(--accent);
+        color: var(--text);
+      }
+      .country-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+      .country-btn .flag {
+        margin-right: 5px;
+        font-size: 13px;
+      }
+
+      /* Custom override inputs */
+      .override-row {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .panel-input {
+        background: var(--ink-3);
+        border: 1px solid var(--rule);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-family: var(--mono);
+        width: 100%;
+        outline: none;
+        transition: border 0.2s;
+      }
+      .panel-input:focus {
+        border-color: var(--gold);
+      }
+
+      .apply-btn {
+        width: 100%;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-family: var(--sans);
+        transition: all 0.2s;
+        margin-top: 4px;
+      }
+      .apply-btn:hover {
+        background: var(--accent-2);
+      }
+
+      .print-btn {
+        width: 100%;
+        background: transparent;
+        color: var(--gold);
+        border: 1px solid var(--gold);
+        padding: 9px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 11px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-family: var(--sans);
+        transition: all 0.2s;
+        margin-top: 8px;
+      }
+      .print-btn:hover {
+        background: var(--gold);
+        color: var(--ink);
+      }
+
+      .panel-tip {
+        font-size: 10px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--rule);
+      }
+
+      /* ─── HEADER ─── */
+      .doc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .logo-img {
+        width: 7rem;
+        height: 4.2rem;
+        object-fit: contain;
+        filter: brightness(1.1);
+      }
+      .logo-tagline {
+        font-size: 8.5px;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 600;
+        margin-top: 4px;
+      }
+
+      .header-right {
+        text-align: right;
+      }
+      .doc-title-sm {
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .doc-sub-sm {
+        font-size: 9px;
+        color: var(--muted);
+        margin-top: 4px;
+        letter-spacing: 0.5px;
+      }
+
+      /* ─── SECTION HEADERS ─── */
+      .section-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .section-num {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--accent);
+        letter-spacing: 1px;
+        background: rgba(232, 64, 12, 0.12);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+      .section-label h2 {
+        font-family: var(--serif);
+        font-size: 22px;
+        color: var(--text);
+        letter-spacing: -0.3px;
+      }
+
+      /* ─── INTRO BLOCKS ─── */
+      .intro-card {
+        background: var(--ink-2);
+        border: 1px solid var(--rule);
+        border-left: 3px solid var(--gold);
+        border-radius: 8px;
+        padding: 16px 18px;
+        margin-bottom: 16px;
+      }
+      .intro-card p {
+        font-size: 12.5px;
+        line-height: 1.75;
+        color: #344fd5;
+      }
+
+      .warning-card {
+        background: rgba(201, 168, 76, 0.07);
+        border: 1px solid rgba(163, 90, 7, 0.3);
+        border-left: 3px solid var(--gold);
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+      }
+      .warning-card p {
+        font-size: 12px;
+        line-height: 1.7;
+        color: #d4b96a;
+      }
+      .warning-card strong {
+        color: var(--gold-light);
+      }
+
+      /* ─── PLAN CARDS ─── */
+      .plan-trio {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        margin: 20px 0;
+      }
+
+      .plan-card {
+        background: var(--ink-2);
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .plan-card.featured {
+        border-color: var(--accent);
+        box-shadow:
+          0 0 0 1px var(--accent),
+          0 8px 24px rgba(232, 64, 12, 0.2);
+      }
+      .plan-card.authority-card {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.4);
+      }
+
+      .plan-head {
+        padding: 16px 14px 14px;
+        position: relative;
+      }
+
+      .plan-card.featured .plan-head {
+        background: linear-gradient(
+          135deg,
+          rgba(232, 64, 12, 0.18) 0%,
+          rgba(232, 64, 12, 0.04) 100%
+        );
+      }
+      .plan-card.authority-card .plan-head {
+        background: linear-gradient(
+          135deg,
+          rgba(201, 168, 76, 0.15) 0%,
+          rgba(201, 168, 76, 0.03) 100%
+        );
+      }
+
+      .plan-eyebrow {
+        font-size: 9px;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .plan-card:not(.featured):not(.authority-card) .plan-eyebrow {
+        color: var(--green);
+      }
+      .plan-card.featured .plan-eyebrow {
+        color: var(--accent-2);
+      }
+      .plan-card.authority-card .plan-eyebrow {
+        color: var(--gold);
+      }
+
+      .plan-name {
+        font-family: var(--serif);
+        font-size: 22px;
+        color: var(--text);
+        margin-bottom: 4px;
+        line-height: 1;
+      }
+
+      .plan-ideal {
+        font-size: 10px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-bottom: 10px;
+        font-style: italic;
+      }
+
+      .plan-price-box {
+        margin-top: 8px;
+      }
+      .plan-price-line {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+      }
+      .plan-currency {
+        font-family: var(--mono);
+        font-size: 20px;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .plan-card.authority-card .plan-currency {
+        color: var(--gold);
+      }
+
+      .plan-amount {
+        font-family: var(--mono);
+        font-size: 22px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .plan-period {
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      .plan-setup {
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .plan-setup span {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        color: var(--text);
+      }
+
+      .plan-min {
+        display: inline-block;
+        font-size: 9.5px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 10px;
+        margin-top: 8px;
+        letter-spacing: 0.4px;
+      }
+      .plan-card:not(.featured):not(.authority-card) .plan-min {
+        background: rgba(45, 190, 124, 0.12);
+        color: var(--green);
+      }
+      .plan-card.featured .plan-min {
+        background: rgba(232, 64, 12, 0.15);
+        color: var(--accent-2);
+      }
+      .plan-card.authority-card .plan-min {
+        background: rgba(201, 168, 76, 0.12);
+        color: var(--gold);
+      }
+
+      .badge-popular {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--accent);
+        color: white;
+        font-size: 8px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .badge-authority {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(201, 168, 76, 0.2);
+        color: var(--gold);
+        font-size: 8px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border: 1px solid rgba(201, 168, 76, 0.4);
+      }
+
+      /* ─── DELIVERABLE ITEMS ─── */
+      .deliverable-list {
+        padding: 14px;
+        flex: 1;
+      }
+      .del-item {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 11px;
+        align-items: flex-start;
+      }
+      .del-num {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--accent);
+        font-weight: 500;
+        min-width: 18px;
+        margin-top: 2px;
+      }
+      .plan-card.authority-card .del-num {
+        color: var(--gold);
+      }
+      .del-text {
+      }
+      .del-title {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 2px;
+        line-height: 1.3;
+      }
+      .del-desc {
+        font-size: 10.5px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ─── COMPARISON TABLE ─── */
+      .comp-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-top: 14px;
+      }
+      .comp-table th {
+        background: var(--ink-3);
+        color: var(--muted);
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 10px 10px;
+        text-align: left;
+        border-bottom: 2px solid var(--rule);
+      }
+      .comp-table th:not(:first-child) {
+        text-align: center;
+      }
+      .comp-table th.col-featured {
+        color: var(--accent-2);
+      }
+      .comp-table th.col-authority {
+        color: var(--gold);
+      }
+
+      .comp-table td {
+        padding: 9px 10px;
+        border-bottom: 1px solid rgba(46, 50, 69, 0.6);
+        color: #6978c4;
+        vertical-align: middle;
+      }
+      .comp-table td:not(:first-child) {
+        text-align: center;
+      }
+
+      .comp-table .group-row td {
+        background: var(--ink-2);
+        color: var(--gold-light);
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--rule);
+      }
+      .comp-table tr:hover td:not(.group-row td) {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .tick {
+        color: var(--green);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .dash {
+        color: var(--rule);
+        font-size: 14px;
+      }
+      .val {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text);
+        font-weight: 500;
+      }
+      .val.featured-val {
+        color: var(--accent-2);
+      }
+      .val.auth-val {
+        color: var(--gold);
+      }
+
+      /* ─── ADDON TABLE ─── */
+      .addon-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11.5px;
+        margin-top: 14px;
+      }
+      .addon-table thead th {
+        background: var(--ink-2);
+        color: var(--muted);
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--rule);
+      }
+      .addon-table thead th:last-child {
+        text-align: right;
+      }
+      .addon-table td {
+        padding: 11px 12px;
+        border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+        color: #b0b4c8;
+        vertical-align: top;
+      }
+      .addon-table td:last-child {
+        text-align: right;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .addon-table td:first-child {
+        font-weight: 600;
+        color: var(--text);
+      }
+      .addon-table .note-cell {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .addon-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      /* ─── PROCESS ─── */
+      .process-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 14px;
+      }
+      .process-card {
+        background: var(--ink-2);
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        padding: 14px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+      .process-num {
+        font-family: var(--serif);
+        font-size: 26px;
+        color: rgba(232, 64, 12, 0.25);
+        line-height: 1;
+        flex-shrink: 0;
+        min-width: 28px;
+      }
+      .process-title {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .process-desc {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* ─── PAYMENT BLOCK ─── */
+      .payment-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 14px;
+      }
+      .payment-card {
+        background: var(--ink-2);
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        padding: 16px;
+      }
+      .payment-card h4 {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--accent-2);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 12px;
+      }
+
+      .payment-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 9px;
+        align-items: flex-start;
+      }
+      .pay-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 5px;
+      }
+      .pay-text {
+        font-size: 11.5px;
+        color: #b0b4c8;
+        line-height: 1.5;
+      }
+      .pay-text strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ─── DISCLAIMER ─── */
+      .disclaimer {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--rule);
+        border-radius: 6px;
+        padding: 12px 14px;
+        margin-top: 16px;
+      }
+      .disclaimer p {
+        font-size: 10.5px;
+        color: var(--muted);
+        line-height: 1.65;
+        font-style: italic;
+      }
+
+      /* ─── FOOTER ─── */
+      .page-footer {
+        margin-top: auto;
+        padding-top: 14px;
+        border-top: 1px solid var(--rule);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 9px;
+        color: var(--muted);
+        letter-spacing: 0.3px;
+      }
+      .footer-brand {
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 9px;
+      }
+      .confidential {
+        font-size: 8.5px;
+        color: #4558b573;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+
+      /* ─── PRICE ATOMS ─── */
+      /* Every price is wrapped in .price-atom for easy JS targeting */
+      .price-atom {
+        /* inherits surrounding font style */
+      }
+
+      /* mini commit grid on page 1 */
+      .commit-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .commit-card {
+        background: var(--ink-2);
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        padding: 12px 14px;
+        text-align: center;
+      }
+      .commit-plan {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .commit-months {
+        font-family: var(--serif);
+        font-size: 28px;
+        color: var(--text);
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .commit-label {
+        font-size: 9px;
+        color: var(--muted);
+      }
+
+      /* divider rule */
+      .ruled {
+        border: none;
+        border-top: 1px solid var(--rule);
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════
+     CURRENCY CONTROL PANEL
+═══════════════════════════════════════ -->
+    <div class="currency-panel no-print">
+      <h3>Currency Settings</h3>
+
+      <p class="panel-label">Select Region</p>
+      <div class="country-grid">
+        <button
+          class="country-btn active"
+          onclick="setPreset('INR', '₹', 'India')"
+        >
+          <span class="flag">🇮🇳</span>India (INR)
+        </button>
+        <button class="country-btn" onclick="setPreset('EUR', '€', 'Europe')">
+          <span class="flag">🇪🇺</span>Europe (EUR)
+        </button>
+        <button class="country-btn" onclick="setPreset('GBP', '£', 'UK')">
+          <span class="flag">🇬🇧</span>UK (GBP)
+        </button>
+        <button class="country-btn" onclick="setPreset('USD', '$', 'USA')">
+          <span class="flag">🇺🇸</span>USA (USD)
+        </button>
+        <button class="country-btn" onclick="setPreset('AED', 'AED', 'UAE')">
+          <span class="flag">🇦🇪</span>UAE (AED)
+        </button>
+        <button
+          class="country-btn"
+          onclick="setPreset('SGD', 'S$', 'Singapore')"
+        >
+          <span class="flag">🇸🇬</span>Singapore
+        </button>
+        <button
+          class="country-btn"
+          onclick="setPreset('AUD', 'A$', 'Australia')"
+        >
+          <span class="flag">🇦🇺</span>Australia
+        </button>
+        <button class="country-btn" onclick="setPreset('CAD', 'C$', 'Canada')">
+          <span class="flag">🇨🇦</span>Canada
+        </button>
+      </div>
+
+      <hr
+        style="border: none; border-top: 1px solid var(--rule); margin: 12px 0"
+      />
+      <p class="panel-label">Custom Override</p>
+
+      <div class="override-row">
+        <div>
+          <p class="panel-label" style="margin-bottom: 4px">Symbol</p>
+          <input
+            class="panel-input"
+            id="inp-symbol"
+            placeholder="₹"
+            value="₹"
+          />
+        </div>
+        <div>
+          <p class="panel-label" style="margin-bottom: 4px">Currency Code</p>
+          <input
+            class="panel-input"
+            id="inp-code"
+            placeholder="INR"
+            value="INR"
+          />
+        </div>
+      </div>
+
+      <p class="panel-label" style="margin-bottom: 4px">Multiplier vs INR</p>
+      <input
+        class="panel-input"
+        id="inp-rate"
+        placeholder="1"
+        value="1"
+        style="margin-bottom: 4px"
+      />
+      <p style="font-size: 9.5px; color: var(--muted); margin-bottom: 10px">
+        e.g. if ₹1 = 0.011 EUR → enter
+        <strong style="color: var(--text)">0.011</strong>
+      </p>
+
+      <button class="apply-btn" onclick="applyCustom()">
+        Apply & Convert All Prices
+      </button>
+      <button class="print-btn" onclick="window.print()">
+        🖨 Print / Save as PDF
+      </button>
+
+      <p class="panel-tip">
+        All prices tagged in the document update instantly. Set your multiplier
+        then hit Apply.
+      </p>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+     PAGE 1 — COVER + PLANS AT A GLANCE
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages</div>
+          <div class="doc-sub-sm">
+            www.tronlabz.com · support@tronlabz.com · +91 95400 43695
+          </div>
+          <div
+            class="doc-sub-sm"
+            style="
+              margin-top: 4px;
+              color: #4558b573;
+              font-size: 8px;
+              letter-spacing: 0.8px;
+              text-transform: uppercase;
+            "
+          >
+            Confidential — For Client Use Only
+          </div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div style="margin-bottom: 22px">
+        <p
+          style="
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+          "
+        >
+          Data-Driven Search Engine Optimisation
+        </p>
+        <h1
+          style="
+            font-family: var(--serif);
+            font-size: 42px;
+            color: var(--text);
+            letter-spacing: -1px;
+            line-height: 1.05;
+            margin-bottom: 10px;
+          "
+        >
+          SEO Services<br /><em style="color: var(--gold)">&amp; Packages</em>
+        </h1>
+        <p
+          style="
+            font-size: 11.5px;
+            color: var(--muted);
+            max-width: 100%;
+            line-height: 1.7;
+          "
+        >
+          Get found on Google before your competitors do. Long-term organic
+          growth for clinics, service businesses, and B2B companies across
+          India, Europe, UAE, and beyond.
+        </p>
+      </div>
+
+      <div class="intro-card">
+        <p>
+          SEO (Search Engine Optimisation) is the process of improving your
+          website's visibility on Google so that potential clients find you
+          first. Unlike paid ads, SEO builds compounding organic traffic over
+          time, one of the highest ROI digital investments for any growing
+          business.
+        </p>
+      </div>
+
+      <div class="warning-card">
+        <p>
+          <strong>Important:</strong> SEO is a long-term strategy. Results
+          typically begin showing in months 2–3, with significant improvements
+          in months 4–6. We recommend a minimum commitment of 3–6 months to see
+          measurable rankings, traffic growth, and lead increases. All plans
+          include monthly performance reporting.
+        </p>
+      </div>
+
+      <!-- Section 01 -->
+      <div class="section-label">
+        <span class="section-num">01</span>
+        <h2>SEO Plans at a Glance</h2>
+      </div>
+
+      <div class="plan-trio">
+        <!-- STARTER -->
+        <div class="plan-card">
+          <div class="plan-head">
+            <div class="plan-eyebrow">Starter</div>
+            <div class="plan-name">Get Found<br />Locally</div>
+            <div class="plan-ideal">
+              Ideal for: New businesses, clinics, local services
+            </div>
+            <div class="plan-price-box">
+              <div class="plan-price-line">
+                <span class="plan-currency price-sym">₹</span> 
+                <span
+                  class="plan-amount price-atom"
+                  data-inr-lo="5000"
+                  data-inr-hi="10000"
+                  >5,000 – 10,000</span
+                >
+              </div>
+              <div class="plan-period">/ month</div>
+              <div class="plan-setup">
+                Setup:
+                <span class="price-atom" data-inr-lo="10000">₹10,000</span>
+                one-time
+              </div>
+            </div>
+            <span class="plan-min">Min. 3 months</span>
+          </div>
+        </div>
+
+        <!-- GROWTH -->
+        <div class="plan-card featured">
+          <div class="plan-head">
+            <div class="plan-eyebrow">Growth</div>
+            <div class="plan-name">Rank Higher,<br />Get More Leads</div>
+            <div class="plan-ideal">
+              Ideal for: Established businesses wanting consistent lead flow
+            </div>
+            <div class="plan-price-box">
+              <div class="plan-price-line">
+                <span class="plan-currency price-sym">₹</span>
+                <span
+                  class="plan-amount price-atom"
+                  data-inr-lo="15000"
+                  data-inr-hi="25000"
+                  >15,000 – 25,000</span
+                >
+              </div>
+              <div class="plan-period">/ month</div>
+              <div class="plan-setup">
+                Setup:
+                <span class="price-atom" data-inr-lo="18000">₹18,000</span>
+                one-time
+              </div>
+            </div>
+            <span class="plan-min">Min. 4 months</span>
+            <span class="badge-popular">Popular</span>
+          </div>
+        </div>
+
+        <!-- AUTHORITY -->
+        <div class="plan-card authority-card">
+          <div class="plan-head">
+            <div class="plan-eyebrow">Authority</div>
+            <div class="plan-name">Dominate<br />Your Market</div>
+            <div class="plan-ideal">
+              Ideal for: Competitive industries, multi-location businesses
+            </div>
+            <div class="plan-price-box">
+              <div class="plan-price-line">
+                <span class="plan-currency price-sym">₹</span>
+                <span
+                  class="plan-amount price-atom"
+                  data-inr-lo="30000"
+                  data-inr-hi="50000"
+                  >30,000 – 50,000</span
+                >
+              </div>
+              <div class="plan-period">/ month</div>
+              <div class="plan-setup">
+                Setup:
+                <span class="price-atom" data-inr-lo="28000">₹28,000</span>
+                one-time
+              </div>
+            </div>
+            <span class="plan-min">Min. 6 months</span>
+            <span class="badge-authority">Best</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Min commitment cards -->
+      <div class="commit-grid" style="margin-top: 8px">
+        <div class="commit-card">
+          <div class="commit-plan">Starter</div>
+          <div class="commit-months">3</div>
+          <div class="commit-label">month minimum</div>
+        </div>
+        <div class="commit-card">
+          <div class="commit-plan">Growth</div>
+          <div class="commit-months">4</div>
+          <div class="commit-label">month minimum</div>
+        </div>
+        <div class="commit-card" style="border-color: rgba(201, 168, 76, 0.3)">
+          <div class="commit-plan" style="color: var(--gold)">Authority</div>
+          <div class="commit-months" style="color: var(--gold-light)">6</div>
+          <div class="commit-label">month minimum</div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 1</span
+        >
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+     PAGE 2 — STARTER DELIVERABLES
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <p
+        style="
+          font-size: 11px;
+          color: var(--muted);
+          margin-bottom: 18px;
+          font-style: italic;
+        "
+      >
+        Detailed deliverables — exactly what you get every month
+      </p>
+
+      <!-- SECTION 02 -->
+      <div class="section-label">
+        <span class="section-num">02</span>
+        <h2>What We Do in Each Plan</h2>
+      </div>
+
+      <!-- Starter -->
+      <div
+        style="
+          background: var(--ink-2);
+          border: 1px solid var(--rule);
+          border-radius: 10px;
+          overflow: hidden;
+          margin-bottom: 16px;
+        "
+      >
+        <div
+          style="
+            background: var(--ink-3);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <div
+              style="
+                font-size: 9px;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                color: var(--green);
+                font-weight: 700;
+                margin-bottom: 3px;
+              "
+            >
+              Starter Plan
+            </div>
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--text);
+              "
+            >
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="5000" data-inr-hi="10000"
+                >5,000 – 10,000</span
+              >
+              / month ·
+              <span class="price-atom" data-inr-lo="10000">₹10,000</span> setup
+            </div>
+          </div>
+          <span
+            style="
+              font-size: 9.5px;
+              color: var(--green);
+              background: rgba(45, 190, 124, 0.1);
+              padding: 4px 10px;
+              border-radius: 10px;
+              font-weight: 700;
+            "
+            >Min. 3 months</span
+          >
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0">
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid var(--rule);
+            "
+          >
+            <div class="del-num">01</div>
+            <div>
+              <div class="del-title">SEO Audit & Setup</div>
+              <div class="del-desc">
+                Full technical audit identifying issues affecting your Google
+                ranking
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num">02</div>
+            <div>
+              <div class="del-title">Keyword Research</div>
+              <div class="del-desc">
+                Up to 20 target keywords focused on your local area and services
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid var(--rule);
+            "
+          >
+            <div class="del-num">03</div>
+            <div>
+              <div class="del-title">On-Page Optimisation</div>
+              <div class="del-desc">
+                Meta titles, descriptions, H1–H3 tags, image alt text across all
+                pages
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num">04</div>
+            <div>
+              <div class="del-title">Google Business Profile</div>
+              <div class="del-desc">
+                Complete setup/optimisation — categories, photos, services,
+                posts
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid var(--rule);
+            "
+          >
+            <div class="del-num">05</div>
+            <div>
+              <div class="del-title">Local Citations</div>
+              <div class="del-desc">
+                Listed consistently across 10+ local directories (Justdial,
+                Sulekha, etc.)
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num">06</div>
+            <div>
+              <div class="del-title">Monthly Reporting</div>
+              <div class="del-desc">
+                1-page performance report: keyword rankings, traffic, visibility
+                changes
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="padding: 10px 14px; border-right: 1px solid var(--rule)"
+          >
+            <div class="del-num">07</div>
+            <div>
+              <div class="del-title">4 Backlinks / Month</div>
+              <div class="del-desc">
+                Quality backlinks from relevant directories and niche websites
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 2</span
+        >
+      </div>
+    </section>
+    <!-- ═══════════════════════════════════════
+     PAGE 3 — GROWTH DELIVERABLES
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages · Tron Labz</div>
+        </div>
+      </div>
+
+
+      <!-- Growth -->
+      <div
+        style="
+          background: var(--ink-2);
+          border: 1px solid var(--accent);
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: 0 0 0 1px rgba(232, 64, 12, 0.15);
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(
+              90deg,
+              rgba(232, 64, 12, 0.15) 0%,
+              var(--ink-3) 100%
+            );
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <div
+              style="
+                font-size: 9px;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                color: var(--accent-2);
+                font-weight: 700;
+                margin-bottom: 3px;
+              "
+            >
+              Growth Plan — Most Popular
+            </div>
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--text);
+              "
+            >
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="15000" data-inr-hi="25000"
+                >15,000 – 25,000</span
+              >
+              / month ·
+              <span class="price-atom" data-inr-lo="18000">₹18,000</span> setup
+            </div>
+          </div>
+          <span
+            style="
+              font-size: 9.5px;
+              color: var(--accent-2);
+              background: rgba(232, 64, 12, 0.12);
+              padding: 4px 10px;
+              border-radius: 10px;
+              font-weight: 700;
+            "
+            >Min. 4 months</span
+          >
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0">
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid var(--rule);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">01</div>
+            <div>
+              <div class="del-title">Everything in Starter</div>
+              <div class="del-desc">
+                All Starter deliverables included as the foundation
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">02</div>
+            <div>
+              <div class="del-title">Deep Keyword Strategy</div>
+              <div class="del-desc">
+                Up to 60 keywords — long-tail, competitor & intent-based mapped
+                per page
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid var(--rule);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">03</div>
+            <div>
+              <div class="del-title">Technical SEO Fixes</div>
+              <div class="del-desc">
+                Core Web Vitals, mobile usability, crawl errors, redirect chains
+                — all fixed
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">04</div>
+            <div>
+              <div class="del-title">Schema Markup</div>
+              <div class="del-desc">
+                Local Business, Clinic, FAQ, Breadcrumb — improves rich results
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid var(--rule);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">05</div>
+            <div>
+              <div class="del-title">XML Sitemap & Robots.txt</div>
+              <div class="del-desc">
+                Properly structured sitemap submitted to Google Search Console
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">06</div>
+            <div>
+              <div class="del-title">Content Optimisation</div>
+              <div class="del-desc">
+                2 existing pages per month rewritten for target keywords and
+                search intent
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid var(--rule);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">07</div>
+            <div>
+              <div class="del-title">Blog / Article Strategy</div>
+              <div class="del-desc">
+                2 SEO blog posts written & published per month
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 9px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--accent)">08</div>
+            <div>
+              <div class="del-title">6–8 Backlinks / Month</div>
+              <div class="del-desc">
+                Guest posts, niche directories, and partner websites
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="padding: 9px 14px; border-right: 1px solid var(--rule)"
+          >
+            <div class="del-num" style="color: var(--accent)">09</div>
+            <div>
+              <div class="del-title">Competitor Analysis</div>
+              <div class="del-desc">
+                Monthly review of top 3 competitors — gaps and opportunities
+              </div>
+            </div>
+          </div>
+          <div class="del-item" style="padding: 9px 14px">
+            <div class="del-num" style="color: var(--accent)">10</div>
+            <div>
+              <div class="del-title">Detailed Monthly Report</div>
+              <div class="del-desc">
+                Rankings, traffic, CTR, backlinks, tasks, next month plan
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 3</span
+        >
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+     PAGE 4 — AUTHORITY DELIVERABLES
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <!-- Authority Plan -->
+      <div
+        style="
+          background: var(--ink-2);
+          border: 1px solid rgba(201, 168, 76, 0.4);
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.1);
+          margin-bottom: 20px;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(
+              90deg,
+              rgba(201, 168, 76, 0.12) 0%,
+              var(--ink-3) 100%
+            );
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <div
+              style="
+                font-size: 9px;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                color: var(--gold);
+                font-weight: 700;
+                margin-bottom: 3px;
+              "
+            >
+              Authority Plan — Dominate Your Market
+            </div>
+            <div
+              style="
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--text);
+              "
+            >
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="30000" data-inr-hi="50000"
+                >30,000 – 50,000</span
+              >
+              / month ·
+              <span class="price-atom" data-inr-lo="28000">₹28,000</span> setup
+            </div>
+          </div>
+          <span
+            style="
+              font-size: 9.5px;
+              color: var(--gold);
+              background: rgba(201, 168, 76, 0.1);
+              padding: 4px 10px;
+              border-radius: 10px;
+              font-weight: 700;
+              border: 1px solid rgba(201, 168, 76, 0.3);
+            "
+            >Min. 6 months</span
+          >
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0">
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid rgba(46, 50, 69, 0.8);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">01</div>
+            <div>
+              <div class="del-title">Everything in Growth</div>
+              <div class="del-desc">All Growth plan deliverables included</div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">02</div>
+            <div>
+              <div class="del-title">Full Content Strategy</div>
+              <div class="del-desc">
+                Monthly calendar: 4+ blog posts, pillar pages, topic clusters
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid rgba(46, 50, 69, 0.8);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">03</div>
+            <div>
+              <div class="del-title">Pillar Page Creation</div>
+              <div class="del-desc">
+                1 comprehensive pillar page per month (2,000–4,000 words)
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">04</div>
+            <div>
+              <div class="del-title">Advanced Schema Markup</div>
+              <div class="del-desc">
+                Product, Review, HowTo, Video, Event, Article schemas — max SERP
+                real estate
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid rgba(46, 50, 69, 0.8);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">05</div>
+            <div>
+              <div class="del-title">Digital PR & Link Building</div>
+              <div class="del-desc">
+                10–15 high-authority backlinks via PR, journalist outreach,
+                editorial
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">06</div>
+            <div>
+              <div class="del-title">Conversion Rate Optimisation</div>
+              <div class="del-desc">
+                Heatmaps, user behaviour, A/B test suggestions to turn visitors
+                into leads
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid rgba(46, 50, 69, 0.8);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">07</div>
+            <div>
+              <div class="del-title">Multi-location SEO</div>
+              <div class="del-desc">
+                Individual strategy per location — pages, citations, GMB per
+                branch
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">08</div>
+            <div>
+              <div class="del-title">Video & Image SEO</div>
+              <div class="del-desc">
+                YouTube video SEO, image optimisation, visual search best
+                practices
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+              border-right: 1px solid rgba(46, 50, 69, 0.8);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">09</div>
+            <div>
+              <div class="del-title">International SEO</div>
+              <div class="del-desc">
+                hreflang, geo-targeting, multilingual keyword strategy if
+                applicable
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-bottom: 1px solid rgba(46, 50, 69, 0.5);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">10</div>
+            <div>
+              <div class="del-title">Weekly Check-in Reports</div>
+              <div class="del-desc">
+                Weekly ranking snapshots + monthly deep-dive + next-quarter
+                planning
+              </div>
+            </div>
+          </div>
+          <div
+            class="del-item"
+            style="
+              padding: 10px 14px;
+              border-right: 1px solid rgba(46, 50, 69, 0.8);
+            "
+          >
+            <div class="del-num" style="color: var(--gold)">11</div>
+            <div>
+              <div class="del-title">Dedicated SEO Strategist</div>
+              <div class="del-desc">
+                Named specialist assigned to your account — direct communication
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 4</span
+        >
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+     PAGE 5 — PLAN COMPARISON (Part 1)
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <span class="section-num">03</span>
+        <h2>Plan Comparison</h2>
+      </div>
+      <p style="font-size: 11.5px; color: var(--muted); margin-bottom: 4px">
+        See exactly what each plan includes side by side
+      </p>
+
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width: 42%">SEO Activity</th>
+            <th>Starter</th>
+            <th class="col-featured">Growth</th>
+            <th class="col-authority">Authority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group-row">
+            <td colspan="4">Keyword Research</td>
+          </tr>
+          <tr>
+            <td>Number of target keywords</td>
+            <td><span class="val">20 kw</span></td>
+            <td><span class="val featured-val">60 kw</span></td>
+            <td><span class="val auth-val">80 kw</span></td>
+          </tr>
+          <tr>
+            <td>Local / geo keywords</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Long-tail keywords</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Competitor keyword gaps</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Intent-based keyword mapping</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+
+          <tr class="group-row">
+            <td colspan="4">On-Page SEO</td>
+          </tr>
+          <tr>
+            <td>Meta titles &amp; descriptions</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Heading tags (H1–H3)</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Image alt text</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Content optimisation (pages/mo)</td>
+            <td><span class="val">1</span></td>
+            <td><span class="val featured-val">2</span></td>
+            <td><span class="val auth-val">4</span></td>
+          </tr>
+          <tr>
+            <td>Internal linking strategy</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Pillar pages created</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="val auth-val">1 / month</span></td>
+          </tr>
+
+          <tr class="group-row">
+            <td colspan="4">Technical SEO</td>
+          </tr>
+          <tr>
+            <td>Technical SEO audit</td>
+            <td><span class="val">Basic</span></td>
+            <td><span class="val featured-val">Full</span></td>
+            <td><span class="val auth-val">Full</span></td>
+          </tr>
+          <tr>
+            <td>Site speed &amp; Core Web Vitals</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Mobile usability fixes</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Crawl error fixes</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>XML sitemap &amp; robots.txt</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Schema markup</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="val featured-val">Basic</span></td>
+            <td><span class="val auth-val">Advanced</span></td>
+          </tr>
+          <tr>
+            <td>International SEO / hreflang</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 5</span
+        >
+      </div>
+    </section>
+    <!-- ═══════════════════════════════════════
+     PAGE 6 — PLAN COMPARISON (Part 2)
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width: 42%">SEO Activity</th>
+            <th>Starter</th>
+            <th class="col-featured">Growth</th>
+            <th class="col-authority">Authority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group-row">
+            <td colspan="4">Local SEO</td>
+          </tr>
+          <tr>
+            <td>Google Business Profile</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Local citations (directories)</td>
+            <td><span class="val">10+</span></td>
+            <td><span class="val featured-val">20+</span></td>
+            <td><span class="val auth-val">40+</span></td>
+          </tr>
+          <tr>
+            <td>Multi-location SEO</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Review generation strategy</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr class="group-row">
+            <td colspan="4">Content & Blog</td>
+          </tr>
+          <tr>
+            <td>Blog posts written &amp; published</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="val featured-val">2 / mo</span></td>
+            <td><span class="val auth-val">4+ / mo</span></td>
+          </tr>
+          <tr>
+            <td>Content calendar planning</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Topic cluster strategy</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Video / image SEO</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+
+          <tr class="group-row">
+            <td colspan="4">Link Building</td>
+          </tr>
+          <tr>
+            <td>Backlinks per month</td>
+            <td><span class="val">4</span></td>
+            <td><span class="val featured-val">6–8</span></td>
+            <td><span class="val auth-val">10–15</span></td>
+          </tr>
+          <tr>
+            <td>Directory backlinks</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Guest post backlinks</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Digital PR / editorial links</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+
+          <tr class="group-row">
+            <td colspan="4">Reporting & Strategy</td>
+          </tr>
+          <tr>
+            <td>Monthly performance report</td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Weekly ranking snapshots</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Competitor analysis</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="val featured-val">Monthly</span></td>
+            <td><span class="val auth-val">Monthly</span></td>
+          </tr>
+          <tr>
+            <td>Conversion rate optimisation</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Dedicated SEO strategist</td>
+            <td><span class="dash">—</span></td>
+            <td><span class="dash">—</span></td>
+            <td><span class="tick">✓</span></td>
+          </tr>
+          <tr>
+            <td>Direct communication / calls</td>
+            <td><span class="val">Email</span></td>
+            <td><span class="val featured-val">Email + Call</span></td>
+            <td><span class="val auth-val">Priority</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 6</span
+        >
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+     PAGE 7 — ADD-ONS
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <!-- Section 04: Add-ons -->
+      <div class="section-label">
+        <span class="section-num">04</span>
+        <h2>Optional Add-Ons</h2>
+      </div>
+      <p style="font-size: 11px; color: var(--muted); margin-bottom: 10px">
+        Enhance any plan with these additional services
+      </p>
+
+      <table class="addon-table">
+        <thead>
+          <tr>
+            <th style="width: 38%">Add-on</th>
+            <th style="width: 32%">Notes</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Additional Blog Posts</td>
+            <td class="note-cell">SEO-optimised articles</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="2000">2,000</span> / post
+            </td>
+          </tr>
+          <tr>
+            <td>Paid Ads Management (Google/Meta)</td>
+            <td class="note-cell">Ad spend billed separately</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="8000" data-inr-hi="20000"
+                >8,000 – 20,000</span
+              >
+              / mo
+            </td>
+          </tr>
+          <tr>
+            <td>YouTube SEO & Video Optimisation</td>
+            <td class="note-cell">Per channel</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="5000" data-inr-hi="10000"
+                >5,000 – 10,000</span
+              >
+              / mo
+            </td>
+          </tr>
+          <tr>
+            <td>E-commerce SEO (product pages)</td>
+            <td class="note-cell">Category + product optimisation</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="15000" data-inr-hi="30000"
+                >15,000 – 30,000</span
+              >
+              / mo
+            </td>
+          </tr>
+          <tr>
+            <td>Social Media Profile Optimisation</td>
+            <td class="note-cell">One-time setup</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="4000" data-inr-hi="6000"
+                >4,000 – 6,000</span
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>SEO for Multilingual Pages</td>
+            <td class="note-cell">hreflang + translated content</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="2000">2,000</span> /
+              language / mo
+            </td>
+          </tr>
+          <tr>
+            <td>Weekly Reporting Upgrade</td>
+            <td class="note-cell">Available for Starter & Growth</td>
+            <td>
+              <span class="price-sym">₹</span
+              ><span class="price-atom" data-inr-lo="3000">3,000</span> / mo
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 7</span
+        >
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+     PAGE 8 — HOW WE WORK & PAYMENT TERMS
+═══════════════════════════════════════ -->
+    <section class="page">
+      <div class="doc-header">
+        <div>
+            <img
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz Logo"
+              style="width: 8rem; height: 4.8rem"
+            />
+            <div class="tagline">Building Your Digital Home</div>
+          </div>
+        <div class="header-right">
+          <div class="doc-title-sm">SEO Services & Packages · Tron Labz</div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <span class="section-num">05</span>
+        <h2>How We Work & Payment Terms</h2>
+      </div>
+
+      <div class="process-grid">
+        <div class="process-card">
+          <div class="process-num">01</div>
+          <div>
+            <div class="process-title">Discovery Call</div>
+            <div class="process-desc">
+              We learn your business, competitors, target market, and growth
+              goals before proposing anything
+            </div>
+          </div>
+        </div>
+        <div class="process-card">
+          <div class="process-num">02</div>
+          <div>
+            <div class="process-title">SEO Audit</div>
+            <div class="process-desc">
+              Full technical and on-page audit of your current website to
+              understand baseline performance
+            </div>
+          </div>
+        </div>
+        <div class="process-card">
+          <div class="process-num">03</div>
+          <div>
+            <div class="process-title">Strategy Document</div>
+            <div class="process-desc">
+              We send a custom 3-month roadmap with clear targets and
+              deliverables before work begins
+            </div>
+          </div>
+        </div>
+        <div class="process-card">
+          <div class="process-num">04</div>
+          <div>
+            <div class="process-title">Monthly Execution</div>
+            <div class="process-desc">
+              Tasks executed every month: content, links, technical fixes,
+              reporting, no gaps
+            </div>
+          </div>
+        </div>
+        <div class="process-card">
+          <div class="process-num">05</div>
+          <div>
+            <div class="process-title">Monthly Report</div>
+            <div class="process-desc">
+              Results shared by the 5th of each month: rankings, traffic,
+              leads, what's next
+            </div>
+          </div>
+        </div>
+        <div class="process-card">
+          <div class="process-num">06</div>
+          <div>
+            <div class="process-title">Review & Scale</div>
+            <div class="process-desc">
+              Quarterly strategy review to double down on what's working and
+              eliminate what isn't
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="ruled" />
+
+      <div class="payment-grid">
+        <div class="payment-card">
+          <h4>Payment & Contract Terms</h4>
+          <div class="payment-row">
+            <div class="pay-dot"></div>
+            <div class="pay-text">
+              <strong>Monthly billing</strong> — invoiced at the start of each
+              month
+            </div>
+          </div>
+          <div class="payment-row">
+            <div class="pay-dot"></div>
+            <div class="pay-text">
+              <strong>One-time setup fee</strong> — paid before work begins
+              (covers audit, strategy, initial setup)
+            </div>
+          </div>
+          <div class="payment-row">
+            <div class="pay-dot"></div>
+            <div class="pay-text">
+              <strong>Minimum commitment:</strong> Starter 3 months · Growth 4
+              months · Authority 6 months
+            </div>
+          </div>
+          <div class="payment-row">
+            <div class="pay-dot"></div>
+            <div class="pay-text">
+              <strong>30-day cancellation notice</strong> required after minimum
+              period ends
+            </div>
+          </div>
+        </div>
+
+        <div class="payment-card">
+          <h4>Payment Methods & Reporting</h4>
+          <div class="payment-row">
+            <div class="pay-dot"></div>
+            <div class="pay-text">
+              <strong>Payment methods:</strong> Bank Transfer · UPI · PayPal ·
+              Wise · Razorpay · Stripe
+            </div>
+          </div>
+          <div class="payment-row">
+            <div class="pay-dot"></div>
+            <div class="pay-text">
+              <strong>Reporting:</strong> Monthly report delivered by the 5th of
+              each month
+            </div>
+          </div>
+          <div class="payment-row">
+            <div class="pay-dot"></div>
+            <div class="pay-text">
+              <strong>GST / VAT</strong> applicable where required by local
+              regulations
+            </div>
+          </div>
+          <div
+            style="
+              background: rgba(232, 64, 12, 0.07);
+              border: 1px solid rgba(232, 64, 12, 0.2);
+              border-radius: 6px;
+              padding: 10px;
+              margin-top: 8px;
+            "
+          >
+            <div
+              style="
+                font-size: 10.5px;
+                color: #d4856a;
+                line-height: 1.6;
+                font-style: italic;
+              "
+            >
+              SEO results are never guaranteed — rankings depend on competition,
+              content quality, and Google's algorithm. We guarantee consistent
+              effort, transparent reporting, and best-practice execution every
+              month.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <p>
+          Prices shown are monthly retainer estimates. Final pricing is
+          confirmed after the initial discovery call and audit. All prices are
+          indicative and subject to exchange rate fluctuations where applicable.
+          GST / VAT applicable where required. Tron Labz does not guarantee
+          specific search engine rankings or traffic volumes. Results depend on
+          numerous factors including industry competition, domain history,
+          content quality, and continued client cooperation.
+        </p>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz</span
+        >
+        <span class="confidential"
+          >Confidential · For Client Use Only · Page 8</span
+        >
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+     JAVASCRIPT — CURRENCY SWITCHER
+═══════════════════════════════════════ -->
+    <script>
+      // ── Base INR prices are stored in data-inr-lo / data-inr-hi on each .price-atom
+      // ── The currency panel updates: symbol everywhere & converts amounts
+
+      let currentSym = "₹";
+      let currentRate = 1; // multiplier: INR × rate = target currency
+      let currentCode = "INR";
+
+      // Format number nicely
+      function fmt(n) {
+        if (n >= 100000)
+          return (n / 100000).toFixed(n % 100000 === 0 ? 0 : 1) + "L";
+        if (n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + "K";
+        return Math.round(n).toLocaleString();
+      }
+
+      function convertVal(inrVal, rate) {
+        const raw = inrVal * rate;
+        // round sensibly
+        if (raw >= 10000) return Math.round(raw / 100) * 100;
+        if (raw >= 1000) return Math.round(raw / 10) * 10;
+        if (raw >= 100) return Math.round(raw / 5) * 5;
+        return parseFloat(raw.toFixed(2));
+      }
+
+      function numStr(n) {
+        if (n >= 1000000)
+          return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + "M";
+        if (n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + "K";
+        return n.toLocaleString();
+      }
+
+      function applyConversion(sym, rate) {
+        currentSym = sym;
+        currentRate = rate;
+
+        // Update every price-atom
+        document.querySelectorAll(".price-atom").forEach((el) => {
+          const lo = parseFloat(el.dataset.inrLo || 0);
+          const hi = parseFloat(el.dataset.inrHi || 0);
+
+          const loC = convertVal(lo, rate);
+
+          if (hi && hi !== lo) {
+            const hiC = convertVal(hi, rate);
+            el.textContent = numStr(loC) + " – " + numStr(hiC);
+          } else {
+            el.textContent = numStr(loC);
+          }
+
+          // Also update inline sym prefix if it's a sibling (e.g. plan-setup span)
+          // The sym spans are handled separately below
+        });
+
+        // Update all currency symbols
+        document.querySelectorAll(".price-sym").forEach((el) => {
+          el.textContent = sym;
+        });
+      }
+
+      function applyCustom() {
+        const sym = document.getElementById("inp-symbol").value.trim() || "₹";
+        const rate = parseFloat(document.getElementById("inp-rate").value) || 1;
+        applyConversion(sym, rate);
+        // deselect preset buttons
+        document
+          .querySelectorAll(".country-btn")
+          .forEach((b) => b.classList.remove("active"));
+      }
+
+      // Preset configs: [code, symbol, rate vs INR]
+      // Rate = how many units of target currency = 1 INR
+      // IMPORTANT: these are placeholder rates — user updates them via the multiplier field
+      const PRESETS = {
+        INR: ["₹", 1],
+        EUR: ["€", 0.011],
+        GBP: ["£", 0.0094],
+        USD: ["$", 0.012],
+        AED: ["AED ", 0.044],
+        SGD: ["S$", 0.016],
+        AUD: ["A$", 0.018],
+        CAD: ["C$", 0.016],
+      };
+
+      function setPreset(code, sym, label) {
+        const [s, r] = PRESETS[code] || ["₹", 1];
+        document.getElementById("inp-symbol").value = s;
+        document.getElementById("inp-rate").value = r;
+        document.getElementById("inp-code").value = code;
+        applyConversion(s, r);
+
+        document
+          .querySelectorAll(".country-btn")
+          .forEach((b) => b.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+      }
+
+      // Init on load — already INR, no conversion needed
+      window.addEventListener("DOMContentLoaded", () => {
+        // Sync setup-fee spans that embed sym inline (already done via price-sym class)
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Invoice · Tron Labz</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+      :root {
+        --ink: #1a1714;
+        --ink-2: #2c2825;
+        --mid: #7a736d;
+        --light: #f0ece6;
+        --lighter: #f8f5f1;
+        --border: #e2ddd8;
+        --page: #fffefb;
+        --accent: #facc15;
+        --accent-2: #ea580c;
+        --accent-lt: #fff7ed;
+        --green: #15803d;
+        --serif: "Fraunces", Georgia, serif;
+        --sans: "Plus Jakarta Sans", system-ui, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: #e8e4de;
+        color: var(--ink);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ── A4 PAGE ── */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: var(--page);
+        margin: 8mm auto;
+        padding: 14mm 14mm 12mm;
+        position: relative;
+        box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .tagline {
+        font-size: 7px;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      /* top stripe */
+      .page::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--accent) 0%,
+          var(--accent-2) 100%
+        );
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          padding: 12mm 13mm 10mm;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+        [contenteditable] {
+          outline: none !important;
+          border: none !important;
+          background: transparent !important;
+        }
+      }
+
+      /* ── CONTROL PANEL ── */
+      .panel {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 272px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-top: 3px solid var(--accent);
+        border-radius: 10px;
+        padding: 16px;
+        z-index: 1000;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+        font-family: var(--sans);
+      }
+
+      .panel-title {
+        font-family: var(--serif);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .panel-title::before {
+        content: "";
+        width: 3px;
+        height: 15px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+
+      .plabel {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        margin-bottom: 4px;
+      }
+
+      .country-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+
+      .cbtn {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        color: var(--mid);
+        padding: 6px 7px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.15s;
+        font-family: var(--sans);
+      }
+      .cbtn:hover {
+        border-color: var(--accent);
+        color: var(--ink);
+      }
+      .cbtn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+
+      .row2 {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .pinput {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        color: var(--ink);
+        padding: 7px 9px;
+        border-radius: 4px;
+        font-size: 11.5px;
+        font-family: var(--mono);
+        width: 100%;
+        outline: none;
+      }
+      .pinput:focus {
+        border-color: var(--accent);
+      }
+
+      .abtn {
+        width: 100%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 9px;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 11px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        font-family: var(--sans);
+        margin-top: 4px;
+      }
+      .abtn:hover {
+        background: var(--accent-2);
+      }
+      .pbtn {
+        width: 100%;
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--border);
+        padding: 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 11px;
+        cursor: pointer;
+        font-family: var(--sans);
+        margin-top: 5px;
+      }
+      .pbtn:hover {
+        background: var(--lighter);
+      }
+
+      .pdivider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 10px 0;
+      }
+
+      .ptip {
+        font-size: 9.5px;
+        color: var(--mid);
+        line-height: 1.6;
+      }
+
+      /* ── EDITABLE ── */
+      .e {
+        outline: none;
+        display: inline;
+        padding: 1px 2px;
+        min-width: 4px;
+        color: inherit;
+        font: inherit;
+        transition: background 0.15;
+      }
+      .e.block {
+        display: block;
+        width: 100%;
+      }
+
+      body:not(.print-mode) .e:hover {
+        background: rgba(194, 65, 12, 0.07);
+        border-radius: 2px;
+      }
+      body:not(.print-mode) .e:focus {
+        background: var(--accent-lt);
+        border-radius: 2px;
+        outline: 1px solid rgba(194, 65, 12, 0.3);
+      }
+
+      /* ── INVOICE LAYOUT ── */
+
+      /* Header Band */
+      .inv-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .logo-block img {
+        width: 7rem;
+        height: 4.2rem;
+        object-fit: contain;
+      }
+      .logo-tagline {
+        font-size: 7.5px;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-top: 3px;
+      }
+
+      .inv-title-block {
+        text-align: right;
+      }
+      .inv-word {
+        font-family: var(--serif);
+        font-size: 38px;
+        font-weight: 900;
+        color: var(--ink);
+        letter-spacing: -1.5px;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .inv-meta {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 2px 12px;
+        text-align: right;
+        justify-content: end;
+      }
+      .meta-label {
+        font-size: 8.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--mid);
+        text-align: right;
+      }
+      .meta-value {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--ink);
+        text-align: left;
+      }
+
+      /* Status Badge */
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-top: 6px;
+        cursor: pointer;
+        background: #dcfce7 !important;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+      }
+
+      /* Party Grid */
+      .party-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .party-card {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 12px 14px;
+      }
+
+      .party-label {
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--accent);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .party-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .party-name {
+        font-family: var(--serif);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 4px;
+        line-height: 1.2;
+      }
+      .party-line {
+        font-size: 11px;
+        color: var(--mid);
+        line-height: 1.6;
+        display: block;
+      }
+
+      /* Items Table */
+      .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+        font-size: 11.5px;
+      }
+
+      .items-table thead th {
+        background: var(--ink);
+        color: #fff;
+        padding: 9px 10px;
+        text-align: left;
+        font-size: 8.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .items-table thead th:nth-child(2) {
+        text-align: center;
+      }
+      .items-table thead th:nth-child(3),
+      .items-table thead th:nth-child(4),
+      .items-table thead th:last-child {
+        text-align: right;
+      }
+
+      .items-table tbody td {
+        padding: 10px;
+        border-bottom: 1px solid var(--lighter);
+        vertical-align: top;
+      }
+      .items-table tbody td:nth-child(2) {
+        text-align: center;
+      }
+      .items-table tbody td:nth-child(3),
+      .items-table tbody td:nth-child(4),
+      .items-table tbody td:last-child {
+        text-align: right;
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+      .items-table tbody td:last-child {
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .items-table tbody tr:hover td {
+        background: rgba(0, 0, 0, 0.01);
+      }
+      .items-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .item-name {
+        font-weight: 700;
+        color: var(--ink);
+        display: block;
+        margin-bottom: 2px;
+      }
+      .item-desc {
+        font-size: 10px;
+        color: var(--mid);
+        line-height: 1.5;
+      }
+
+      .add-row-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: 1px dashed var(--border);
+        color: var(--mid);
+        font-size: 10.5px;
+        font-weight: 600;
+        padding: 7px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 6px;
+        font-family: var(--sans);
+        transition: all 0.15s;
+        width: 100%;
+      }
+      .add-row-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .del-btn {
+        background: none;
+        border: none;
+        color: #e5e7eb;
+        font-size: 13px;
+        cursor: pointer;
+        padding: 0 4px;
+        line-height: 1;
+        transition: color 0.15s;
+      }
+      .del-btn:hover {
+        color: var(--accent);
+      }
+
+      /* Totals Block */
+      .bottom-grid {
+        display: grid;
+        grid-template-columns: 1fr 200px;
+        gap: 16px;
+        margin-top: 14px;
+        align-items: end;
+      }
+
+      .notes-block {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 12px 14px;
+        align-self: flex-start;
+      }
+      .notes-label {
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        margin-bottom: 6px;
+      }
+      .notes-text {
+        font-size: 11px;
+        color: var(--ink-2);
+        line-height: 1.7;
+      }
+
+      .totals-block {
+        background: var(--lighter);
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        overflow: hidden;
+      }
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--border) !important;
+        font-size: 11.5px;
+      }
+      .total-row:last-child {
+        border-bottom: none !important;
+      }
+      .total-row.grand {
+        background: var(--ink) !important;
+        padding: 11px 14px;
+      }
+      .total-label {
+        color: var(--mid);
+        font-weight: 500;
+      }
+      .total-row.grand .total-label {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .total-value {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 12px;
+        color: var(--ink);
+      }
+      .total-row.grand .total-value {
+        color: #fff;
+        font-size: 16px;
+      }
+
+      /* Payment Details */
+      .payment-band {
+        background: var(--ink);
+        border-radius: 8px;
+        padding: 14px 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+        margin-top: 16px;
+      }
+      .pay-col-label {
+        font-size: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 4px;
+      }
+      .pay-col-value {
+        font-size: 11.5px;
+        color: #fff;
+        line-height: 1.6;
+        font-weight: 500;
+      }
+
+      /* Footer */
+      .inv-footer {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 8.5px;
+        color: var(--mid);
+      }
+      .footer-brand {
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      /* ── CURRENCY DISPLAY ── */
+      .csym {
+        /* inline sym */
+      }
+      .camount {
+        /* inline amount */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════ CONTROL PANEL ═══════════ -->
+    <div class="panel no-print">
+      <div class="panel-title">Invoice Controls</div>
+
+      <div class="plabel">Currency</div>
+      <div class="country-grid">
+        <button class="cbtn active" onclick="setPreset('INR', '₹', 1, event)">
+          🇮🇳 India (INR)
+        </button>
+        <button class="cbtn" onclick="setPreset('EUR', '€', 0.011, event)">
+          🇪🇺 Europe (EUR)
+        </button>
+        <button class="cbtn" onclick="setPreset('GBP', '£', 0.0094, event)">
+          🇬🇧 UK (GBP)
+        </button>
+        <button class="cbtn" onclick="setPreset('USD', '$', 0.012, event)">
+          🇺🇸 USA (USD)
+        </button>
+        <button class="cbtn" onclick="setPreset('AED', 'AED ', 0.044, event)">
+          🇦🇪 UAE (AED)
+        </button>
+        <button class="cbtn" onclick="setPreset('SGD', 'S$', 0.016, event)">
+          🇸🇬 Singapore
+        </button>
+        <button class="cbtn" onclick="setPreset('AUD', 'A$', 0.018, event)">
+          🇦🇺 Australia
+        </button>
+        <button class="cbtn" onclick="setPreset('CAD', 'C$', 0.016, event)">
+          🇨🇦 Canada
+        </button>
+      </div>
+
+      <hr class="pdivider" />
+      <div class="plabel" style="margin-bottom: 6px">Custom Rate</div>
+      <div class="row2">
+        <div>
+          <div class="plabel" style="margin-bottom: 3px">Symbol</div>
+          <input class="pinput" id="inp-sym" value="₹" />
+        </div>
+        <div>
+          <div class="plabel" style="margin-bottom: 3px">Rate × INR</div>
+          <input class="pinput" id="inp-rate" value="1" />
+        </div>
+      </div>
+      <button class="abtn" onclick="applyCustom()">Apply Currency</button>
+
+      <hr class="pdivider" />
+      <div class="plabel" style="margin-bottom: 6px">Tax Rate (%)</div>
+      <input
+        class="pinput"
+        id="inp-tax"
+        value="18"
+        style="margin-bottom: 6px"
+      />
+      <button class="abtn" style="background: var(--ink-2)" onclick="recalc()">
+        Recalculate Totals
+      </button>
+
+      <hr class="pdivider" />
+      <button class="abtn" onclick="addRow()">+ Add Line Item</button>
+      <button class="pbtn" onclick="window.print()">🖨 Print / Save PDF</button>
+
+      <hr class="pdivider" />
+      <p class="ptip">
+        Click any text to edit. Add/remove line items. Currency converts all
+        prices instantly.
+      </p>
+    </div>
+
+    <!-- ═══════════ INVOICE PAGE ═══════════ -->
+    <div class="page" id="invoice">
+      <!-- ── HEADER ── -->
+      <div class="inv-header">
+        <div>
+          <img
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz Logo"
+            style="width: 8rem; height: 4.8rem"
+          />
+          <div class="tagline">Building Your Digital Home</div>
+        </div>
+
+        <div class="inv-title-block">
+          <div class="inv-word">Invoice</div>
+          <div class="inv-meta">
+            <span class="meta-label">Invoice No.</span>
+            <span class="meta-value e" contenteditable="true" id="inv-number"
+              >INV-01012026-0001</span
+            >
+
+            <span class="meta-label">Issue Date</span>
+            <span class="meta-value e" contenteditable="true" id="inv-date"
+              >01 Jun 2025</span
+            >
+
+            <span class="meta-label">Due Date</span>
+            <span class="meta-value e" contenteditable="true" id="inv-due"
+              >15 Jun 2025</span
+            >
+          </div>
+          <div style="text-align: right; margin-top: 8px">
+            <span class="status-badge e" contenteditable="true">Unpaid</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PARTIES ── -->
+      <div class="party-grid">
+        <!-- From -->
+        <div class="party-card">
+          <div class="party-label">From</div>
+          <div class="party-name e" contenteditable="true">Tron Labz</div>
+          <span class="party-line e" contenteditable="true"
+            >support@tronlabz.com</span
+          >
+          <span class="party-line e" contenteditable="true"
+            >+91 95400 43695</span
+          >
+          <span class="party-line e" contenteditable="true"
+            >www.tronlabz.com</span
+          >
+          <span class="party-line e" contenteditable="true"
+            >Shastri Park, Delhi, India</span
+          >
+          <span class="party-line e" contenteditable="true">GSTIN: NA</span>
+        </div>
+
+        <!-- To -->
+        <div class="party-card">
+          <div class="party-label">Bill To</div>
+          <div class="party-name e" contenteditable="true">
+            [Client Name / Company]
+          </div>
+          <span class="party-line e" contenteditable="true"
+            >client@email.com</span
+          >
+          <span class="party-line e" contenteditable="true"
+            >+91 [Phone Number]</span
+          >
+          <span class="party-line e" contenteditable="true"
+            >[Client Website]</span
+          >
+          <span class="party-line e" contenteditable="true"
+            >[Client Address, City]</span
+          >
+          <span class="party-line e" contenteditable="true">GSTIN: NA</span>
+        </div>
+      </div>
+
+      <!-- ── LINE ITEMS ── -->
+      <table class="items-table" id="items-table">
+        <thead>
+          <tr>
+            <th style="width: 42%">Description</th>
+            <th style="width: 8%">Qty</th>
+            <th style="width: 18%">Unit Price</th>
+            <th style="width: 10%">Disc %</th>
+            <th style="width: 18%">Amount</th>
+            <th style="width: 4%" class="no-print"></th>
+          </tr>
+        </thead>
+        <tbody id="line-items">
+          <!-- Row 1 -->
+          <tr data-rate="80000" data-qty="1" data-disc="0">
+            <td>
+              <span class="item-name e" contenteditable="true"
+                >Website Design & Development</span
+              >
+              <span class="item-desc e" contenteditable="true"
+                >Standard package — up to 12 pages, CMS, booking form</span
+              >
+            </td>
+            <td><span class="e qty" contenteditable="true">1</span></td>
+            <td>
+              <span class="csym">₹</span
+              ><span
+                class="e unit-price camount"
+                contenteditable="true"
+                data-inr="80000"
+                >80,000</span
+              >
+            </td>
+            <td><span class="e disc" contenteditable="true">0</span>%</td>
+            <td class="line-total" contenteditable="true">
+              <span class="csym">₹</span> <span class="camount">80,000</span>
+            </td>
+            <td class="no-print">
+              <button class="del-btn" onclick="delRow(this)">✕</button>
+            </td>
+          </tr>
+          <!-- Row 2 -->
+          <tr data-rate="18000" data-qty="1" data-disc="0">
+            <td>
+              <span class="item-name e" contenteditable="true"
+                >SEO Setup — Growth Plan (Setup Fee)</span
+              >
+              <span class="item-desc e" contenteditable="true"
+                >One-time technical setup, keyword research, on-page
+                optimisation</span
+              >
+            </td>
+            <td><span class="e qty" contenteditable="true">1</span></td>
+            <td>
+              <span class="csym">₹</span
+              ><span
+                class="e unit-price camount"
+                contenteditable="true"
+                data-inr="18000"
+                >18,000</span
+              >
+            </td>
+            <td><span class="e disc" contenteditable="true">0</span>%</td>
+            <td class="line-total" contenteditable="true">
+              <span class="csym">₹</span> <span class="camount">18,000</span>
+            </td>
+            <td class="no-print">
+              <button class="del-btn" onclick="delRow(this)">✕</button>
+            </td>
+          </tr>
+          <!-- Row 3 -->
+          <tr data-rate="15000" data-qty="3" data-disc="10">
+            <td>
+              <span class="item-name e" contenteditable="true"
+                >SEO Retainer — Growth Plan</span
+              >
+              <span class="item-desc e" contenteditable="true"
+                >Monthly SEO management, reporting, content & link
+                building</span
+              >
+            </td>
+            <td><span class="e qty" contenteditable="true">3</span></td>
+            <td>
+              <span class="csym">₹</span
+              ><span
+                class="e unit-price camount"
+                contenteditable="true"
+                data-inr="15000"
+                >15,000</span
+              >
+            </td>
+            <td><span class="e disc" contenteditable="true">10</span>%</td>
+            <td class="line-total" contenteditable="true">
+              <span class="csym">₹</span> <span class="camount">40,500</span>
+            </td>
+            <td class="no-print">
+              <button class="del-btn" onclick="delRow(this)">✕</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="add-row-btn no-print" onclick="addRow()">
+        ＋ Add line item
+      </button>
+
+      <!-- ── BOTTOM: NOTES + TOTALS ── -->
+      <div class="bottom-grid">
+        <div class="notes-block">
+          <div class="notes-label">Notes & Terms</div>
+          <div
+            class="notes-text e block"
+            contenteditable="true"
+            style="min-height: 60px; text-align: justify"
+          >
+            Payment is due within 14 days of the invoice date. Bank transfer or
+            UPI is preferred. Projects may be paused if payment remains
+            outstanding for more than 7 days after the invoice date. Thank you
+            for choosing Tron Labz.
+          </div>
+        </div>
+
+        <div>
+          <div class="totals-block">
+            <div class="total-row" contenteditable="true">
+              <span class="total-label">Subtotal</span>
+              <span class="total-value" id="subtotal-display"
+                ><span class="csym">₹</span
+                ><span class="camount" id="subtotal-val">1,38,500</span></span
+              >
+            </div>
+            <div class="total-row" contenteditable="true">
+              <span class="total-label">Discount</span>
+              <span class="total-value" id="discount-display"
+                ><span class="csym">₹</span
+                > <span class="camount" id="discount-val">4,500</span></span
+              >
+            </div>
+            <div class="total-row" contenteditable="true">
+              <span class="total-label"
+                >Tax (<span id="tax-pct-display">18</span>% GST)</span
+              >
+              <span class="total-value"
+                ><span class="csym">₹</span
+                > <span class="camount" id="tax-val">24,930</span></span
+              >
+            </div>
+            <div class="total-row grand" contenteditable="true">
+              <span class="total-label">Total Due</span>
+              <span class="total-value"
+                ><span class="csym">₹</span
+                > <span class="camount" id="grand-val">1,58,930</span></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PAYMENT DETAILS ── -->
+      <div class="payment-band">
+        <div>
+          <div class="pay-col-label">Bank Transfer</div>
+          <div class="pay-col-value e block" contenteditable="true">
+            Bank: BANK OF INDIA<br />
+            A/C: 601110110005070<br />
+            IFSC: BKID0006011
+          </div>
+        </div>
+        <div>
+          <div class="pay-col-label">UPI / Digital</div>
+          <div class="pay-col-value e block" contenteditable="true">
+            UPI ID: 9540043695@okbizaxis<br />
+            PayPal: https://paypal.me/tronlabz<br />
+            Wise / Stripe: on request
+          </div>
+        </div>
+        <div>
+          <div class="pay-col-label">Contact</div>
+          <div class="pay-col-value e block" contenteditable="true">
+            support@tronlabz.com<br />
+            +91 95400 43695<br />
+            www.tronlabz.com
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FOOTER ── -->
+      <div class="inv-footer">
+        <span class="footer-brand"
+          >Tron Labz — Building Your Digital Home</span
+        >
+        <span
+          >Invoice
+          <span
+            class="e"
+            contenteditable="true"
+            style="font-family: var(--mono); font-size: 9px"
+            >INV-01012026-0001</span
+          >
+          · Thank you for your business</span
+        >
+      </div>
+    </div>
+    <!-- /page -->
+
+    <script>
+      /* ════ CURRENCY ════ */
+      let currentSym = "₹";
+      let currentRate = 1;
+
+      function numFmt(n) {
+        if (n >= 10000000)
+          return (n / 10000000).toFixed(2).replace(/\.?0+$/, "") + "Cr";
+        if (n >= 100000)
+          return (n / 100000).toFixed(2).replace(/\.?0+$/, "") + "L";
+        if (n >= 1000) return (n / 1000).toFixed(2).replace(/\.?0+$/, "") + "K";
+        return parseFloat(n.toFixed(2)).toLocaleString("en-IN");
+      }
+
+      function applySymbols() {
+        document
+          .querySelectorAll(".csym")
+          .forEach((el) => (el.textContent = currentSym));
+      }
+
+      function setPreset(code, sym, rate, e) {
+        currentSym = sym;
+        currentRate = rate;
+        document.getElementById("inp-sym").value = sym;
+        document.getElementById("inp-rate").value = rate;
+        document
+          .querySelectorAll(".cbtn")
+          .forEach((b) => b.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+        applyAllPrices();
+      }
+
+      function applyCustom() {
+        currentSym = document.getElementById("inp-sym").value.trim() || "₹";
+        currentRate =
+          parseFloat(document.getElementById("inp-rate").value) || 1;
+        document
+          .querySelectorAll(".cbtn")
+          .forEach((b) => b.classList.remove("active"));
+        applyAllPrices();
+      }
+
+      function convertINR(inr) {
+        const raw = inr * currentRate;
+        if (raw >= 1000)
+          return Math.round(
+            raw / (raw >= 100000 ? 100 : raw >= 10000 ? 10 : 1),
+          );
+        return parseFloat(raw.toFixed(2));
+      }
+
+      function applyAllPrices() {
+        // Update unit price displays
+        document.querySelectorAll(".unit-price[data-inr]").forEach((el) => {
+          const inr = parseFloat(el.dataset.inr);
+          el.textContent = numFmt(convertINR(inr));
+        });
+        applySymbols();
+        recalc();
+      }
+
+      /* ════ CALCULATIONS ════ */
+      function getRowData(tr) {
+        const upEl = tr.querySelector(".unit-price");
+        const inr = parseFloat(upEl?.dataset.inr || 0);
+        const qty = parseFloat(tr.querySelector(".qty")?.textContent || 1);
+        const disc = parseFloat(tr.querySelector(".disc")?.textContent || 0);
+        const unit = convertINR(inr);
+        const lineTotal = unit * qty * (1 - disc / 100);
+        return { unit, qty, disc, lineTotal };
+      }
+
+      function recalc() {
+        const taxPct =
+          parseFloat(document.getElementById("inp-tax").value) || 0;
+        document.getElementById("tax-pct-display").textContent = taxPct;
+
+        let subtotal = 0;
+        let discountTotal = 0;
+
+        document.querySelectorAll("#line-items tr").forEach((tr) => {
+          const d = getRowData(tr);
+          const gross = d.unit * d.qty;
+          subtotal += gross;
+          discountTotal += gross - d.lineTotal;
+
+          // update line total display
+          const ltEl = tr.querySelector(".line-total .camount");
+          if (ltEl) ltEl.textContent = numFmt(d.lineTotal);
+        });
+
+        const afterDiscount = subtotal - discountTotal;
+        const tax = afterDiscount * (taxPct / 100);
+        const grand = afterDiscount + tax;
+
+        document.getElementById("subtotal-val").textContent = numFmt(subtotal);
+        document.getElementById("discount-val").textContent =
+          numFmt(discountTotal);
+        document.getElementById("tax-val").textContent = numFmt(tax);
+        document.getElementById("grand-val").textContent = numFmt(grand);
+
+        applySymbols();
+      }
+
+      /* ════ ADD / DELETE ROWS ════ */
+      function addRow() {
+        const tbody = document.getElementById("line-items");
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-rate", "0");
+        tr.setAttribute("data-qty", "1");
+        tr.setAttribute("data-disc", "0");
+        tr.innerHTML = `
+    <td>
+      <span class="item-name e" contenteditable="true">New Service Item</span>
+      <span class="item-desc e" contenteditable="true">Description of service</span>
+    </td>
+    <td><span class="e qty" contenteditable="true">1</span></td>
+    <td><span class="csym">${currentSym}</span><span class="e unit-price camount" contenteditable="true" data-inr="0">0</span></td>
+    <td><span class="e disc" contenteditable="true">0</span>%</td>
+    <td class="line-total" contenteditable="true"><span class="csym">${currentSym}</span> <span class="camount">0</span></td>
+    <td class="no-print"><button class="del-btn" onclick="delRow(this)">✕</button></td>
+  `;
+        tbody.appendChild(tr);
+
+        // allow typing price and auto-update data-inr
+        tr.querySelector(".unit-price").addEventListener("input", function () {
+          const raw = parseFloat(this.textContent.replace(/[^0-9.]/g, "")) || 0;
+          // store in INR equivalent
+          this.dataset.inr = String(Math.round(raw / currentRate));
+          recalc();
+        });
+        tr.querySelector(".qty").addEventListener("input", recalc);
+        tr.querySelector(".disc").addEventListener("input", recalc);
+      }
+
+      function delRow(btn) {
+        btn.closest("tr").remove();
+        recalc();
+      }
+
+      /* ════ LIVE RECALC ON EDIT ════ */
+      document.addEventListener("input", (e) => {
+        const t = e.target;
+        if (t.classList.contains("qty") || t.classList.contains("disc"))
+          recalc();
+        if (t.classList.contains("unit-price")) {
+          const raw = parseFloat(t.textContent.replace(/[^0-9.]/g, "")) || 0;
+          t.dataset.inr = String(Math.round(raw / currentRate));
+          recalc();
+        }
+      });
+
+      /* ════ INIT ════ */
+      window.addEventListener("DOMContentLoaded", () => {
+        recalc();
+      });
+    </script>
+  </body>
+</html>
