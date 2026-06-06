@@ -21,11 +21,12 @@ import { videoFrameCrop } from "./Video Tools/video_frame_cropper.js"; //video f
 import { videoToAudioExtracter } from "./Video Tools/video_to_audio_extracter.js"; //video to audio extractor [any video format]
 import { videoToGifConverter } from "./Video Tools/video_to_gif_converter.js"; //video to gif converter [any video format]
 import { videoToThumbnail } from "./Video Tools/video_to_thumbnail_generator.js"; //video to thumbnail generator [any video format]
+import { covertToWebmFormat } from "./Video Tools/convert_video_to_webm_video_format.js"; //video format converter (any video format to webm format)
 
 
 // Input and Output Paths
 
-const fileInputPath = "D:\\Soul Code\\Soul Code Graphics"; //Change as per requirement
+const fileInputPath = "C:\\Users\\Assassin\\Downloads\\"; //Change as per requirement
 // C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\input\\
 
 const fileOuptutPath =
@@ -104,7 +105,7 @@ ________________________________________________________________________________
 const inputVideoFormatType = ".mp4"; //Change as per requirement
 
 
-compressVideo(fileInputPath, fileOuptutPath, inputVideoFormatType);
+// compressVideo(fileInputPath, fileOuptutPath, inputVideoFormatType);
 
 /* 
   Function for video frame cropping
@@ -148,3 +149,10 @@ const thumbnailConfig = {
 };
 
 // videoToThumbnail(fileInputPath, fileOuptutPath, inputVideoFormatType, thumbnailMode, thumbnailConfig);
+
+
+/* 
+  Function for video format conversion (any video format) to Webm format
+*/
+
+covertToWebmFormat(fileInputPath, fileOuptutPath, inputVideoFormatType);

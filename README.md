@@ -35,10 +35,12 @@ This directory contains various tools designed to accelerate and streamline the 
 
 - `video_to_thumbnail_generator.js`: A utility for generating thumbnail images from video files, which can be used for previews or as cover images.
 
+- `convert_video_to_webm_video_format.js`: A tool for converting video files into WebM format, which is optimized for web use and can provide better compression than traditional formats for videos.
+
 ##
 ### Email Marketing
 ##
 
-- `server.js`: A simple server setup for handling email marketing campaigns, including sending emails in bulk for promotions, newsletters, or updates to subscribers.
+- `Email Marketing/server.js`: A simple server setup for handling email marketing campaigns, including sending emails in bulk for promotions, newsletters, or updates to subscribers.
 
 
