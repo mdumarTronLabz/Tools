@@ -26,7 +26,8 @@ import { covertToWebmFormat } from "./Video Tools/convert_video_to_webm_video_fo
 
 // Input and Output Paths
 
-const fileInputPath = "C:\\Users\\Assassin\\Downloads\\"; //Change as per requirement
+const fileInputPath =
+  "C:\\Users\\Assassin\\Downloads\\"; //Change as per requirement
 // C:\\Users\\Assassin\\Desktop\\TRON LABZ\\Tron Labz Projects\\Tools\\input\\
 
 const fileOuptutPath =
@@ -41,10 +42,10 @@ const fileOuptutPath =
     */
 
 const imageConvertFromType = ".png"; //Change as per requirement
-const imageConvertToType = ".ico"; //Change as per requirement options: .avif, .webp, .ico
+const imageConvertToType = ".webp"; //Change as per requirement options: .avif, .webp, .ico
 
 // convertMultipleImagesToAVIF(fileInputPath, fileOuptutPath, imageConvertFromType, imageConvertToType);
-// convertMultipleImagesToWEBP(fileInputPath, fileOuptutPath, imageConvertFromType, imageConvertToType);
+convertMultipleImagesToWEBP(fileInputPath, fileOuptutPath, imageConvertFromType, imageConvertToType);
 // convertMultipleImagesToICO(fileInputPath, fileOuptutPath, imageConvertFromType, imageConvertToType);
 
 /* 
@@ -70,8 +71,8 @@ const pixelsToCrop = 30; // Change as per requirement
     */
 
 const imageResizingType = ".png"; //Change as per requirement
-const resizingWidth = 1920; //Change as per requirement
-const resizingHeight = 1080; //Change as per requirement
+const resizingWidth = 1200; //Change as per requirement
+const resizingHeight = 630; //Change as per requirement
 
 // resizeMultipleImagesDimensions(fileInputPath, fileOuptutPath, imageResizingType, resizingWidth, resizingHeight );
 
@@ -99,8 +100,8 @@ ________________________________________________________________________________
 */
 
 /* 
-        Functions for bulk jpg/jpeg/png image compression
-    */
+        Functions for bulk .mp4/.mov video compression
+*/
 
 const inputVideoFormatType = ".mp4"; //Change as per requirement
 
@@ -139,11 +140,11 @@ const duration = "00:00:15"; // Change as per requirement (format: HH:MM:SS)
   Function for video to thumbnail generation
 */
 
-const thumbnailMode = "ALL"; //Change as per requirement options: 'SINGLE', 'RANGE', 'ALL'
+const thumbnailMode = "RANGE"; //Change as per requirement options: 'SINGLE', 'RANGE', 'ALL'
 const thumbnailConfig = {
   // time: "00:00:05", // For SINGLE mode (format: HH:MM:SS)
-  // startTime: "00:00:02", // For RANGE mode (format: HH:MM:SS)
-  // duration: "00:00:08", // For RANGE mode (format: HH:MM:SS)
+  startTime: "00:00:01", // For RANGE mode (format: HH:MM:SS)
+  duration: "00:00:03", // For RANGE mode (format: HH:MM:SS)
   fps: 10, // For RANGE mode (frames per second to extract)
   size: "1080x?", // For every mode (size of output thumbnails, maintain aspect ratio with '?')
 };
@@ -155,4 +156,4 @@ const thumbnailConfig = {
   Function for video format conversion (any video format) to Webm format
 */
 
-covertToWebmFormat(fileInputPath, fileOuptutPath, inputVideoFormatType);
+// covertToWebmFormat(fileInputPath, fileOuptutPath, inputVideoFormatType);

@@ -27,9 +27,17 @@ async function covertToWebmFormat(videoInputPath, videoOutputPath, videoType) {
       
       await new Promise((resolve, reject) => {
         ffmpeg(inputFilePath)
-          .videoCodec("libvpx-vp9")
-          .audioCodec("libopus")
-          .outputOptions(["-crf 30", "-b:v 0"]) //lower the -crf value for better quality (and larger file size), higher for more compression (and lower quality)
+          .outputOptions([
+            "-r 24",
+            "-c:v libvpx-vp9",
+            "-crf 30", // VP9's perceptual scale differs from x264's
+            "-b:v 0", // required with VP9 to use constant-quality mode
+            "-pix_fmt yuv420p",
+            // "-an", // for muted video
+            // Audio
+            "-c:a libopus",
+            "-b:a 128k",
+          ])
           .on("start", (commandLine) => {
             console.log("Spawned FFmpeg with command: " + commandLine);
           })

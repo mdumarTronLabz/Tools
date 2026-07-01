@@ -30,14 +30,16 @@ async function compressVideo(videoInputPath, videoOutputPath, videoType) {
       await new Promise((resolve, reject) => {
         ffmpeg(inputFilePath)
           .outputOptions([
-            "-vf scale=-2:1080", // change resolution (width is auto-calculated to maintain aspect ratio)
+            // "-vf scale=-2:1080", // change resolution (width is auto-calculated to maintain aspect ratio)
             "-r 24", // frame rate
             "-c:v libx264", // codec
-            "-crf 28", // quality (lower = better)
+            "-crf 21", // quality (lower = better)
             "-pix_fmt yuv420p",
             "-preset slow", // speed vs compression option:(slow or fast)
-            "-c:a aac",
-            "-b:a 64k", // audio bitrate
+            // "-c:a aac", //for aac encoded audio
+            "-an", //for muted video
+            // "-b:a 64k", // audio bitrate
+            "-movflags +faststart",
           ])
           .on("start", (commandLine) => {
             console.log("Spawned FFmpeg with command: " + commandLine);
