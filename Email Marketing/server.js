@@ -51,12 +51,23 @@ app.post("/email-marketing", async (req, res) => {
   // USE A SEQUENTIAL LOOP
   for (const recipient of recipients) {
     console.log(`Sending email to: ${recipient.email}`);
+
+    /* 
+    
+    // Outreach Mail Details
+    
+    */
     const outreachMailSubject = `${recipient.firstName}, let's transform your online presence!`;
     const outreachMail = await fs.readFile(
       "./email_html/outreach_mail.html",
       "utf8",
     );
 
+    /* 
+     
+     // Welcome Mail Details
+    
+    */
     // Dark Glass Welcome mail
     const welcomeMailSubject = `Tron Labz Welcomes you to the family!🎉`;
     const welcomeMail = await fs.readFile(
@@ -82,7 +93,7 @@ app.post("/email-marketing", async (req, res) => {
     
     */
 
-    const emailData = {
+    const thankYouEmailData = {
       clientName: "Katrina",
       companyName: "Bloom Beauty",
       projectName: "Website Redesign & Development",
@@ -108,7 +119,7 @@ app.post("/email-marketing", async (req, res) => {
       ],
     };
 
-    const futureScopeHTML = emailData.futureScope
+    const futureScopeHTML = thankYouEmailData.futureScope
       .map(
         (item, index) => `
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
@@ -152,20 +163,49 @@ app.post("/email-marketing", async (req, res) => {
     );
 
     thankYouMail = thankYouMail
-      .replace(/{{CLIENT_NAME}}/g, emailData.clientName)
-      .replace(/{{COMPANY_NAME}}/g, emailData.companyName)
-      .replace(/{{PROJECT_NAME}}/g, emailData.projectName)
-      .replace(/{{LAUNCH_DATE}}/g, emailData.launchDate)
+      .replace(/{{CLIENT_NAME}}/g, thankYouEmailData.clientName)
+      .replace(/{{COMPANY_NAME}}/g, thankYouEmailData.companyName)
+      .replace(/{{PROJECT_NAME}}/g, thankYouEmailData.projectName)
+      .replace(/{{LAUNCH_DATE}}/g, thankYouEmailData.launchDate)
       .replace("{{FUTURE_SCOPE}}", futureScopeHTML);
 
     
+    /* 
+    
+    // Payment Request Mail
+    
+    */
+    const paymentMailSubject = "Action Required: Payment Request";
+    let paymentMail = await fs.readFile(
+      "./email_html/payment_mail.html",
+      "utf8",
+    );
+
+    const paymentEmailData = {
+      clientName: "Katrina",
+      companyName: "Bloom Beauty",
+      paymentTitle: "Website Redesign & Development",
+      paymentReference: "INV-",
+      paymentAmount: "",
+      paymentDueDate: "",
+      paymentLink: "",
+    };
+
+    paymentMail = paymentMail
+      .replace(/{{CLIENT_NAME}}/g, paymentEmailData.clientName)
+      .replace(/{{COMPANY_NAME}}/g, paymentEmailData.companyName)
+      .replace(/{{PAYMENT_TITLE}}/g, paymentEmailData.paymentTitle)
+      .replace(/{{PAYMENT_REF}}/g, paymentEmailData.paymentReference)
+      .replace(/{{AMOUNT}}/g, paymentEmailData.paymentAmount)
+      .replace(/{{DUE_DATE}}/g, paymentEmailData.paymentDueDate)
+      .replace(/{{PAYMENT_LINK}}/g, paymentEmailData.paymentLink);
 
     try {
       await transporter.sendMail({
         from: `"TRON LABZ" <${process.env.SMTP_EMAIL}>`,
         to: recipient.email,
-        subject: thankYouSubject,
-        html: thankYouMail,
+        subject: paymentMailSubject,
+        html: paymentMail,
       });
 
       successCount++;

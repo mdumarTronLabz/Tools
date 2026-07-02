@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Thank You & Future Scope · Tron Labz</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap");
+
+      :root {
+        --linen: #f7f3ec;
+        --linen-2: #efe9df;
+        --linen-3: #e5ddd0;
+        --forest: #1a3a2a;
+        --forest-2: #245038;
+        --forest-lt: #e8f0eb;
+        --gold: #8a6a1f;
+        --gold-2: #b8912e;
+        --gold-lt: #f5edd8;
+        --gold-bd: #d4b870;
+        --bark: #4a3728;
+        --mid: #6b5d50;
+        --light: #c8bfb0;
+        --serif: "Cormorant Garamond", Georgia, serif;
+        --sans: "Nunito Sans", system-ui, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: #d4cec5;
+        color: var(--forest);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ── A4 PAGE ── */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: var(--linen);
+        margin: 8mm auto;
+        padding: 0;
+        position: relative;
+        box-shadow:
+          0 6px 40px rgba(0, 0, 0, 0.18),
+          0 1px 4px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      @media print {
+        body {
+          background: var(--linen);
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          page-break-after: always;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .e:focus,
+        .e:hover {
+          background: transparent !important;
+          outline: none !important;
+        }
+      }
+
+      /* ── EDITABLE ── */
+      .e {
+        outline: none;
+        display: inline;
+        padding: 1px 3px;
+        border-radius: 2px;
+        transition: background 0.15s;
+      }
+      .e.block {
+        display: block;
+        width: 100%;
+      }
+      .e:hover {
+        background: rgba(138, 106, 31, 0.08);
+      }
+      .e:focus {
+        background: rgba(138, 106, 31, 0.12);
+        outline: 1px solid rgba(138, 106, 31, 0.3);
+      }
+
+      /* ── EDIT PANEL ── */
+      .edit-panel {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--forest);
+        border-radius: 10px;
+        padding: 14px 16px;
+        z-index: 1000;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-family: var(--sans);
+      }
+
+      .ep-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 0.3px;
+      }
+
+      .ep-btn {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 11px;
+        cursor: pointer;
+        font-family: var(--sans);
+        transition: all 0.15s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .ep-edit {
+        background: var(--gold-2);
+        color: #fff;
+      }
+      .ep-edit:hover {
+        background: var(--gold);
+      }
+      .ep-print {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .ep-print:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* ═══════════════════════════════════
+   PAGE 1 — THANK YOU LETTER
+═══════════════════════════════════ */
+
+      /* Decorative top bar */
+      .top-bar {
+        height: 6px;
+        background: linear-gradient(
+          90deg,
+          var(--forest) 0%,
+          var(--forest-2) 40%,
+          var(--gold-2) 70%,
+          var(--gold) 100%
+        );
+        flex-shrink: 0;
+      }
+
+      /* Ink border frame */
+      .letter-frame {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin: 10mm;
+        border: 1.5px solid var(--linen-3);
+        border-radius: 4px;
+        padding: 12mm 13mm 10mm;
+        position: relative;
+      }
+
+      /* Corner ornaments */
+      .corner {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        opacity: 0.35;
+      }
+      .corner svg {
+        width: 100%;
+        height: 100%;
+      }
+      .corner.tl {
+        top: -1px;
+        left: -1px;
+      }
+      .corner.tr {
+        top: -1px;
+        right: -1px;
+        transform: scaleX(-1);
+      }
+      .corner.bl {
+        bottom: -1px;
+        left: -1px;
+        transform: scaleY(-1);
+      }
+      .corner.br {
+        bottom: -1px;
+        right: -1px;
+        transform: scale(-1);
+      }
+
+      /* Letter header */
+      .letter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 24px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--linen-3);
+      }
+
+      .logo-img {
+        width: 6.5rem;
+        height: 3.9rem;
+        object-fit: contain;
+        opacity: 0.95;
+      }
+      .logo-tagline {
+        font-family: var(--mono);
+        font-size: 7.5px;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-weight: 500;
+        margin-top: 4px;
+      }
+
+      .letter-date-block {
+        text-align: right;
+      }
+      .letter-date {
+        font-family: var(--serif);
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--mid);
+        font-style: italic;
+        margin-bottom: 3px;
+      }
+      .letter-ref {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--light);
+        letter-spacing: 0.5px;
+      }
+
+      /* Drop Cap Section */
+      .drop-cap-section {
+        margin-bottom: 18px;
+      }
+
+      .drop-cap {
+        font-family: var(--serif);
+        font-size: 78px;
+        font-weight: 600;
+        line-height: 0.8;
+        color: var(--forest);
+        float: left;
+        margin-right: 8px;
+        margin-top: 4px;
+        margin-bottom: -4px;
+        -webkit-text-stroke: 0.5px var(--gold);
+      }
+
+      .letter-opening {
+        font-family: var(--serif);
+        font-size: 22px;
+        font-weight: 300;
+        color: var(--forest);
+        line-height: 1.35;
+        font-style: italic;
+        margin-bottom: 18px;
+        clear: both;
+      }
+
+      /* Letter body */
+      .letter-para {
+        font-size: 16px;
+        line-height: 1.85;
+        color: var(--bark);
+        margin-bottom: 14px;
+        font-weight: 400;
+      }
+
+      .letter-highlight {
+        display: block;
+        background: var(--gold-lt);
+        border-left: 3px solid var(--gold-2);
+        padding: 12px 16px;
+        margin: 18px 0;
+        border-radius: 0 4px 4px 0;
+        font-family: var(--serif);
+        font-size: 15px;
+        font-style: italic;
+        color: var(--forest);
+        line-height: 1.6;
+      }
+
+      /* Milestone achieved chips */
+      .milestone-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 16px 0;
+      }
+      .milestone-chip {
+        background: var(--forest-lt);
+        border: 1px solid rgba(26, 58, 42, 0.15);
+        color: var(--forest);
+        font-size: 10px;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .milestone-chip::before {
+        content: "✓";
+        color: var(--gold-2);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      /* Sign-off */
+      .sign-off {
+        margin-top: 42px;
+        padding-top: 18px;
+        border-top: 1px solid var(--linen-3);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+
+      .sig-left {
+      }
+      .sig-warm {
+        font-family: var(--serif);
+        font-size: 13px;
+        font-style: italic;
+        color: var(--mid);
+        margin-bottom: 28px;
+      }
+      .sig-name {
+        font-family: var(--serif);
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--forest);
+        line-height: 1;
+        margin-bottom: 2px;
+      }
+      .sig-title {
+        font-size: 10px;
+        color: var(--mid);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+      }
+      .sig-contact {
+        font-size: 10px;
+        color: var(--mid);
+        margin-top: 6px;
+        line-height: 1.7;
+      }
+
+      .sig-stamp {
+        width: 80px;
+        height: 80px;
+        border: 2px solid var(--linen-3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        opacity: 0.80;
+      }
+      .stamp-inner {
+        font-family: var(--serif);
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--forest);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        line-height: 1.4;
+        text-align: center;
+      }
+      .stamp-ring {
+        position: absolute;
+        inset: 4px;
+        border: 1px dashed var(--forest);
+        border-radius: 50%;
+        opacity: 0.4;
+      }
+
+      /* Page footer */
+      .page-foot {
+        padding: 8px 10mm;
+        display: flex;
+        justify-content: space-between;
+        font-size: 8px;
+        color: var(--light);
+        background: var(--linen-2);
+        flex-shrink: 0;
+        border-top: 1px solid var(--linen-3);
+      }
+      .foot-brand {
+        font-weight: 700;
+        color: var(--gold);
+      }
+
+      /* ═══════════════════════════════════
+   PAGE 2 — FUTURE SCOPE
+═══════════════════════════════════ */
+
+      .scope-page {
+        background: var(--linen);
+      }
+
+      /* Two-column master layout */
+      .scope-layout {
+        display: grid;
+        grid-template-columns: 52mm 1fr;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      /* Left sidebar */
+      .scope-sidebar {
+        background: var(--forest);
+        padding: 14mm 10mm 12mm;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Sidebar bg texture */
+      .scope-sidebar::before {
+        content: "";
+        position: absolute;
+        bottom: -40px;
+        left: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .scope-sidebar::after {
+        content: "";
+        position: absolute;
+        top: 40%;
+        right: -20px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: rgba(138, 106, 31, 0.12);
+      }
+
+      .sidebar-eyebrow {
+        font-family: var(--mono);
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.35);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .sidebar-title {
+        font-family: var(--serif);
+        font-size: 32px;
+        font-weight: 600;
+        color: #fff;
+        line-height: 1.05;
+        letter-spacing: -0.5px;
+        margin-bottom: 14px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .sidebar-title em {
+        font-style: italic;
+        color: var(--gold-bd);
+      }
+
+      .sidebar-divider {
+        width: 32px;
+        height: 2px;
+        background: var(--gold-2);
+        margin-bottom: 16px;
+        border-radius: 1px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .sidebar-desc {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.55);
+        line-height: 1.75;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .sidebar-client-block {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 12px;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 16px;
+      }
+      .scb-label {
+        font-size: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 6px;
+      }
+      .scb-name {
+        font-family: var(--serif);
+        font-size: 16px;
+        font-weight: 500;
+        color: #fff;
+        margin-bottom: 3px;
+      }
+      .scb-project {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.45);
+        line-height: 1.5;
+      }
+
+      .sidebar-note {
+        margin-top: auto;
+        position: relative;
+        z-index: 1;
+      }
+      .sidebar-note p {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.3);
+        line-height: 1.7;
+        font-style: italic;
+      }
+
+      /* Right content */
+      .scope-content {
+        padding: 14mm 12mm 10mm;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .scope-content-header {
+        margin-bottom: 20px;
+      }
+      .scope-head-label {
+        font-size: 8.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--gold);
+        margin-bottom: 4px;
+      }
+      .scope-head-title {
+        font-family: var(--serif);
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--forest);
+        line-height: 1.2;
+      }
+
+      /* Scope timeline items */
+      .scope-items {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .scope-item {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 0 12px;
+        margin-bottom: 16px;
+        position: relative;
+      }
+
+      /* Vertical connector line */
+      .scope-item:not(:last-child) .si-spine::after {
+        content: "";
+        position: absolute;
+        top: 32px;
+        left: 17px;
+        width: 2px;
+        height: calc(100% + 4px);
+        background: linear-gradient(
+          180deg,
+          var(--linen-3) 0%,
+          transparent 100%
+        );
+      }
+
+      .si-spine {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+      }
+
+      .si-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--forest-lt);
+        border: 2px solid var(--linen-3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+      }
+
+      .scope-item.active .si-icon {
+        background: var(--forest);
+        border-color: var(--gold-2);
+      }
+
+      .si-body {
+        padding-bottom: 4px;
+      }
+
+      .si-phase {
+        font-family: var(--mono);
+        font-size: 8px;
+        font-weight: 500;
+        color: var(--gold);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+
+      .si-title {
+        font-family: var(--serif);
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--forest);
+        margin-bottom: 5px;
+        line-height: 1.2;
+      }
+
+      .si-desc {
+        font-size: 10.5px;
+        color: var(--mid);
+        line-height: 1.65;
+        margin-bottom: 6px;
+      }
+
+      .si-tags {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .si-tag {
+        font-size: 9px;
+        font-weight: 700;
+        background: var(--gold-lt);
+        border: 1px solid rgba(138, 106, 31, 0.2);
+        color: var(--gold);
+        padding: 2px 8px;
+        border-radius: 10px;
+      }
+      .si-tag.forest {
+        background: var(--forest-lt);
+        border-color: rgba(26, 58, 42, 0.15);
+        color: var(--forest-2);
+      }
+
+      /* CTA band at bottom of scope page */
+      .scope-cta {
+        background: var(--forest);
+        margin: -10mm -12mm -10mm;
+        padding: 14px 12px;
+       
+        margin-top: auto;
+      }
+      .cta-left p {
+        font-family: var(--serif);
+        font-size: 16px;
+        color: #fff;
+        font-style: italic;
+        margin-bottom: 2px;
+      }
+      
+      
+     
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════ EDIT PANEL ═══════════ -->
+    <div class="edit-panel no-print">
+      <span class="ep-label">Click any text to edit</span>
+      <button class="ep-btn ep-print" onclick="window.print()">
+        🖨 Print / PDF
+      </button>
+    </div>
+
+    <!-- ═══════════════════════════════════
+     PAGE 1 — THANK YOU LETTER
+═══════════════════════════════════ -->
+    <div class="page">
+      <div class="top-bar"></div>
+
+      <div class="letter-frame">
+        <!-- Corner ornaments -->
+        <div class="corner tl">
+          <svg viewBox="0 0 22 22" fill="none">
+            <path
+              d="M2 20 L2 2 L20 2"
+              stroke="#1a3a2a"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <circle cx="2" cy="2" r="1.5" fill="#8a6a1f" />
+          </svg>
+        </div>
+        <div class="corner tr">
+          <svg viewBox="0 0 22 22" fill="none">
+            <path
+              d="M2 20 L2 2 L20 2"
+              stroke="#1a3a2a"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <circle cx="2" cy="2" r="1.5" fill="#8a6a1f" />
+          </svg>
+        </div>
+        <div class="corner bl">
+          <svg viewBox="0 0 22 22" fill="none">
+            <path
+              d="M2 20 L2 2 L20 2"
+              stroke="#1a3a2a"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <circle cx="2" cy="2" r="1.5" fill="#8a6a1f" />
+          </svg>
+        </div>
+        <div class="corner br">
+          <svg viewBox="0 0 22 22" fill="none">
+            <path
+              d="M2 20 L2 2 L20 2"
+              stroke="#1a3a2a"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <circle cx="2" cy="2" r="1.5" fill="#8a6a1f" />
+          </svg>
+        </div>
+
+        <!-- Header -->
+        <div class="letter-header">
+          <div
+            style="display: flex; flex-direction: column; align-items: center"
+          >
+            <img
+              class="logo-img"
+              src="https://tronlabz.com/assets/company_logo.png"
+              alt="Tron Labz"
+            />
+            <div class="logo-tagline">Powering Your Digital World</div>
+          </div>
+          <div
+            class="letter-date-block"
+            style="display: flex; flex-direction: column; align-items: flex-end"
+          >
+            <div class="letter-date e" contenteditable="true">June 2025</div>
+            <div class="letter-ref e" contenteditable="true">
+              REF: PRO_B-2026-001
+            </div>
+          </div>
+        </div>
+
+        <!-- Salutation -->
+        <div style="margin-bottom: 10px">
+          <div
+            style="
+              font-size: 11px;
+              font-weight: 700;
+              color: var(--mid);
+              text-transform: uppercase;
+              letter-spacing: 1.2px;
+              margin-bottom: 4px;
+            "
+          >
+            To
+          </div>
+          <div
+            style="
+              font-family: var(--serif);
+              font-size: 17px;
+              font-weight: 600;
+              color: var(--forest);
+              line-height: 1.3;
+            "
+          >
+            <span class="e" contenteditable="true">Dr. Ananya Sharma</span
+            ><br />
+            <span
+              style="
+                font-size: 13px;
+                font-weight: 400;
+                font-style: italic;
+                color: var(--mid);
+              "
+              class="e"
+              contenteditable="true"
+              >Founder, Sharma Dental Clinic, Mumbai</span
+            >
+          </div>
+        </div>
+
+        <!-- Drop cap + opening -->
+        <div
+          class="drop-cap-section"
+          style="display: flex; flex-direction: row; align-items: flex-start"
+        >
+          <span class="drop-cap">T</span>
+          <div
+            class="letter-opening e block"
+            contenteditable="true"
+            style="padding-top: 38px; margin-left: -18px"
+          >
+            hank you for trusting Tron Labz with your digital journey.
+          </div>
+        </div>
+
+        <!-- Body -->
+        <p class="letter-para e block" contenteditable="true">
+          It has been a genuine pleasure working alongside you and your team
+          over these past weeks. Watching your vision take shape from our first
+          conversation about what your brand should feel like, to seeing your
+          new website go live, it has been one of those projects we are truly
+          proud to put our name on.
+        </p>
+
+        <!-- Highlight quote
+    <span class="letter-highlight e block" contenteditable="true">
+      "A great website is not just about looking good. It is about earning trust in the first three seconds — and your new platform does exactly that."
+    </span> -->
+
+        <!-- What we achieved
+    <p style="font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;">What We Delivered Together</p>
+    <div class="milestone-row">
+      <div class="milestone-chip e" contenteditable="true">Brand-new website</div>
+      <div class="milestone-chip e" contenteditable="true">Mobile-first design</div>
+      <div class="milestone-chip e" contenteditable="true">Booking system</div>
+      <div class="milestone-chip e" contenteditable="true">WhatsApp integration</div>
+      <div class="milestone-chip e" contenteditable="true">SEO foundations</div>
+      <div class="milestone-chip e" contenteditable="true">Launched on time</div>
+    </div> -->
+
+        <p
+          class="letter-para e block"
+          contenteditable="true"
+          style="margin-top: 14px"
+        >
+          We did not just build you a website, we built you a growth tool. Every
+          element was crafted with your patients in mind: clear service pages,
+          fast load times, an easy booking path, and a visual identity that
+          communicates care and professionalism from the very first click.
+        </p>
+
+        <p class="letter-para e block" contenteditable="true">
+          Your feedback throughout this process made the outcome stronger.
+          Collaboration like yours is what pushes us to do our best work and we
+          are grateful for it.
+        </p>
+
+        <!-- Sign off -->
+        <div class="sign-off">
+          <div
+            class="sig-left"
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+            "
+          >
+            <div class="sig-warm e" contenteditable="true">
+              With warm regards,
+            </div>
+            <div class="sig-name e" contenteditable="true">Md Umar</div>
+            <div class="sig-title e" contenteditable="true">
+              Founder, Tron Labz
+            </div>
+            <div class="sig-contact e block" contenteditable="true">
+              mdumar@tronlabz.com<br />+91 95400 43695<br />
+              www.tronlabz.com
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <!-- /letter-frame -->
+
+      <div class="page-foot">
+        <span class="foot-brand">Tron Labz</span>
+        <span class="e" style="color: black;" contenteditable="true"
+          >www.tronlabz.com · support@tronlabz.com · +91 95400 43695</span
+        >
+        <span style="color: black;">Page 1 of 2</span>
+      </div>
+    </div>
+    <!-- /page 1 -->
+
+    <!-- ═══════════════════════════════════
+     PAGE 2 — FUTURE SCOPE
+═══════════════════════════════════ -->
+    <div class="page scope-page">
+      <div class="top-bar"></div>
+
+      <div class="scope-layout" style="flex: 1">
+        <!-- ── SIDEBAR ── -->
+        <div class="scope-sidebar">
+          <div class="sidebar-eyebrow">Tron Labz</div>
+
+          <div class="sidebar-title e block" contenteditable="true">
+            What's<br /><em>Next</em><br />for You
+          </div>
+
+          <div class="sidebar-divider"></div>
+
+          <p class="sidebar-desc e block" contenteditable="true">
+            Your website is live but this is just the starting line. Here is a
+            clear roadmap of what we can build together to grow your digital
+            presence, attract more patients, and future-proof your business.
+          </p>
+
+       
+
+          <div class="sidebar-note" style="
+              background: rgba(255, 255, 255, 0.04);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              border-radius: 6px;
+              padding: 10px;
+              position: relative;
+              z-index: 1;
+              margin-top: 20px;
+            ">
+            <p class="e block" contenteditable="true" style=" color: white;">
+              Every item in this scope is optional and can be phased as your
+              business grows. No pressure, just possibilities.
+            </p>
+          </div>
+        </div>
+
+        <!-- ── MAIN CONTENT ── -->
+        <div class="scope-content">
+          <div class="scope-content-header">
+            <div class="scope-head-label">Future Growth Roadmap</div>
+            <div class="scope-head-title e" contenteditable="true">
+              Opportunities to Grow Further with Tron Labz
+            </div>
+          </div>
+
+          <div class="scope-items">
+            <!-- Item 1 -->
+            <div class="scope-item">
+              <div class="si-spine">
+                <div class="si-icon">🔍</div>
+              </div>
+              <div class="si-body">
+                <div class="si-phase e" contenteditable="true">
+                  Phase 1 · Immediate
+                </div>
+                <div class="si-title e" contenteditable="true">
+                  SEO & Local Search Visibility
+                </div>
+                <div class="si-desc e block" contenteditable="true">
+                  Help patients in your area find you on Google before they find
+                  competitors. Monthly keyword targeting, Google Business
+                  Profile management, local citations, and performance
+                  reporting.
+                </div>
+                <div class="si-tags">
+                  <span class="si-tag e" contenteditable="true"
+                    >Google Rankings</span
+                  >
+                  <span class="si-tag e" contenteditable="true">Local SEO</span>
+                  <!-- <span class="si-tag forest e" contenteditable="true"
+                    >Starts from ₹8,000/mo</span
+                  > -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="scope-item">
+              <div class="si-spine">
+                <div class="si-icon">📱</div>
+              </div>
+              <div class="si-body">
+                <div class="si-phase e" contenteditable="true">
+                  Phase 2 · Month 1–2
+                </div>
+                <div class="si-title e" contenteditable="true">
+                  Seasonal Campaign Pages
+                </div>
+                <div class="si-desc e block" contenteditable="true">
+                    Launch special promotions and offers for new patients. Custom
+                    landing pages for seasonal campaigns, social media ads, and
+                    email marketing to boost engagement and conversions.
+                </div>
+                <div class="si-tags">
+                  <span class="si-tag e" contenteditable="true">Promotions</span>
+                  <span class="si-tag e" contenteditable="true">Offers</span>
+                  <span class="si-tag forest e" contenteditable="true"
+                    >Custom packages</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="scope-item">
+              <div class="si-spine">
+                <div class="si-icon">⚙️</div>
+              </div>
+              <div class="si-body">
+                <div class="si-phase e" contenteditable="true">
+                  Phase 3 · Month 2–3
+                </div>
+                <div class="si-title e" contenteditable="true">
+                  Advanced Booking & Patient Portal
+                </div>
+                <div class="si-desc e block" contenteditable="true">
+                  Let patients book, reschedule, and manage appointments
+                  entirely online — 24/7. Automated confirmation messages,
+                  reminders via WhatsApp, and a patient login area for records.
+                </div>
+                <div class="si-tags">
+                  <span class="si-tag e" contenteditable="true"
+                    >Online Booking</span
+                  >
+                  <span class="si-tag e" contenteditable="true"
+                    >WhatsApp Alerts</span
+                  >
+                  <span class="si-tag forest e" contenteditable="true"
+                    >Reduces no-shows</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="scope-item">
+              <div class="si-spine">
+                <div class="si-icon">⭐</div>
+              </div>
+              <div class="si-body">
+                <div class="si-phase e" contenteditable="true">
+                  Phase 4 · Ongoing
+                </div>
+                <div class="si-title e" contenteditable="true">
+                  E-commerce Integration
+                </div>
+                <div class="si-desc e block" contenteditable="true">
+                    Sell products and services directly from your website. Secure
+                    payment gateway, inventory management, and automated order
+                    notifications.
+                </div>
+                <div class="si-tags">
+                  <span class="si-tag e" contenteditable="true"
+                    >Google Reviews</span
+                  >
+                  <span class="si-tag e" contenteditable="true"
+                    >Auto-requests</span
+                  >
+                  <span class="si-tag forest e" contenteditable="true"
+                    >Trust builder</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="scope-item" style="margin-bottom: 0">
+              <div class="si-spine">
+                <div class="si-icon">🌐</div>
+              </div>
+              <div class="si-body">
+                <div class="si-phase e" contenteditable="true">
+                  Phase 5 · When ready
+                </div>
+                <div class="si-title e" contenteditable="true">
+                  Website Maintenance & Continuous Growth
+                </div>
+                <div class="si-desc e block" contenteditable="true">
+                  Keep your site secure, fast, and evolving. Monthly updates,
+                  A/B testing on key pages, new treatment pages as your clinic
+                  expands, and analytics reporting so you always know what's
+                  working.
+                </div>
+                <div class="si-tags">
+                  <span class="si-tag e" contenteditable="true"
+                    >Monthly care</span
+                  >
+                  <span class="si-tag e" contenteditable="true">Analytics</span>
+                  <span class="si-tag forest e" contenteditable="true"
+                    >Starts from NZ  $50/mo</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /scope-items -->
+
+          <!-- CTA Band -->
+          <div class="scope-cta">
+            <div class="cta-left">
+              <p class="e" contenteditable="true">
+                "Ready to take the next step? Let's talk."
+              </p>
+            </div>
+            
+          </div>
+        </div>
+        <!-- /scope-content -->
+      </div>
+      <!-- /scope-layout -->
+
+      <div class="page-foot">
+        <span class="foot-brand">Tron Labz</span>
+        <span class="e" contenteditable="true" style="color: black;"
+          >Confidential · Prepared exclusively for this client</span
+        >
+        <span style="color: black;">Page 2 of 2</span>
+      </div>
+    </div>
+    <!-- /page 2 -->
+  </body>
+</html>
