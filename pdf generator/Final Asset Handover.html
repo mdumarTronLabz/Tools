@@ -1,0 +1,1535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Tron Labz's Final Asset Handover</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
+
+      :root {
+        --ink: #111318;
+        --mid: #6b7280;
+        --light: #e5e7eb;
+        --lighter: #f9fafb;
+        --border: #d1d5db;
+        --page: #ffffff;
+        --accent: #1d4ed8;
+        --red: #dc2626;
+        --green: #16a34a;
+        --amber: #d97706;
+        --sans: "Inter", system-ui, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: #e5e7eb;
+        color: var(--ink);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ── A4 ── */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        background: var(--page);
+        margin: 8mm auto;
+        padding: 14mm 14mm 12mm;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+      }
+
+      .page:not(:last-child) {
+        page-break-after: always;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+        .page {
+          margin: 0;
+          box-shadow: none;
+          padding: 12mm 13mm 10mm;
+          page-break-after: always;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .e {
+          background: transparent !important;
+          outline: none !important;
+          border: none !important;
+        }
+        .del-btn {
+          display: none !important;
+        }
+        .add-btn {
+          display: none !important;
+        }
+        tr:has(.del-btn) td:last-child {
+          display: none !important;
+        }
+      }
+
+      /* ── EDITABLE ── */
+      .e {
+        outline: none;
+        display: inline;
+        padding: 1px 3px;
+        border-radius: 2px;
+        min-width: 4px;
+        font: inherit;
+        color: inherit;
+      }
+      .e.block {
+        display: block;
+        width: 100%;
+      }
+      .e:hover {
+        background: rgba(29, 78, 216, 0.06);
+      }
+      .e:focus {
+        background: rgba(29, 78, 216, 0.1);
+        outline: 1px dashed rgba(29, 78, 216, 0.4);
+      }
+      .e:empty:before {
+        content: attr(data-ph);
+        color: #9ca3af;
+        font-style: italic;
+      }
+
+      /* ── CONTROL BAR ── */
+      .ctrl {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: var(--ink);
+        border-radius: 8px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        font-family: var(--sans);
+      }
+      .ctrl-label {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 500;
+      }
+      .ctrl-btn {
+        padding: 7px 14px;
+        border: none;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: var(--sans);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.15s;
+      }
+      .c-print {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+      }
+      .c-print:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .c-add {
+        background: var(--accent);
+        color: #fff;
+      }
+      .c-add:hover {
+        background: #1e40af;
+      }
+
+      /* ── HEADER ── */
+      .doc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-bottom: 14px;
+        margin-bottom: 18px;
+        border-bottom: 2px solid var(--ink);
+      }
+
+      .logo-img {
+        width: 6rem;
+        height: 3.6rem;
+        object-fit: contain;
+      }
+      .logo-tag {
+        font-size: 8px;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-top: 3px;
+      }
+
+      .doc-title-block {
+        text-align: right;
+      }
+      .doc-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--ink);
+        letter-spacing: -0.5px;
+        margin-bottom: 4px;
+      }
+      .doc-subtitle {
+        font-size: 11px;
+        color: var(--mid);
+        margin-bottom: 6px;
+      }
+
+      .doc-meta {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 2px 14px;
+        justify-content: end;
+        text-align: left;
+      }
+      .ml {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--mid);
+      }
+      .mv {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--ink);
+        font-family: var(--mono);
+      }
+
+      /* ── SECTION ── */
+      .section {
+        margin-bottom: 22px;
+      }
+
+      .sec-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .sec-title {
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .sec-title::before {
+        content: "";
+        display: inline-block;
+        width: 3px;
+        height: 14px;
+        background: var(--accent);
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+
+      .add-btn {
+        background: none;
+        border: 1px dashed var(--border);
+        color: var(--mid);
+        font-size: 10px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: var(--sans);
+        transition: all 0.15s;
+      }
+      .add-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ── TABLES ── */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11.5px;
+      }
+
+      thead th {
+        background: var(--ink);
+        color: #fff;
+        padding: 8px 10px;
+        text-align: left;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        white-space: nowrap;
+      }
+      thead th:last-child.del-col {
+        width: 28px;
+        background: var(--ink);
+      }
+
+      tbody td {
+        padding: 9px 10px;
+        border-bottom: 1px solid var(--lighter);
+        vertical-align: top;
+        color: var(--ink);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      tbody tr:hover td {
+        background: #fafafa;
+      }
+
+      .mono-cell {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        word-break: break-all;
+      }
+
+      /* status badge */
+      .status {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .s-live {
+        background: #dcfce7;
+        color: var(--green);
+      }
+      .s-staging {
+        background: #fef9c3;
+        color: var(--amber);
+      }
+      .s-pending {
+        background: #fee2e2;
+        color: var(--red);
+      }
+      .s-active {
+        background: #dbeafe;
+        color: var(--accent);
+      }
+      .s-na {
+        background: var(--lighter);
+        color: var(--mid);
+      }
+
+      /* password cell */
+      .pass-wrap {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .pass-val {
+        font-family: var(--mono);
+        font-size: 10.5px;
+      }
+      .toggle-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 11px;
+        color: var(--mid);
+        padding: 0 2px;
+      }
+
+      /* note cell */
+      .note-cell {
+        font-size: 10.5px;
+        color: var(--mid);
+        font-style: italic;
+      }
+
+      .del-btn {
+        background: none;
+        border: none;
+        color: #d1d5db;
+        font-size: 13px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.15s;
+      }
+      .del-btn:hover {
+        color: var(--red);
+      }
+
+      /* ── CLIENT + IMPORTANT ── */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .info-card {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px 14px;
+      }
+      .ic-title {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        margin-bottom: 8px;
+      }
+      .ic-row {
+        display: grid;
+        grid-template-columns: 90px 1fr;
+        gap: 4px 8px;
+        margin-bottom: 5px;
+        font-size: 11.5px;
+      }
+      .ic-row:last-child {
+        margin-bottom: 0;
+      }
+      .ic-label {
+        color: var(--mid);
+        font-weight: 500;
+      }
+      .ic-val {
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      /* ── IMPORTANT NOTICE BOX ── */
+      .notice {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-left: 3px solid var(--amber);
+        border-radius: 5px;
+        padding: 10px 14px;
+        margin-bottom: 18px;
+        font-size: 11px;
+        color: #92400e;
+        line-height: 1.6;
+      }
+      .notice strong {
+        font-weight: 700;
+      }
+
+      /* ── CHECKLIST ── */
+      .checklist {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 11px;
+        color: var(--ink);
+        padding: 7px 10px;
+        background: var(--lighter);
+        border-radius: 5px;
+        border: 1px solid var(--border);
+      }
+      .check-item input[type="checkbox"] {
+        accent-color: var(--accent);
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      /* ── SIGN OFF ── */
+      .sign-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      .sign-block {
+        border-top: 2px solid var(--border);
+        padding-top: 10px;
+      }
+      .sign-role {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--mid);
+        margin-bottom: 24px;
+      }
+      .sign-name-row {
+        display: grid;
+        grid-template-columns: 70px 1fr;
+        gap: 6px;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 11px;
+      }
+      .sign-field-label {
+        color: var(--mid);
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .sign-line {
+        border-bottom: 1px solid var(--border);
+        min-height: 18px;
+        flex: 1;
+      }
+
+      /* ── FOOTER ── */
+      .page-footer {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        font-size: 8.5px;
+        color: var(--mid);
+      }
+      .footer-brand {
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      /* ── CONFIDENTIAL STRIP ── */
+      .conf-strip {
+        background: var(--ink);
+        color: rgba(255, 255, 255, 0.5);
+        text-align: center;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 8px;
+        margin: -12mm -14mm 14px;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════ CONTROL BAR ═══════════ -->
+    <div class="ctrl no-print">
+      <span class="ctrl-label">Click any cell to edit</span>
+      <button class="ctrl-btn c-print" onclick="window.print()">
+        🖨 Print / PDF
+      </button>
+    </div>
+
+    <!-- ═══════════════════════════════
+     PAGE 1
+═══════════════════════════════ -->
+    <div class="page">
+      <div class="conf-strip">
+        Confidential — For Client Use Only · Keep This Document Secure
+      </div>
+
+      <!-- Header -->
+      <div class="doc-header">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <img
+            class="logo-img"
+            src="https://tronlabz.com/assets/company_logo.png"
+            alt="Tron Labz"
+          />
+          <div class="logo-tag">Powering Your Digital World</div>
+        </div>
+        <div class="doc-title-block">
+          <div class="doc-title">Final Asset Handover</div>
+          <div class="doc-subtitle">
+            All logins, links, credentials & access details
+          </div>
+          <div class="doc-meta">
+            <span class="ml">Prepared for</span>
+            <span class="mv e" contenteditable="true" data-ph="Client Name"
+              >Client Name</span
+            >
+            <span class="ml">Date</span>
+            <span class="mv e" contenteditable="true" data-ph="DD MMM YYYY"
+              >01 Jun 2025</span
+            >
+            <span class="ml">Project</span>
+            <span class="mv e" contenteditable="true" data-ph="Project Name"
+              >Clinic Website</span
+            >
+            <!-- Project Number -->
+            <span class="ml">Ref</span>
+            <span class="mv e" contenteditable="true" data-ph="TL-000"
+              >PRO_B-2026-001</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Client + Agency Info -->
+      <div class="two-col">
+        <div class="info-card">
+          <div class="ic-title">Client Details</div>
+          <div class="ic-row">
+            <span class="ic-label">Name</span
+            ><span class="ic-val e" contenteditable="true"
+              >Dr. Ananya Sharma</span
+            >
+          </div>
+          <div class="ic-row">
+            <span class="ic-label">Business</span
+            ><span class="ic-val e" contenteditable="true"
+              >Sharma Dental Clinic</span
+            >
+          </div>
+          <div class="ic-row">
+            <span class="ic-label">Email</span
+            ><span class="ic-val e" contenteditable="true"
+              >ananya@sharmadental.com</span
+            >
+          </div>
+          <div class="ic-row">
+            <span class="ic-label">Phone</span
+            ><span class="ic-val e" contenteditable="true"
+              >+91 98765 43210</span
+            >
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="ic-title">Delivered By</div>
+          <div class="ic-row">
+            <span class="ic-label">Agency</span
+            ><span class="ic-val">Tron Labz</span>
+          </div>
+          <div class="ic-row">
+            <span class="ic-label">Contact</span
+            ><span class="ic-val">support@tronlabz.com</span>
+          </div>
+          <div class="ic-row">
+            <span class="ic-label">Phone</span
+            ><span class="ic-val">+91 95400 43695</span>
+          </div>
+          <div class="ic-row">
+            <span class="ic-label">Support</span
+            ><span class="ic-val e" contenteditable="true"
+              >30 days post-launch</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong>⚠️ Important:</strong> This document contains sensitive login
+        credentials. Do not share this file over email or messaging apps. Store
+        it in a secure location. Change passwords once you have saved them to
+        your password manager.
+        <span class="e" contenteditable="true"
+          >Contact us immediately at +91 95400 43695 if any access seems
+          compromised.</span
+        >
+      </div>
+
+      <!-- ── SECTION 1: WEBSITE ── -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title">Website & Domain</div>
+          <button class="add-btn no-print" onclick="addRow('tbl-web')">
+            + Add Row
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 22%">Item</th>
+              <th style="width: 30%">URL / Link</th>
+              <th style="width: 16%">Login / Username</th>
+              <th style="width: 16%">Password</th>
+              <th style="width: 10%">Status</th>
+              <th class="no-print del-col"></th>
+            </tr>
+          </thead>
+          <tbody id="tbl-web">
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Live Website</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >https://www.sharmadental.com</span
+                >
+              </td>
+              <td><span class="e mono-cell" contenteditable="true">—</span></td>
+              <td><span class="e mono-cell" contenteditable="true">—</span></td>
+              <td><span class="status s-live">Live</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">WordPress Admin</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >https://sharmadental.com/wp-admin</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >admin@sharmadental</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                    title="Show/hide"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="status s-active">Active</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Staging / Dev Site</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >https://staging.sharmadental.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true">admin</span>
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                    title="Show/hide"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="status s-staging">Staging</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── SECTION 2: DOMAIN & HOSTING ── -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title">Domain & Hosting</div>
+          <button class="add-btn no-print" onclick="addRow('tbl-host')">
+            + Add Row
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%">Item</th>
+              <th style="width: 24%">Provider / URL</th>
+              <th style="width: 18%">Login / Email</th>
+              <th style="width: 16%">Password</th>
+              <th style="width: 14%">Renewal Date</th>
+              <th style="width: 3%" class="no-print del-col"></th>
+            </tr>
+          </thead>
+          <tbody id="tbl-host">
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Domain Registrar</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >GoDaddy — godaddy.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >ananya@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="e" contenteditable="true">Jan 2026</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="e" contenteditable="true">Web Hosting</span></td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Hostinger — hpanel.hostinger.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >ananya@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="e" contenteditable="true">Jan 2026</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">cPanel / FTP</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >sharmadental.com/cpanel</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >sharmadental_usr</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="e" contenteditable="true">—</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">SSL Certificate</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Let's Encrypt (Auto-renew)</span
+                >
+              </td>
+              <td><span class="e mono-cell" contenteditable="true">—</span></td>
+              <td><span class="e mono-cell" contenteditable="true">—</span></td>
+              <td><span class="e" contenteditable="true">Auto</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz — Powering Your Digital World</span
+        >
+        
+        <span>Page 1 of 3</span>
+      </div>
+    </div>
+    <!-- /page 1 -->
+
+    <!-- ═══════════════════════════════
+     PAGE 2
+═══════════════════════════════ -->
+    <div class="page">
+      <div class="conf-strip">
+        Confidential — For Client Use Only · Keep This Document Secure
+      </div>
+
+      <!-- ── SECTION 3: EMAIL ── -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title">Email Accounts</div>
+          <button class="add-btn no-print" onclick="addRow('tbl-email')">
+            + Add Row
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%">Account / Role</th>
+              <th style="width: 28%">Email Address</th>
+              <th style="width: 20%">Provider / Login URL</th>
+              <th style="width: 18%">Password</th>
+              <th style="width: 9%">Status</th>
+              <th class="no-print del-col"></th>
+            </tr>
+          </thead>
+          <tbody id="tbl-email">
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Primary / Admin</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >info@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Google Workspace</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="status s-active">Active</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Appointments</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >appointments@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Google Workspace</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="status s-active">Active</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">No-Reply / Forms</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >noreply@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >cPanel Email</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td><span class="status s-active">Active</span></td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── SECTION 4: THIRD PARTY ── -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title">Third-Party Accounts & Integrations</div>
+          <button class="add-btn no-print" onclick="addRow('tbl-third')">
+            + Add Row
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%">Service</th>
+              <th style="width: 24%">Login URL</th>
+              <th style="width: 20%">Email / Username</th>
+              <th style="width: 16%">Password / Key</th>
+              <th style="width: 15%">Notes</th>
+              <th class="no-print del-col"></th>
+            </tr>
+          </thead>
+          <tbody id="tbl-third">
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Google Analytics</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >analytics.google.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >ananya@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Google account</span
+                >
+              </td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >GA4 property set up</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true"
+                  >Google Search Console</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >search.google.com/console</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >ananya@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Google account</span
+                >
+              </td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >Sitemap submitted</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true"
+                  >Google Business Profile</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >business.google.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >ananya@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Google account</span
+                >
+              </td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >Verified & optimised</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">WhatsApp Business</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >wa.me/+91XXXXXXXXXX</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >+91 XXXXXXXXXX</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >Phone OTP</span
+                >
+              </td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >Linked to website button</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Razorpay / Stripe</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >dashboard.razorpay.com</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >ananya@sharmadental.com</span
+                >
+              </td>
+              <td>
+                <div class="pass-wrap">
+                  <span class="pass-val e" contenteditable="true"
+                    >••••••••••</span
+                  >
+                  <!-- <button
+                    class="toggle-btn no-print"
+                    onclick="togglePass(this)"
+                  >
+                    👁
+                  </button> -->
+                </div>
+              </td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >Test mode — go live when ready</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ── SECTION 5: FILE ASSETS ── -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title">File Assets & Drive Links</div>
+          <button class="add-btn no-print" onclick="addRow('tbl-files')">
+            + Add Row
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 24%">Asset</th>
+              <th style="width: 44%">Link / Location</th>
+              <th style="width: 12%">Access</th>
+              <th style="width: 15%">Notes</th>
+              <th class="no-print del-col"></th>
+            </tr>
+          </thead>
+          <tbody id="tbl-files">
+            <tr>
+              <td>
+                <span class="e" contenteditable="true"
+                  >All Website Files (ZIP)</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >drive.google.com/drive/folders/xxxxxxxx</span
+                >
+              </td>
+              <td><span class="status s-active">Shared</span></td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >Full backup</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true"
+                  >Logo Files (All formats)</span
+                >
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >drive.google.com/drive/folders/xxxxxxxx</span
+                >
+              </td>
+              <td><span class="status s-active">Shared</span></td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >PNG, SVG, AI, PDF</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Brand Style Guide</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >drive.google.com/drive/folders/xxxxxxxx</span
+                >
+              </td>
+              <td><span class="status s-active">Shared</span></td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >Colors, fonts, usage</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="e" contenteditable="true">Database Backup</span>
+              </td>
+              <td>
+                <span class="e mono-cell" contenteditable="true"
+                  >drive.google.com/drive/folders/xxxxxxxx</span
+                >
+              </td>
+              <td><span class="status s-active">Shared</span></td>
+              <td>
+                <span class="note-cell e" contenteditable="true"
+                  >SQL export — June 2025</span
+                >
+              </td>
+              <td class="no-print">
+                <button class="del-btn" onclick="this.closest('tr').remove()">
+                  ✕
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz — Powering Your Digital World</span
+        >
+        
+        <span>Page 2 of 3</span>
+      </div>
+    </div>
+    <!-- /page 2 -->
+
+    <!-- ═══════════════════════════════
+     PAGE 3
+═══════════════════════════════ -->
+    <div class="page">
+      <div class="conf-strip">
+        Confidential — For Client Use Only · Keep This Document Secure
+      </div>
+
+       <!-- Handover Checklist -->
+      <div class="section">
+        <div class="sec-title" style="margin-bottom: 10px; margin-top: 20px;">
+          Handover Checklist
+        </div>
+        <div class="checklist">
+          <label class="check-item"
+            ><input type="checkbox" checked /> Website live & tested</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" checked /> All logins transferred</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" checked /> Domain pointed correctly</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" checked /> SSL certificate active</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" checked /> Analytics connected</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" checked /> Google Search Console</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" checked /> File assets delivered</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" checked /> Email accounts working</label
+          >
+          <label class="check-item"
+            ><input type="checkbox" /> Passwords changed by client</label
+          >
+        </div>
+      </div>
+
+      <!-- Signatures -->
+      <div class="sign-grid" style="margin-top: 4rem;">
+        <div class="sign-block">
+          <div class="sign-role">Service Provider — Tron Labz</div>
+          <div class="sign-name-row">
+            <span class="sign-field-label">Name</span>
+            <div
+              class="sign-line e"
+              contenteditable="true"
+              style="padding-left: 6px; font-size: 11px"
+            ></div>
+          </div>
+          <div class="sign-name-row">
+            <span class="sign-field-label">Signature</span>
+            <div class="sign-line" style="min-height: 32px"></div>
+          </div>
+          <div class="sign-name-row">
+            <span class="sign-field-label">Date</span>
+            <div
+              class="sign-line e"
+              contenteditable="true"
+              style="padding-left: 6px; font-size: 11px"
+            ></div>
+          </div>
+        </div>
+        <div class="sign-block">
+          <div class="sign-role">Client — Received & Acknowledged</div>
+          <div class="sign-name-row">
+            <span class="sign-field-label">Name</span>
+            <div
+              class="sign-line e"
+              contenteditable="true"
+              style="padding-left: 6px; font-size: 11px"
+            ></div>
+          </div>
+          <div class="sign-name-row">
+            <span class="sign-field-label">Signature</span>
+            <div class="sign-line" style="min-height: 32px"></div>
+          </div>
+          <div class="sign-name-row">
+            <span class="sign-field-label">Date</span>
+            <div
+              class="sign-line e"
+              contenteditable="true"
+              style="padding-left: 6px; font-size: 11px"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-footer">
+        <span class="footer-brand"
+          >Tron Labz — Powering Your Digital World</span
+        >
+        
+        <span>Page 3 of 3</span>
+      </div>
+    </div>
+    <!-- /page 3 -->
+
+    <script>
+      // ── Add row to any table
+      const rowTemplate = (sym) => `
+  <tr>
+    <td><span class="e" contenteditable="true">Item</span></td>
+    <td><span class="e mono-cell" contenteditable="true">—</span></td>
+    <td><span class="e mono-cell" contenteditable="true">—</span></td>
+    <td><div class="pass-wrap"><span class="pass-val e" contenteditable="true">——</span><button class="toggle-btn no-print" onclick="togglePass(this)">👁</button></div></td>
+    <td><span class="e" contenteditable="true">—</span></td>
+    <td class="no-print"><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>
+  </tr>`;
+
+      const fileRowTemplate = () => `
+  <tr>
+    <td><span class="e" contenteditable="true">Asset Name</span></td>
+    <td><span class="e mono-cell" contenteditable="true">drive.google.com/drive/folders/—</span></td>
+    <td><span class="status s-active">Shared</span></td>
+    <td><span class="note-cell e" contenteditable="true">Notes</span></td>
+    <td class="no-print"><button class="del-btn" onclick="this.closest('tr').remove()">✕</button></td>
+  </tr>`;
+
+      function addRow(tbodyId) {
+        const tbody = document.getElementById(tbodyId);
+        if (!tbody) return;
+        const html =
+          tbodyId === "tbl-files" ? fileRowTemplate() : rowTemplate();
+        tbody.insertAdjacentHTML("beforeend", html);
+      }
+
+      // ── Toggle password visibility
+      function togglePass(btn) {
+        const span = btn.previousElementSibling;
+        if (!span) return;
+        const current = span.textContent;
+        if (span.dataset.real) {
+          span.textContent = span.dataset.real;
+          delete span.dataset.real;
+          btn.textContent = "🙈";
+        } else {
+          span.dataset.real = current;
+          span.textContent = "••••••••••";
+          btn.textContent = "👁";
+        }
+      }
+
+      // ── Status badge cycle
+      document.addEventListener("click", (e) => {
+        if (!e.target.classList.contains("status")) return;
+        const states = [
+          ["Live", "s-live"],
+          ["Active", "s-active"],
+          ["Staging", "s-staging"],
+          ["Pending", "s-pending"],
+          ["N/A", "s-na"],
+        ];
+        const cls = e.target.className.replace("status ", "").trim();
+        const idx = states.findIndex((s) => s[1] === cls);
+        const next = states[(idx + 1) % states.length];
+        e.target.className = "status " + next[1];
+        e.target.textContent = next[0];
+      });
+    </script>
+  </body>
+</html>
