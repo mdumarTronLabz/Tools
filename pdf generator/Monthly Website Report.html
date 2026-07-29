@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Monthly Website Report · Tron Labz</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --navy:    #0f1f3d;
+  --navy-2:  #162847;
+  --navy-3:  #1e3354;
+  --blue:    #2563eb;
+  --blue-2:  #3b82f6;
+  --blue-lt: #eff6ff;
+  --blue-bd: #bfdbfe;
+  --page:    #ffffff;
+  --bg:      #f1f4f9;
+  --linen:   #f8f9fb;
+  --border:  #e2e8f0;
+  --text:    #0f172a;
+  --mid:     #64748b;
+  --light:   #94a3b8;
+  --green:   #16a34a;
+  --green-lt:#f0fdf4;
+  --green-bd:#bbf7d0;
+  --red:     #dc2626;
+  --red-lt:  #fef2f2;
+  --amber:   #d97706;
+  --amber-lt:#fffbeb;
+  --teal:    #0891b2;
+  --head:    'Sora', system-ui, sans-serif;
+  --sans:    'Inter', system-ui, sans-serif;
+  --mono:    'JetBrains Mono', monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:var(--sans);
+  background:#dde3ed;
+  color:var(--text);
+  -webkit-print-color-adjust:exact;
+  print-color-adjust:exact;
+}
+
+/* ── A4 PAGE ── */
+.page{
+  width:210mm;
+  min-height:297mm;
+  background:var(--page);
+  margin:8mm auto;
+  padding:0;
+  position:relative;
+  box-shadow:0 4px 24px rgba(0,0,0,.12);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  page-break-after:always;
+}
+
+@media print{
+  body{background:#fff;}
+  .page{margin:0;box-shadow:none;page-break-after:always;}
+  @page{size:A4;margin:0;}
+  .no-print{display:none!important;}
+  .e:hover,.e:focus{background:transparent!important;outline:none!important;}
+}
+
+/* ── EDITABLE ── */
+.e{outline:none;display:inline;padding:1px 3px;border-radius:2px;font:inherit;color:inherit;}
+.e.block{display:block;width:100%;}
+.e:hover{background:rgba(37,99,235,.07);}
+.e:focus{background:rgba(37,99,235,.12);outline:1px dashed rgba(37,99,235,.4);}
+.e:empty:before{content:attr(data-ph);color:#94a3b8;font-style:italic;}
+
+/* ── CONTROL BAR ── */
+.ctrl{
+  position:fixed;top:16px;right:16px;
+  background:var(--navy);
+  border-radius:8px;padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+  z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,.3);
+  font-family:var(--sans);
+}
+.ctrl span{font-size:11px;color:rgba(255,255,255,.5);font-weight:500;}
+.ctrl button{
+  padding:7px 14px;border:none;border-radius:5px;
+  font-size:11px;font-weight:700;cursor:pointer;
+  font-family:var(--sans);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.c1{background:var(--blue);color:#fff;}
+.c1:hover{background:var(--blue-2);}
+.c2{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);}
+.c2:hover{background:rgba(255,255,255,.18);}
+
+/* ════════════════════════════
+   PAGE 1 — COVER
+════════════════════════════ */
+.cover-top{
+  background:var(--navy);
+  padding:14mm 14mm 10mm;
+  flex-shrink:0;
+}
+
+.cover-header{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:20mm;
+}
+
+.logo-img{width:6.5rem;height:3.9rem;object-fit:contain;filter:brightness(1.2);}
+.logo-tag{font-size:8px;letter-spacing:1.8px;text-transform:uppercase;color:var(--blue-2);font-weight:600;margin-top:3px;}
+
+.cover-badge{
+  background:rgba(37,99,235,.2);
+  border:1px solid rgba(59,130,246,.3);
+  color:var(--blue-2);
+  font-size:9px;font-weight:700;
+  padding:6px 14px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:1px;
+}
+
+.cover-title-block{margin-bottom:10mm;}
+.cover-eyebrow{
+  font-size:11px;font-weight:600;
+  color:var(--blue-2);
+  text-transform:uppercase;letter-spacing:2px;
+  margin-bottom:8px;
+}
+.cover-h1{
+  font-family:var(--head);
+  font-size:38px;font-weight:800;
+  color:#fff;
+  letter-spacing:-1.2px;line-height:1.05;
+  margin-bottom:6px;
+}
+.cover-sub{
+  font-size:14px;color:rgba(255,255,255,.5);
+  font-weight:300;letter-spacing:.2px;
+}
+
+.cover-meta-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;overflow:hidden;
+}
+.cover-meta-cell{
+  padding:10px 14px;
+  background:rgba(255,255,255,.04);
+}
+.cmc-label{font-size:8.5px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:4px;}
+.cmc-val{font-size:13px;color:#fff;font-weight:600;}
+
+/* Health score band */
+.health-band{
+  background:var(--linen);
+  padding:8mm 14mm;
+  border-bottom:1px solid var(--border);
+}
+
+.health-inner{
+  display:grid;grid-template-columns:auto 1fr auto;
+  gap:16px;align-items:center;
+}
+
+.health-score-block{
+  text-align:center;
+  background:var(--navy);
+  border-radius:12px;
+  padding:16px 22px;
+  min-width:110px;
+}
+.hs-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.hs-num{
+  font-family:var(--head);
+  font-size:48px;font-weight:800;
+  line-height:1;margin-bottom:2px;
+}
+.hs-num.good{color:#4ade80;}
+.hs-num.avg{color:#fbbf24;}
+.hs-num.bad{color:#f87171;}
+.hs-sub{font-size:9px;color:rgba(255,255,255,.4);}
+
+.health-bars{flex:1;}
+.hb-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.hb-row:last-child{margin-bottom:0;}
+.hb-label{font-size:10.5px;font-weight:600;color:var(--text);min-width:120px;}
+.hb-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.hb-fill{height:100%;border-radius:4px;transition:width .3s;}
+.fill-green{background:var(--green);}
+.fill-blue{background:var(--blue);}
+.fill-amber{background:var(--amber);}
+.fill-red{background:var(--red);}
+.hb-val{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text);min-width:32px;text-align:right;}
+
+.health-verdict{
+  background:var(--navy);
+  border-radius:10px;
+  padding:14px 16px;
+  min-width:160px;
+}
+.hv-label{font-size:8px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:6px;}
+.hv-text{font-size:12px;color:#fff;font-weight:600;line-height:1.4;}
+.hv-arrow{font-size:18px;margin-top:6px;display:block;color:#fff;}
+
+/* Key numbers strip */
+.key-numbers{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  padding:8mm 14mm 0;
+  gap:0;
+  flex-shrink:0;
+}
+
+.kn-cell{
+  padding:14px 12px;
+  border-right:1px solid var(--border);
+  text-align:center;
+}
+.kn-cell:first-child{text-align:left;padding-left:0;}
+.kn-cell:last-child{border-right:none;text-align:right;padding-right:0;}
+
+.kn-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--light);margin-bottom:4px;}
+.kn-num{
+  font-family:var(--head);
+  font-size:28px;font-weight:800;
+  color:var(--navy);line-height:1;
+  margin-bottom:3px;
+}
+.kn-change{
+  font-size:10px;font-weight:700;
+  display:inline-flex;align-items:center;gap:3px;
+}
+.up{color:var(--green);}
+.down{color:var(--red);}
+.neutral{color:var(--light);}
+.kn-sub{font-size:9.5px;color:var(--light);margin-top:2px;}
+
+.cover-content{
+  padding:6mm 14mm 0;
+  flex:1;display:flex;flex-direction:column;
+}
+
+/* Summary box */
+.summary-box{
+  background:var(--linen);
+  border:1px solid var(--border);
+  border-left:4px solid var(--blue);
+  border-radius:8px;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.sb-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--blue);margin-bottom:8px;}
+.sb-text{font-size:12.5px;color:var(--text);line-height:1.75;}
+
+/* Highlight row */
+.highlight-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:10px;margin-bottom:14px;
+}
+.hl-card{
+  border-radius:8px;padding:12px 14px;
+  border:1px solid;
+}
+.hl-card.win{background:var(--green-lt);border-color:var(--green-bd);}
+.hl-card.warn{background:var(--amber-lt);border-color:#fde68a;}
+.hl-card.action{background:var(--blue-lt);border-color:var(--blue-bd);}
+.hl-icon{font-size:16px;margin-bottom:4px;}
+.hl-head{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.hl-card.win .hl-head{color:var(--green);}
+.hl-card.warn .hl-head{color:var(--amber);}
+.hl-card.action .hl-head{color:var(--blue);}
+.hl-body{font-size:11px;color:var(--text);line-height:1.6;}
+
+/* Page footer */
+.pg-foot{
+  margin-top:auto;
+  padding:8px 14mm;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;
+  font-size:8.5px;color:var(--light);
+  background:var(--linen);
+  flex-shrink:0;
+}
+.pg-brand{font-weight:700;color:var(--blue);}
+
+/* ════════════════════════════
+   INNER PAGES — SHARED
+════════════════════════════ */
+.pg-inner{padding:12mm 14mm 0;}
+
+.pg-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14mm;
+  background:var(--navy);
+  flex-shrink:0;
+}
+.pg-header-left{display:flex;align-items:center;gap:12px;}
+.ph-logo{width:4rem;height:2.4rem;object-fit:contain;filter:brightness(1.2);}
+.ph-title{font-family:var(--head);font-size:13px;font-weight:700;color:#fff;letter-spacing:-.2px;}
+.ph-sub{font-size:9px;color:rgba(255,255,255,.4);margin-top:1px;}
+.ph-chip{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.6);
+  font-size:9px;font-weight:700;
+  padding:4px 12px;border-radius:12px;
+  text-transform:uppercase;letter-spacing:.8px;
+}
+
+/* Section heading */
+.sec-h{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;
+}
+.sec-h-line{width:3px;height:20px;border-radius:2px;flex-shrink:0;}
+.sec-h-blue{background:var(--blue);}
+.sec-h-green{background:var(--green);}
+.sec-h-amber{background:var(--amber);}
+.sec-h-teal{background:var(--teal);}
+.sec-h-navy{background:var(--navy);}
+
+.sec-title{font-family:var(--head);font-size:16px;font-weight:700;color:var(--navy);letter-spacing:-.3px;}
+.sec-desc{font-size:10.5px;color:var(--mid);margin-top:1px;}
+
+/* Stat cards */
+.stat-row{
+  display:grid;gap:10px;
+  margin-bottom:16px;
+}
+.cols-4{grid-template-columns:repeat(4,1fr);}
+.cols-3{grid-template-columns:repeat(3,1fr);}
+.cols-2{grid-template-columns:1fr 1fr;}
+
+.stat-card{
+  background:var(--linen);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:12px 14px;
+}
+.stat-card.accent{background:var(--navy);border-color:var(--navy);}
+.stat-card.green{background:var(--green-lt);border-color:var(--green-bd);}
+.stat-card.amber{background:var(--amber-lt);border-color:#fde68a;}
+.stat-card.red{background:var(--red-lt);border-color:#fecaca;}
+.stat-card.blue{background:var(--blue-lt);border-color:var(--blue-bd);}
+
+.sc-label{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mid);margin-bottom:4px;}
+.stat-card.accent .sc-label{color:rgba(255,255,255,.4);}
+.stat-card.green .sc-label{color:var(--green);}
+.stat-card.amber .sc-label{color:var(--amber);}
+.stat-card.red .sc-label{color:var(--red);}
+.stat-card.blue .sc-label{color:var(--blue);}
+
+.sc-num{font-family:var(--head);font-size:26px;font-weight:800;color:var(--navy);line-height:1;margin-bottom:3px;}
+.stat-card.accent .sc-num{color:#fff;}
+.stat-card.green .sc-num{color:var(--green);}
+.stat-card.amber .sc-num{color:var(--amber);}
+.stat-card.red .sc-num{color:var(--red);}
+.stat-card.blue .sc-num{color:var(--blue);}
+
+.sc-change{font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px;margin-bottom:3px;}
+.sc-explain{font-size:10px;color:var(--mid);line-height:1.5;}
+.stat-card.accent .sc-explain{color:rgba(255,255,255,.5);}
+
+/* Bar chart */
+.bar-chart{margin-bottom:16px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+.bar-name{font-size:11px;font-weight:500;color:var(--text);min-width:130px;}
+.bar-track{flex:1;height:10px;background:var(--border);border-radius:5px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:5px;background:var(--blue);}
+.bar-val{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text);min-width:40px;text-align:right;}
+
+/* Traffic source table */
+.data-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:16px;}
+.data-table thead th{
+  background:var(--navy);color:#fff;
+  padding:8px 10px;text-align:left;
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;
+}
+.data-table thead th:not(:first-child){text-align:right;}
+.data-table tbody td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.data-table tbody td:not(:first-child){text-align:right;font-family:var(--mono);font-size:11px;}
+.data-table tbody tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover td{background:var(--linen);}
+.pill{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.pill-up{background:var(--green-lt);color:var(--green);}
+.pill-dn{background:var(--red-lt);color:var(--red);}
+.pill-nt{background:var(--linen);color:var(--mid);}
+
+/* Explanation box — plain English */
+.plain-box{
+  background:var(--blue-lt);
+  border:1px solid var(--blue-bd);
+  border-radius:8px;
+  padding:12px 14px;
+  margin-bottom:14px;
+}
+.pb-head{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--blue);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.pb-head::before{content:'💡';font-size:11px;}
+.pb-text{font-size:11.5px;color:var(--navy);line-height:1.7;}
+
+/* What this means box */
+.wtm-box{
+  background:var(--linen);border:1px solid var(--border);
+  border-radius:8px;padding:12px 14px;margin-bottom:14px;
+}
+.wtm-head{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--mid);margin-bottom:8px;}
+.wtm-items{display:flex;flex-direction:column;gap:6px;}
+.wtm-item{display:flex;gap:10px;align-items:flex-start;font-size:11px;color:var(--text);line-height:1.6;}
+.wtm-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dot-green{background:var(--green);}
+.dot-blue{background:var(--blue);}
+.dot-amber{background:var(--amber);}
+.dot-red{background:var(--red);}
+
+/* SEO keyword table */
+.kw-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px;}
+.kw-table thead th{background:var(--navy);color:#fff;padding:8px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;text-align:left;}
+.kw-table thead th:not(:first-child){text-align:center;}
+.kw-table tbody td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text);}
+.kw-table tbody td:not(:first-child){text-align:center;font-family:var(--mono);font-size:10.5px;}
+.kw-table tbody tr:last-child td{border-bottom:none;}
+.kw-table tbody tr:hover td{background:var(--linen);}
+.rank-badge{
+  display:inline-block;width:28px;height:28px;border-radius:50%;
+  font-weight:700;font-size:11px;line-height:28px;text-align:center;
+}
+.r-top{background:#dcfce7;color:var(--green);}
+.r-mid{background:#fef9c3;color:var(--amber);}
+.r-low{background:#fee2e2;color:var(--red);}
+.r-new{background:var(--blue-lt);color:var(--blue);}
+
+/* Speed gauges */
+.speed-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;}
+.speed-card{
+  border:1px solid var(--border);border-radius:10px;
+  padding:14px;text-align:center;
+  background:var(--linen);
+}
+.sp-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mid);margin-bottom:8px;}
+.sp-score{
+  font-family:var(--head);font-size:36px;font-weight:800;
+  line-height:1;margin-bottom:4px;
+}
+.sp-good{color:var(--green);}
+.sp-avg{color:var(--amber);}
+.sp-bad{color:var(--red);}
+.sp-bar{height:6px;background:var(--border);border-radius:3px;margin-bottom:6px;overflow:hidden;}
+.sp-bar-fill{height:100%;border-radius:3px;}
+.sp-explain{font-size:10px;color:var(--mid);line-height:1.5;}
+
+/* Issues list */
+.issue-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.issue-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 12px;border-radius:7px;border:1px solid;
+}
+.issue-item.fixed{background:var(--green-lt);border-color:var(--green-bd);}
+.issue-item.pending{background:var(--amber-lt);border-color:#fde68a;}
+.issue-item.critical{background:var(--red-lt);border-color:#fecaca;}
+.issue-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.issue-body{}
+.issue-title{font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.issue-desc{font-size:10.5px;color:var(--mid);line-height:1.5;}
+.issue-badge{display:inline-block;font-size:8.5px;font-weight:800;padding:2px 7px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+.badge-fixed{background:#dcfce7;color:var(--green);}
+.badge-pending{background:#fef9c3;color:var(--amber);}
+.badge-critical{background:#fee2e2;color:var(--red);}
+
+/* Conversion funnel */
+.funnel{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.funnel-step{
+  display:grid;grid-template-columns:160px 1fr 80px 80px;
+  gap:12px;align-items:center;
+  background:var(--linen);border:1px solid var(--border);
+  border-radius:7px;padding:10px 14px;
+}
+.fs-name{font-size:11.5px;font-weight:600;color:var(--text);}
+.fs-bar-wrap{background:var(--border);border-radius:4px;height:8px;overflow:hidden;}
+.fs-bar{height:100%;border-radius:4px;}
+.fs-count{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--navy);text-align:right;}
+.fs-change{font-size:10px;font-weight:700;text-align:right;}
+
+/* Next steps table */
+.next-table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:14px;}
+.next-table thead th{background:var(--navy);color:#fff;padding:9px 12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;text-align:left;}
+.next-table tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;}
+.next-table tbody tr:last-child td{border-bottom:none;}
+.next-table tbody tr:hover td{background:var(--linen);}
+.pri-badge{display:inline-block;font-size:9px;font-weight:800;padding:3px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;}
+.pri-high{background:#fee2e2;color:var(--red);}
+.pri-med{background:#fef9c3;color:var(--amber);}
+.pri-low{background:var(--blue-lt);color:var(--blue);}
+.pri-done{background:var(--green-lt);color:var(--green);}
+
+/* Sign-off band */
+.sign-band{
+  background:var(--navy);
+  padding:14px 14mm;
+  display:flex;
+  gap:20px;align-items:center;
+  justify-content: space-between;
+  
+  flex-shrink:0;
+}
+.sb-col{display: flex; flex-direction: column;}
+.sb-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.35);font-weight:700;margin-bottom:4px;}
+.sb-val{font-size:12px;color:#fff;font-weight:600;}
+.sb-sub{font-size:9.5px;color:rgba(255,255,255,.4);margin-top:2px;}
+.sb-divider{width:1px;height:40px;background:rgba(255,255,255,.1);}
+.sb-center{text-align:center;}
+.sb-center .sb-label{text-align:center;}
+.need-from-you{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:6px;
+  padding:10px 14px;
+  font-size:11px;color:rgba(255,255,255,.7);
+  line-height:1.7;
+}
+
+/* Two-col layout helper */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* Ruled divider */
+.ruled{border:none;border-top:1px solid var(--border);margin:14px 0;}
+
+.spacer{height:14px;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ CTRL ═══════════ -->
+<div class="ctrl no-print">
+  <span>Click any number or text to edit</span>
+  <button class="c1" onclick="window.print()">🖨 Print / PDF</button>
+</div>
+
+
+<!-- ════════════════════════════════════
+     PAGE 1 — COVER
+════════════════════════════════════ -->
+<div class="page">
+
+  <!-- Top navy band -->
+  <div class="cover-top">
+    <div class="cover-header">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+        <img class="logo-img" src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz"/>
+        <div class="logo-tag">Powering Your Digital World</div>
+      </div>
+      <div class="cover-badge e" contenteditable="true">Monthly Website Report</div>
+    </div>
+
+    <div class="cover-title-block">
+      
+      <div class="cover-h1 e" contenteditable="true">Sharma Dental Clinic</div>
+      <!-- <div class="cover-sub e" contenteditable="true">sharmadental.com &nbsp;·&nbsp; Prepared by Tron Labz &nbsp;·&nbsp; June 2025</div> -->
+    </div>
+
+    <div class="cover-meta-row">
+      <div class="cover-meta-cell">
+        <div class="cmc-label">Reporting Period</div>
+        <div class="cmc-val e" contenteditable="true">1–30 June 2025</div>
+      </div>
+      <div class="cover-meta-cell">
+        <div class="cmc-label">Report Date</div>
+        <div class="cmc-val e" contenteditable="true">03 July 2025</div>
+      </div>
+      <div class="cover-meta-cell">
+        <div class="cmc-label">Prepared By</div>
+        <div class="cmc-val e" contenteditable="true">Tron Labz Team</div>
+      </div>
+      <div class="cover-meta-cell">
+        <div class="cmc-label">Report No.</div>
+        <div class="cmc-val e" contenteditable="true">RPT-2025-06</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Health Score Band -->
+  <div class="health-band">
+    <div class="health-inner">
+      <div class="health-score-block">
+        <div class="hs-label">Overall Health</div>
+        <div class="hs-num good e" contenteditable="true">74</div>
+        <div class="hs-sub e" contenteditable="true">out of 100</div>
+      </div>
+
+      <div class="health-bars">
+        <div class="hb-row">
+          <span class="hb-label e" contenteditable="true">Traffic & Visitors</span>
+          <div class="hb-track"><div class="hb-fill fill-green" style="width:82%"></div></div>
+          <span class="hb-val e" contenteditable="true">82</span>
+        </div>
+        <div class="hb-row">
+          <span class="hb-label e" contenteditable="true">SEO & Search Ranking</span>
+          <div class="hb-track"><div class="hb-fill fill-blue" style="width:68%"></div></div>
+          <span class="hb-val e" contenteditable="true">68</span>
+        </div>
+        <div class="hb-row">
+          <span class="hb-label e" contenteditable="true">Website Speed</span>
+          <div class="hb-track"><div class="hb-fill fill-amber" style="width:61%"></div></div>
+          <span class="hb-val e" contenteditable="true">61</span>
+        </div>
+        <div class="hb-row">
+          <span class="hb-label e" contenteditable="true">Leads & Conversions</span>
+          <div class="hb-track"><div class="hb-fill fill-green" style="width:75%"></div></div>
+          <span class="hb-val e" contenteditable="true">75</span>
+        </div>
+        <div class="hb-row">
+          <span class="hb-label e" contenteditable="true">Security & Uptime</span>
+          <div class="hb-track"><div class="hb-fill fill-green" style="width:98%"></div></div>
+          <span class="hb-val e" contenteditable="true">98</span>
+        </div>
+      </div>
+
+      <div class="health-verdict">
+        <div class="hv-label">This Month</div>
+        <div class="hv-text e" contenteditable="true">Good progress. Uptime perfect. Speed needs attention.</div>
+        <span class="hv-arrow e" contenteditable="true">📈 Trending Up</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Numbers -->
+  <div class="key-numbers">
+    <div class="kn-cell">
+      <div class="kn-label">Total Visitors</div>
+      <div class="kn-num e" contenteditable="true">1,842</div>
+      <div class="kn-change up e" contenteditable="true">↑ 18%</div>
+      <div class="kn-sub">vs last month</div>
+    </div>
+    <div class="kn-cell" style="text-align:center;">
+      <div class="kn-label">Enquiries / Leads</div>
+      <div class="kn-num e" contenteditable="true">47</div>
+      <div class="kn-change up e" contenteditable="true">↑ 12</div>
+      <div class="kn-sub">new this month</div>
+    </div>
+    <div class="kn-cell" style="text-align:center;">
+      <div class="kn-label">Avg. Time on Site</div>
+      <div class="kn-num e" contenteditable="true">2m 34s</div>
+      <div class="kn-change neutral e" contenteditable="true">→ Same</div>
+      <div class="kn-sub">good engagement</div>
+    </div>
+    <div class="kn-cell" style="text-align:center;">
+      <div class="kn-label">Google Ranking</div>
+      <div class="kn-num e" contenteditable="true">#4</div>
+      <div class="kn-change up e" contenteditable="true">↑ 3 spots</div>
+      <div class="kn-sub">"dental clinic Mumbai"</div>
+    </div>
+    <div class="kn-cell">
+      <div class="kn-label">Uptime</div>
+      <div class="kn-num e" contenteditable="true">99.9%</div>
+      <div class="kn-change up e" contenteditable="true">✓ Perfect</div>
+      <div class="kn-sub">no downtime</div>
+    </div>
+  </div>
+
+  <!-- Summary + Highlights -->
+  <div class="cover-content">
+    <div class="spacer"></div>
+    <div class="summary-box">
+      <div class="sb-title">This Month at a Glance</div>
+      <div class="sb-text e block" contenteditable="true">Your website had a strong June. More people found you on Google, your enquiry count grew, and the site stayed online 100% of the time. The main thing to focus on next is mobile page speed — your site loads a little slowly on phones, which means some visitors may leave before seeing your services. We've already started work on this.</div>
+    </div>
+
+    <div class="highlight-row">
+      <div class="hl-card win">
+        <div class="hl-icon">🏆</div>
+        <div class="hl-head">Top Win</div>
+        <div class="hl-body e" contenteditable="true">Google ranking improved from #7 to #4 for "dental clinic Mumbai" — you're almost on page 1.</div>
+      </div>
+      <div class="hl-card warn">
+        <div class="hl-icon">⚡</div>
+        <div class="hl-head">Watch Out</div>
+        <div class="hl-body e" contenteditable="true">Mobile page speed score is 61/100. Google penalises slow mobile sites. We're fixing this in July.</div>
+      </div>
+      <div class="hl-card action">
+        <div class="hl-icon">📋</div>
+        <div class="hl-head">We Need From You</div>
+        <div class="hl-body e" contenteditable="true">3 patient testimonials for the new reviews section and updated clinic photos if available.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pg-foot">
+    <span class="pg-brand">Tron Labz</span>
+    <span>Page 1 of 5</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     PAGE 2 — TRAFFIC & VISITORS
+════════════════════════════════════ -->
+<div class="page">
+  <div class="pg-header">
+    <div class="pg-header-left">
+      <img class="ph-logo" src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz"/>
+      <div>
+        <div class="ph-title e" contenteditable="true">Traffic & Visitors</div>
+        <div class="ph-sub e" contenteditable="true">Who is visiting your website and how are they finding you</div>
+      </div>
+    </div>
+    <div class="ph-chip e" contenteditable="true">June 2025</div>
+  </div>
+
+  <div class="pg-inner" style="flex:1;display:flex;flex-direction:column;">
+
+    <div class="spacer"></div>
+
+    <!-- Stat row -->
+    <div class="stat-row cols-4">
+      <div class="stat-card accent">
+        <div class="sc-label">Total Visitors</div>
+        <div class="sc-num e" contenteditable="true">1,842</div>
+        <div class="sc-change up e" contenteditable="true">↑ 18% vs May</div>
+        <div class="sc-explain e" contenteditable="true">1,560 people visited in May</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">New Visitors</div>
+        <div class="sc-num e" contenteditable="true">1,284</div>
+        <div class="sc-change up e" contenteditable="true">↑ 22%</div>
+        <div class="sc-explain e" contenteditable="true">First-time visitors finding you</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Returning Visitors</div>
+        <div class="sc-num e" contenteditable="true">558</div>
+        <div class="sc-change up e" contenteditable="true">↑ 9%</div>
+        <div class="sc-explain e" contenteditable="true">People coming back — great sign</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Bounce Rate</div>
+        <div class="sc-num e" contenteditable="true">42%</div>
+        <div class="sc-change up e" contenteditable="true">↓ 6% (improved)</div>
+        <div class="sc-explain e" contenteditable="true">Lower = better. Industry avg. 55%</div>
+      </div>
+    </div>
+
+    <div class="plain-box">
+      <div class="pb-head">What does this mean for your clinic?</div>
+      <div class="pb-text e block" contenteditable="true">1,842 people visited your website this month — that's about 61 people per day looking at your clinic online. Of those, 47 submitted an enquiry or called you. Your bounce rate improved, meaning more people are staying on the site and reading about your services rather than leaving immediately.</div>
+    </div>
+
+    <!-- Traffic sources -->
+    <div class="sec-h">
+      <div class="sec-h-line sec-h-blue"></div>
+      <div>
+        <div class="sec-title">How Are People Finding You?</div>
+        <div class="sec-desc">Traffic sources — where your visitors come from</div>
+      </div>
+    </div>
+
+    <div class="bar-chart">
+      <div class="bar-row">
+        <span class="bar-name e" contenteditable="true">Google Search (Organic)</span>
+        <div class="bar-track"><div class="bar-fill" style="width:72%;background:var(--blue);"></div></div>
+        <span class="bar-val e" contenteditable="true">1,326</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name e" contenteditable="true">Direct (typed your URL)</span>
+        <div class="bar-track"><div class="bar-fill" style="width:14%;background:var(--navy);"></div></div>
+        <span class="bar-val e" contenteditable="true">258</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name e" contenteditable="true">Instagram / Facebook</span>
+        <div class="bar-track"><div class="bar-fill" style="width:8%;background:#e879f9;"></div></div>
+        <span class="bar-val e" contenteditable="true">147</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name e" contenteditable="true">WhatsApp Link Clicks</span>
+        <div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--green);"></div></div>
+        <span class="bar-val e" contenteditable="true">92</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name e" contenteditable="true">Other / Referral</span>
+        <div class="bar-track"><div class="bar-fill" style="width:2%;background:var(--light);"></div></div>
+        <span class="bar-val e" contenteditable="true">19</span>
+      </div>
+    </div>
+
+    <!-- Top pages -->
+    <div class="sec-h">
+      <div class="sec-h-line sec-h-blue"></div>
+      <div>
+        <div class="sec-title">Most Visited Pages</div>
+        <div class="sec-desc">Where visitors spent the most time</div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Visitors</th>
+          <th>Avg. Time</th>
+          <th>vs Last Month</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="e" contenteditable="true">Homepage</span></td>
+          <td><span class="e" contenteditable="true">1,842</span></td>
+          <td><span class="e" contenteditable="true">1m 12s</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 18%</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Teeth Cleaning Service</span></td>
+          <td><span class="e" contenteditable="true">624</span></td>
+          <td><span class="e" contenteditable="true">2m 48s</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 34%</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Braces & Orthodontics</span></td>
+          <td><span class="e" contenteditable="true">412</span></td>
+          <td><span class="e" contenteditable="true">3m 02s</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 21%</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Contact / Book Appointment</span></td>
+          <td><span class="e" contenteditable="true">318</span></td>
+          <td><span class="e" contenteditable="true">1m 45s</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 12%</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">About Dr. Ananya Sharma</span></td>
+          <td><span class="e" contenteditable="true">241</span></td>
+          <td><span class="e" contenteditable="true">2m 10s</span></td>
+          <td><span class="pill pill-nt e" contenteditable="true">→ Same</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <div class="pg-foot">
+    <span class="pg-brand">Tron Labz</span>
+    <span>Page 2 of 5</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     PAGE 3 — SEO & SPEED
+════════════════════════════════════ -->
+<div class="page">
+  <div class="pg-header">
+    <div class="pg-header-left">
+      <img class="ph-logo" src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz"/>
+      <div>
+        <div class="ph-title e" contenteditable="true">SEO & Website Speed</div>
+        <div class="ph-sub e" contenteditable="true">How Google sees your website and how fast it loads</div>
+      </div>
+    </div>
+    <div class="ph-chip e" contenteditable="true">June 2025</div>
+  </div>
+
+  <div class="pg-inner" style="flex:1;display:flex;flex-direction:column;">
+    <div class="spacer"></div>
+
+    <div class="sec-h">
+      <div class="sec-h-line sec-h-green"></div>
+      <div>
+        <div class="sec-title">Google Search Rankings</div>
+        <div class="sec-desc">Where your clinic appears when people search on Google</div>
+      </div>
+    </div>
+
+    <div class="plain-box" style="background:var(--green-lt);border-color:var(--green-bd);">
+      <div class="pb-head" style="color:var(--green);">What does "ranking" mean?</div>
+      <div class="pb-text e block" contenteditable="true" style="color:var(--navy);">When someone types "dental clinic Mumbai" on Google, your website needs to appear in the results. The closer to position #1, the more people click on your site. Page 1 (positions 1–10) gets 95% of all clicks. We track your most important search terms below.</div>
+    </div>
+
+    <table class="kw-table">
+      <thead>
+        <tr>
+          <th style="width:40%;">Search Term (Keyword)</th>
+          <th>Current Position</th>
+          <th>Last Month</th>
+          <th>Change</th>
+          <th>Monthly Searches</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="e" contenteditable="true">dental clinic Mumbai</span></td>
+          <td><span class="rank-badge r-mid e" contenteditable="true">4</span></td>
+          <td><span class="e" contenteditable="true">7</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 3</span></td>
+          <td><span class="e" contenteditable="true">2,400/mo</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">teeth cleaning near me</span></td>
+          <td><span class="rank-badge r-mid e" contenteditable="true">6</span></td>
+          <td><span class="e" contenteditable="true">9</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 3</span></td>
+          <td><span class="e" contenteditable="true">1,800/mo</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">braces dentist Bandra</span></td>
+          <td><span class="rank-badge r-top e" contenteditable="true">2</span></td>
+          <td><span class="e" contenteditable="true">3</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 1</span></td>
+          <td><span class="e" contenteditable="true">880/mo</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">root canal treatment cost Mumbai</span></td>
+          <td><span class="rank-badge r-low e" contenteditable="true">14</span></td>
+          <td><span class="e" contenteditable="true">18</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">↑ 4</span></td>
+          <td><span class="e" contenteditable="true">1,200/mo</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">best dentist in Mumbai</span></td>
+          <td><span class="rank-badge r-new e" contenteditable="true">22</span></td>
+          <td><span class="e" contenteditable="true">—</span></td>
+          <td><span class="pill pill-up e" contenteditable="true">New</span></td>
+          <td><span class="e" contenteditable="true">5,400/mo</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="ruled"/>
+
+    <!-- Speed -->
+    <div class="sec-h">
+      <div class="sec-h-line sec-h-amber"></div>
+      <div>
+        <div class="sec-title">Website Speed Scores</div>
+        <div class="sec-desc">How fast your website loads — scored out of 100 by Google</div>
+      </div>
+    </div>
+
+    <div class="speed-grid">
+      <div class="speed-card">
+        <div class="sp-label">Mobile Speed</div>
+        <div class="sp-score sp-avg e" contenteditable="true">61</div>
+        <div class="sp-bar"><div class="sp-bar-fill fill-amber" style="width:61%"></div></div>
+        <div class="sp-explain e" contenteditable="true">Needs improvement. Google wants 70+. Slow mobile load = lost patients.</div>
+      </div>
+      <div class="speed-card">
+        <div class="sp-label">Desktop Speed</div>
+        <div class="sp-score sp-good e" contenteditable="true">88</div>
+        <div class="sp-bar"><div class="sp-bar-fill fill-green" style="width:88%"></div></div>
+        <div class="sp-explain e" contenteditable="true">Good score. Desktop version loads fast and Google is happy.</div>
+      </div>
+      <div class="speed-card">
+        <div class="sp-label">Core Web Vitals</div>
+        <div class="sp-score sp-avg e" contenteditable="true">Pass</div>
+        <div class="sp-bar"><div class="sp-bar-fill fill-green" style="width:75%"></div></div>
+        <div class="sp-explain e" contenteditable="true">Google's key health checks mostly passing. 1 item flagged.</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="sec-h" style="margin-bottom:10px;">
+          <div class="sec-h-line sec-h-green"></div>
+          <div class="sec-title" style="font-size:14px;">Fixed This Month</div>
+        </div>
+        <div class="issue-list">
+          <div class="issue-item fixed">
+            <div class="issue-icon">✅</div>
+            <div class="issue-body">
+              <div class="issue-title e" contenteditable="true">Broken contact form link</div>
+              <div class="issue-desc e" contenteditable="true">Form was not sending emails. Now repaired and tested.</div>
+              <span class="issue-badge badge-fixed">Fixed</span>
+            </div>
+          </div>
+          <div class="issue-item fixed">
+            <div class="issue-icon">✅</div>
+            <div class="issue-body">
+              <div class="issue-title e" contenteditable="true">Missing Google My Business images</div>
+              <div class="issue-desc e" contenteditable="true">Added 8 clinic photos to Google profile. Better first impression.</div>
+              <span class="issue-badge badge-fixed">Fixed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-h" style="margin-bottom:10px;">
+          <div class="sec-h-line sec-h-amber"></div>
+          <div class="sec-title" style="font-size:14px;">Work In Progress</div>
+        </div>
+        <div class="issue-list">
+          <div class="issue-item pending">
+            <div class="issue-icon">🔧</div>
+            <div class="issue-body">
+              <div class="issue-title e" contenteditable="true">Mobile image optimisation</div>
+              <div class="issue-desc e" contenteditable="true">Compressing large images to speed up mobile load. Completing in July.</div>
+              <span class="issue-badge badge-pending">In Progress</span>
+            </div>
+          </div>
+          <div class="issue-item pending">
+            <div class="issue-icon">🔧</div>
+            <div class="issue-body">
+              <div class="issue-title e" contenteditable="true">Root canal page SEO</div>
+              <div class="issue-desc e" contenteditable="true">Writing optimised content to push this page into top 10.</div>
+              <span class="issue-badge badge-pending">In Progress</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pg-foot">
+    <span class="pg-brand">Tron Labz</span>
+    <span>Page 3 of 5</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     PAGE 4 — LEADS & CONVERSIONS
+════════════════════════════════════ -->
+<div class="page">
+  <div class="pg-header">
+    <div class="pg-header-left">
+      <img class="ph-logo" src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz"/>
+      <div>
+        <div class="ph-title e" contenteditable="true">Leads & Conversions</div>
+        <div class="ph-sub e" contenteditable="true">How many visitors became patient enquiries</div>
+      </div>
+    </div>
+    <div class="ph-chip e" contenteditable="true">June 2025</div>
+  </div>
+
+  <div class="pg-inner" style="flex:1;display:flex;flex-direction:column;">
+    <div class="spacer"></div>
+
+    <div class="plain-box">
+      <div class="pb-head">What is a "conversion"?</div>
+      <div class="pb-text e block" contenteditable="true">A conversion is when a website visitor takes an action — they call your clinic, fill in the contact form, click WhatsApp, or book an appointment. This is the most important metric for your business. Every conversion is a potential patient.</div>
+    </div>
+
+    <div class="stat-row cols-4">
+      <div class="stat-card green">
+        <div class="sc-label">Form Enquiries</div>
+        <div class="sc-num e" contenteditable="true">28</div>
+        <div class="sc-change up e" contenteditable="true">↑ 8 vs May</div>
+        <div class="sc-explain e" contenteditable="true">People who filled the booking form</div>
+      </div>
+      <div class="stat-card green">
+        <div class="sc-label">Phone Call Clicks</div>
+        <div class="sc-num e" contenteditable="true">19</div>
+        <div class="sc-change up e" contenteditable="true">↑ 4 vs May</div>
+        <div class="sc-explain e" contenteditable="true">Tapped "Call Now" on mobile</div>
+      </div>
+      <div class="stat-card green">
+        <div class="sc-label">WhatsApp Clicks</div>
+        <div class="sc-num e" contenteditable="true">31</div>
+        <div class="sc-change up e" contenteditable="true">↑ 11 vs May</div>
+        <div class="sc-explain e" contenteditable="true">Opened WhatsApp from your site</div>
+      </div>
+      <div class="stat-card accent">
+        <div class="sc-label">Total Actions</div>
+        <div class="sc-num e" contenteditable="true">78</div>
+        <div class="sc-change up e" contenteditable="true">↑ 23 vs May</div>
+        <div class="sc-explain e" contenteditable="true">Combined contact actions</div>
+      </div>
+    </div>
+
+    <div class="sec-h">
+      <div class="sec-h-line sec-h-navy"></div>
+      <div>
+        <div class="sec-title">Visitor Journey — How Patients Reach You</div>
+        <div class="sec-desc">From first visit to booking — how your funnel performs</div>
+      </div>
+    </div>
+
+    <div class="funnel">
+      <div class="funnel-step">
+        <span class="fs-name e" contenteditable="true">👁 Saw your website</span>
+        <div class="fs-bar-wrap"><div class="fs-bar" style="width:100%;background:var(--blue);"></div></div>
+        <span class="fs-count e" contenteditable="true">1,842</span>
+        <span class="fs-change up e" contenteditable="true">↑ 18%</span>
+      </div>
+      <div class="funnel-step">
+        <span class="fs-name e" contenteditable="true">📄 Visited a service page</span>
+        <div class="fs-bar-wrap"><div class="fs-bar" style="width:70%;background:var(--blue-2);"></div></div>
+        <span class="fs-count e" contenteditable="true">1,288</span>
+        <span class="fs-change up e" contenteditable="true">↑ 24%</span>
+      </div>
+      <div class="funnel-step">
+        <span class="fs-name e" contenteditable="true">📞 Reached contact page</span>
+        <div class="fs-bar-wrap"><div class="fs-bar" style="width:20%;background:var(--teal);"></div></div>
+        <span class="fs-count e" contenteditable="true">318</span>
+        <span class="fs-change up e" contenteditable="true">↑ 12%</span>
+      </div>
+      <div class="funnel-step">
+        <span class="fs-name e" contenteditable="true">✅ Sent enquiry or called</span>
+        <div class="fs-bar-wrap"><div class="fs-bar" style="width:5%;background:var(--green);"></div></div>
+        <span class="fs-count e" contenteditable="true">78</span>
+        <span class="fs-change up e" contenteditable="true">↑ 42%</span>
+      </div>
+    </div>
+
+    <div class="wtm-box">
+      <div class="wtm-head">What This Tells Us</div>
+      <div class="wtm-items">
+        <div class="wtm-item"><div class="wtm-dot dot-green"></div><span class="e" contenteditable="true"><strong>4.2% conversion rate</strong> — 78 out of 1,842 visitors took an action. Industry average for clinics is 2–4%, so you're performing well above average.</span></div>
+        <div class="wtm-item"><div class="wtm-dot dot-blue"></div><span class="e" contenteditable="true"><strong>WhatsApp is your top channel</strong> — 31 patients clicked WhatsApp, more than any other method. We recommend adding a WhatsApp greeting message for faster response.</span></div>
+        <div class="wtm-item"><div class="wtm-dot dot-amber"></div><span class="e" contenteditable="true"><strong>Room to grow:</strong> 1,288 people read your service pages but only 318 went to contact. A stronger call-to-action on each service page could convert more of them.</span></div>
+      </div>
+    </div>
+
+    <div class="stat-row cols-3">
+      <div class="stat-card blue">
+        <div class="sc-label">Conversion Rate</div>
+        <div class="sc-num e" contenteditable="true">4.2%</div>
+        <div class="sc-explain e" contenteditable="true">Industry avg. is 2–4%. You're above average.</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Best Performing Day</div>
+        <div class="sc-num e" contenteditable="true">Monday</div>
+        <div class="sc-explain e" contenteditable="true">Most enquiries on Monday mornings</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Top Device</div>
+        <div class="sc-num e" contenteditable="true">Mobile</div>
+        <div class="sc-explain e" contenteditable="true">74% of visitors are on phones</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pg-foot">
+    <span class="pg-brand">Tron Labz</span>
+    <span>Page 4 of 5</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     PAGE 5 — NEXT MONTH PLAN
+════════════════════════════════════ -->
+<div class="page">
+  <div class="pg-header">
+    <div class="pg-header-left">
+      <img class="ph-logo" src="https://tronlabz.com/assets/company_logo.png" alt="Tron Labz"/>
+      <div>
+        <div class="ph-title e" contenteditable="true">Plan for July 2025</div>
+        <div class="ph-sub e" contenteditable="true">What we'll do next month and what we need from you</div>
+      </div>
+    </div>
+    <div class="ph-chip e" contenteditable="true">July 2025 Roadmap</div>
+  </div>
+
+  <div class="pg-inner" style="flex:1;display:flex;flex-direction:column;">
+    <div class="spacer"></div>
+
+    <div class="sec-h">
+      <div class="sec-h-line sec-h-blue"></div>
+      <div>
+        <div class="sec-title">Our Work Plan for July</div>
+        <div class="sec-desc">Everything Tron Labz will complete this coming month</div>
+      </div>
+    </div>
+
+    <table class="next-table">
+      <thead>
+        <tr>
+          <th style="width:8%;">Week</th>
+          <th style="width:34%;">Task</th>
+          <th style="width:32%;">Why It Matters to You</th>
+          <th style="width:14%;">Priority</th>
+          <th style="width:12%;">Owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="e" contenteditable="true">Wk 1</span></td>
+          <td><span class="e" contenteditable="true">Compress all images — mobile speed fix</span></td>
+          <td><span class="e" contenteditable="true">Faster loading = fewer patients bouncing</span></td>
+          <td><span class="pri-badge pri-high">High</span></td>
+          <td><span class="e" contenteditable="true">Tron Labz</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Wk 1</span></td>
+          <td><span class="e" contenteditable="true">Add patient testimonials section</span></td>
+          <td><span class="e" contenteditable="true">Real reviews build instant trust</span></td>
+          <td><span class="pri-badge pri-high">High</span></td>
+          <td><span class="e" contenteditable="true">Both</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Wk 2</span></td>
+          <td><span class="e" contenteditable="true">Optimise root canal treatment page</span></td>
+          <td><span class="e" contenteditable="true">1,200 people search this monthly — we want them finding you</span></td>
+          <td><span class="pri-badge pri-high">High</span></td>
+          <td><span class="e" contenteditable="true">Tron Labz</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Wk 2</span></td>
+          <td><span class="e" contenteditable="true">Add WhatsApp auto-reply message</span></td>
+          <td><span class="e" contenteditable="true">Patients get instant response even when you're busy</span></td>
+          <td><span class="pri-badge pri-med">Medium</span></td>
+          <td><span class="e" contenteditable="true">Tron Labz</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Wk 3</span></td>
+          <td><span class="e" contenteditable="true">Publish 2 SEO blog articles</span></td>
+          <td><span class="e" contenteditable="true">Brings in people searching dental advice on Google</span></td>
+          <td><span class="pri-badge pri-med">Medium</span></td>
+          <td><span class="e" contenteditable="true">Tron Labz</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Wk 3</span></td>
+          <td><span class="e" contenteditable="true">Update clinic photos on website</span></td>
+          <td><span class="e" contenteditable="true">Fresher photos = more professional first impression</span></td>
+          <td><span class="pri-badge pri-low">Low</span></td>
+          <td><span class="e" contenteditable="true">Client</span></td>
+        </tr>
+        <tr>
+          <td><span class="e" contenteditable="true">Wk 4</span></td>
+          <td><span class="e" contenteditable="true">Monthly analytics review + report</span></td>
+          <td><span class="e" contenteditable="true">You get full visibility of what's working</span></td>
+          <td><span class="pri-badge pri-done">Recurring</span></td>
+          <td><span class="e" contenteditable="true">Tron Labz</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="three-col" style="margin-bottom:14px;">
+      <div class="stat-card blue">
+        <div class="sc-label">July Target</div>
+        <div class="sc-num e" contenteditable="true">2,100</div>
+        <div class="sc-explain e" contenteditable="true">Visitors goal for next month</div>
+      </div>
+      <div class="stat-card green">
+        <div class="sc-label">Leads Target</div>
+        <div class="sc-num e" contenteditable="true">60+</div>
+        <div class="sc-explain e" contenteditable="true">Enquiries goal for next month</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-label">Speed Target</div>
+        <div class="sc-num e" contenteditable="true">75+</div>
+        <div class="sc-explain e" contenteditable="true">Mobile PageSpeed score goal</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:0;">
+      <div class="summary-box" style="margin:0;">
+        <div class="sb-title" style="color:var(--amber);">📌 We Need From You</div>
+        <div class="sb-text">
+          <div class="wtm-items">
+            <div class="wtm-item" style="margin-bottom:6px;"><div class="wtm-dot dot-amber"></div><span class="e" contenteditable="true">3–5 patient testimonials (written or we can call them)</span></div>
+            <div class="wtm-item" style="margin-bottom:6px;"><div class="wtm-dot dot-amber"></div><span class="e" contenteditable="true">New clinic photos (interior + team photos if possible)</span></div>
+            <div class="wtm-item"><div class="wtm-dot dot-amber"></div><span class="e" contenteditable="true">Approve the 2 blog article topics we'll send by 5th July</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="summary-box" style="margin:0;border-left-color:var(--green);">
+        <div class="sb-title" style="color:var(--green);">✅ No Action Needed From You</div>
+        <div class="sb-text">
+          <div class="wtm-items">
+            <div class="wtm-item" style="margin-bottom:6px;"><div class="wtm-dot dot-green"></div><span class="e" contenteditable="true">Image compression and speed fixes — we handle fully</span></div>
+            <div class="wtm-item" style="margin-bottom:6px;"><div class="wtm-dot dot-green"></div><span class="e" contenteditable="true">Root canal page SEO — done by our content team</span></div>
+            <div class="wtm-item"><div class="wtm-dot dot-green"></div><span class="e" contenteditable="true">Security monitoring and backups — automated</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sign off band -->
+  <div class="sign-band">
+    <div class="sb-col">
+      <div class="sb-label">Prepared By</div>
+      <div class="sb-val e" contenteditable="true">Tron Labz Team</div>
+      <div class="sb-sub e" contenteditable="true">support@tronlabz.com <br> +91 95400 43695</div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-col sb-center">
+      <div class="sb-label">Questions? We're here.</div>
+      <div class="sb-val" style="font-size:10px;margin-top:2px;color:rgba(255,255,255,.7);line-height:1.7;" class="e" contenteditable="true">Reply to this report · WhatsApp us · Email us · Call us</div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-col" style="text-align:right;">
+      <div class="sb-label">Next Report</div>
+      <div class="sb-val e" contenteditable="true">1st August 2026</div>
+      <div class="sb-sub e" contenteditable="true">Covering all of July 2026</div>
+    </div>
+  </div>
+
+  <div class="pg-foot">
+    <span class="pg-brand">Tron Labz</span>
+    <span>Page 5 of 5</span>
+  </div>
+</div>
+
+</body>
+</html>

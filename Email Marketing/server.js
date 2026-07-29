@@ -96,7 +96,7 @@ app.post("/email-marketing", async (req, res) => {
     const thankYouEmailData = {
       clientName: "Katrina",
       companyName: "Bloom Beauty",
-      projectName: "Website Redesign & Development",
+      projectName: "Website Redesign & Development Project",
       launchDate: "July 2026",
       futureScope: [
         {
@@ -115,6 +115,10 @@ app.post("/email-marketing", async (req, res) => {
         {
           title: "Seasonal Campaign Pages",
           desc: "Custom landing pages for product launches and promotions.",
+        },
+        {
+          title: "Appointment Booking System",
+          desc: "Integrate a booking system for services with calendar sync and more.",
         },
       ],
     };
@@ -172,6 +176,32 @@ app.post("/email-marketing", async (req, res) => {
     
     /* 
     
+    // Final Assets handover Mail Details
+    
+    */
+    const handoverMailDetails = {
+      clientName: "Katrina",
+      companyName: "Bloom Beauty Dunedin",
+      handoverDate: "07 July 2026",
+      assetsLink:
+        "https://drive.google.com/drive/folders/1aROTtREQRxssWIG56TaV-b-58CJvI4yu?usp=sharing",
+    };
+
+    const handoverMailSubject = "Final Assets Handover & Project Completion";
+    let handoverMail = await fs.readFile(
+      "./email_html/final_asset_handover_mail.html",
+      "utf8",
+    );
+
+    handoverMail = handoverMail
+      .replace(/{{CLIENT_NAME}}/g, handoverMailDetails.clientName)
+      .replace(/{{COMPANY_NAME}}/g, handoverMailDetails.companyName)
+      .replace(/{{HANDOVER_DATE}}/g, handoverMailDetails.handoverDate)
+      .replace(/{{ASSETS_LINK}}/g, handoverMailDetails.assetsLink);
+    
+    
+    /* 
+    
     // Payment Request Mail
     
     */
@@ -182,13 +212,13 @@ app.post("/email-marketing", async (req, res) => {
     );
 
     const paymentEmailData = {
-      clientName: "Katrina",
+      clientName: "Katrina Kleeber",
       companyName: "Bloom Beauty",
-      paymentTitle: "Website Redesign & Development",
-      paymentReference: "INV-",
-      paymentAmount: "",
-      paymentDueDate: "",
-      paymentLink: "",
+      paymentTitle: "Website Hosting Service Fees",
+      paymentReference: "INV-07072026-0003",
+      paymentAmount: "NZ$ 50",
+      paymentDueDate: "20th July  2026",
+      paymentLink: "https://www.paypal.com/ncp/payment/DMA4H3CNV5GRW",
     };
 
     paymentMail = paymentMail
@@ -202,10 +232,10 @@ app.post("/email-marketing", async (req, res) => {
 
     try {
       await transporter.sendMail({
-        from: `"TRON LABZ" <${process.env.SMTP_EMAIL}>`,
+        from: `"Tron Labz" <${process.env.SMTP_EMAIL}>`,
         to: recipient.email,
-        subject: paymentMailSubject,
-        html: paymentMail,
+        subject: paymentMailSubject, // Change this to the desired subject
+        html: paymentMail, // Change this to the desired email content
       });
 
       successCount++;
